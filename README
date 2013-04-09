@@ -1,0 +1,14 @@
+
+zlib/libpngライセンスの元配布されます。
+このドキュメントをビルドするには以下のソフトウェアが必要です。
+
+- pandoc
+
+ただし、automake.sh(ディレクトリの監視)を必要とする場合には、
+
+- inotify-tools
+
+が必要になり、firefoxのauto-reloadを使うと楽です。
+https://addons.mozilla.org/ja/firefox/addon/auto-reload/
+
+PDF化については検討中です.

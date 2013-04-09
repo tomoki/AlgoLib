@@ -1,0 +1,1749 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Tomoki Imai" />
+  <title>Algorithm And Tips For Competitive Programming</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+pre, code { background-color: #f8f8f8; }
+code > span.kw { color: #204a87; font-weight: bold; }
+code > span.dt { color: #204a87; }
+code > span.dv { color: #0000cf; }
+code > span.bn { color: #0000cf; }
+code > span.fl { color: #0000cf; }
+code > span.ch { color: #4e9a06; }
+code > span.st { color: #4e9a06; }
+code > span.co { color: #8f5902; font-style: italic; }
+code > span.ot { color: #8f5902; }
+code > span.al { color: #ef2929; }
+code > span.fu { color: #000000; }
+code > span.er { font-weight: bold; }
+  </style>
+  <link rel="stylesheet" href="buttondown.css" type="text/css" />
+  <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<div id="header">
+<h1 class="title">Algorithm And Tips For Competitive Programming</h1>
+<h2 class="author">Tomoki Imai</h2>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#テンプレート">テンプレート</a></li>
+<li><a href="#算術型">算術型</a><ul>
+<li><a href="#int">int</a></li>
+<li><a href="#long-long">long long</a></li>
+<li><a href="#double">double</a></li>
+<li><a href="#char">char</a></li>
+<li><a href="#bool">bool</a></li>
+<li><a href="#補助関数">補助関数</a></li>
+</ul></li>
+<li><a href="#入出力">入出力</a><ul>
+<li><a href="#cincout">cin,cout</a><ul>
+<li><a href="#cin">cin</a></li>
+<li><a href="#cout">cout</a></li>
+</ul></li>
+<li><a href="#scanfprintf">scanf,printf</a><ul>
+<li><a href="#scanf">scanf</a></li>
+<li><a href="#printf">printf</a></li>
+</ul></li>
+<li><a href="#高速化">高速化</a></li>
+</ul></li>
+<li><a href="#stdvector">std::vector</a><ul>
+<li><a href="#基本">基本</a></li>
+<li><a href="#並び換え">並び換え</a><ul>
+<li><a href="#sort">sort</a></li>
+<li><a href="#stable_sort">stable_sort</a></li>
+</ul></li>
+<li><a href="#unique">unique</a></li>
+<li><a href="#rotate">rotate</a></li>
+<li><a href="#next_permutation">next_permutation</a></li>
+</ul></li>
+<li><a href="#探索">探索</a><ul>
+<li><a href="#全探索">全探索</a></li>
+<li><a href="#二分探索">二分探索</a></li>
+</ul></li>
+<li><a href="#文字列操作">文字列操作</a><ul>
+<li><a href="#stdstring">std::string</a><ul>
+<li><a href="#部分列">部分列</a></li>
+<li><a href="#検索">検索</a></li>
+</ul></li>
+<li><a href="#stringstream">stringstream</a></li>
+<li><a href="#再帰下降構文解析">再帰下降構文解析</a></li>
+</ul></li>
+<li><a href="#整数論">整数論</a><ul>
+<li><a href="#最大公約数最小公倍数">最大公約数,最小公倍数</a><ul>
+<li><a href="#最大公約数">最大公約数</a></li>
+<li><a href="#最小公倍数">最小公倍数</a></li>
+</ul></li>
+<li><a href="#mod">mod</a><ul>
+<li><a href="#modの計算式について">modの計算式について</a></li>
+<li><a href="#冪乗のmod">冪乗のmod</a></li>
+</ul></li>
+<li><a href="#素数">素数</a><ul>
+<li><a href="#エラトステネスの篩">エラトステネスの篩</a></li>
+</ul></li>
+<li><a href="#コンビネーション">コンビネーション</a><ul>
+<li><a href="#素因数分解">素因数分解</a></li>
+</ul></li>
+<li><a href="#ヨセフス数">ヨセフス数</a></li>
+<li><a href="#乱数">乱数</a></li>
+</ul></li>
+<li><a href="#データ構造">データ構造</a><ul>
+<li><a href="#union-find">Union-Find</a></li>
+<li><a href="#ヒープ">ヒープ</a></li>
+<li><a href="#bitset">bitset</a></li>
+</ul></li>
+<li><a href="#グラフ">グラフ</a><ul>
+<li><a href="#構成要素">構成要素</a></li>
+<li><a href="#ダイクストラ">ダイクストラ</a></li>
+<li><a href="#ワーシャルフロイド">ワーシャルフロイド</a></li>
+<li><a href="#最小全域木">最小全域木</a></li>
+</ul></li>
+<li><a href="#幾何">幾何</a><ul>
+<li><a href="#基本要素">基本要素</a></li>
+</ul></li>
+<li><a href="#ゲーム">ゲーム</a><ul>
+<li><a href="#nim">Nim</a></li>
+</ul></li>
+<li><a href="#いろんなデータ">いろんなデータ</a><ul>
+<li><a href="#階乗">階乗</a></li>
+<li><a href="#数単位変換">数単位変換</a></li>
+<li><a href="#アスキーコード">アスキーコード</a></li>
+</ul></li>
+</ul>
+</div>
+<p>このライブラリはzlib/libpngライセンスの元に配布されます。</p>
+<p>The zlib/libpng License Copyright (c) 2012-2013 Tomoki Imai</p>
+<p>This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.</p>
+<p>Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:</p>
+<ul>
+<li><p>The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.</p></li>
+<li><p>Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.</p></li>
+<li><p>This notice may not be removed or altered from any source distribution.</p></li>
+</ul>
+<h1 id="テンプレート"><a href="#テンプレート">テンプレート</a></h1>
+<p>各種バッドノウハウを含む。</p>
+<table class="sourceCode cpp numberLines"><tr class="sourceCode"><td class="lineNumbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+</pre></td><td class="sourceCode"><pre><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
+<span class="ot">#include &lt;cstdio&gt;</span>
+<span class="ot">#include &lt;iomanip&gt;</span>
+<span class="ot">#include &lt;vector&gt;</span>
+<span class="ot">#include &lt;map&gt;</span>
+<span class="ot">#include &lt;set&gt;</span>
+<span class="ot">#include &lt;queue&gt;</span>
+<span class="ot">#include &lt;bitset&gt;</span>
+<span class="ot">#include &lt;stack&gt;</span>
+<span class="ot">#include &lt;utility&gt;</span>
+<span class="ot">#include &lt;numeric&gt;</span>
+<span class="ot">#include &lt;algorithm&gt;</span>
+<span class="ot">#include &lt;functional&gt;</span>
+<span class="ot">#include &lt;cctype&gt;</span>
+<span class="ot">#include &lt;complex&gt;</span>
+<span class="ot">#include &lt;string&gt;</span>
+<span class="ot">#include &lt;sstream&gt;</span>
+
+<span class="kw">using</span> <span class="kw">namespace</span> std;
+
+<span class="ot">#define all(c) c.begin(),c.end()</span>
+<span class="ot">#define rall(c) c.rbegin(),c.rend()</span>
+<span class="ot">#define rep(i,n) for(int i=0;i&lt;(n);i++)</span>
+<span class="ot">#define tr(it,container) for(typeof(container.begin()) it = container.begin(); \</span>
+                                                  it != container.end(); ++it)
+<span class="ot">#define mp(a,b) make_pair((a),(b))</span>
+<span class="ot">#define eq ==</span>
+
+<span class="kw">typedef</span> <span class="dt">long</span> <span class="dt">long</span> ll;
+<span class="kw">typedef</span> complex&lt;<span class="dt">double</span>&gt; point;
+<span class="kw">typedef</span> pair&lt;<span class="dt">int</span>,<span class="dt">int</span>&gt; pii;
+
+<span class="co">// →↑←↓</span>
+<span class="dt">const</span> <span class="dt">int</span> dx[] = {<span class="dv">1</span>,<span class="dv">0</span>,-<span class="dv">1</span>,<span class="dv">0</span>};
+<span class="dt">const</span> <span class="dt">int</span> dy[] = {<span class="dv">0</span>,-<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>};
+
+
+<span class="dt">const</span> <span class="dt">double</span> EPS = <span class="fl">1e-9</span>;
+
+<span class="dt">int</span> main(){
+
+    <span class="kw">return</span> <span class="dv">0</span>;
+}</code></pre></td></tr></table>
+<h1 id="算術型"><a href="#算術型">算術型</a></h1>
+<h2 id="int"><a href="#int">int</a></h2>
+<p>基本中の基本。<span class="math">\(10^{9}\)</span>くらい。こわいときにはlong longを使うことを推奨。</p>
+<h2 id="long-long"><a href="#long-long">long long</a></h2>
+<p>大きい整数。<span class="math">\(10^{18}\)</span>?くらい。</p>
+<h2 id="double"><a href="#double">double</a></h2>
+<p>floatは使ってはだめ。絶対値を得たいときには、complexの中にある、fabsを使う。</p>
+<h2 id="char"><a href="#char">char</a></h2>
+<p>-128 ~ 128くらい。ちいさい。基本的には文字を入れるのに使う。vector<char>を vector<bool>の代わりに使ってもいい。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">char</span> c = &#39;a&#39;;
+<span class="co">//cctypeが必要。大文字に変換する。すでに大文字のときは何も起こらない。</span>
+c = toupper(c);
+<span class="co">//小文字に変換する。</span>
+c = tolower(c);
+<span class="co">//vector&lt;bool&gt;の代わり。</span>
+vector&lt;<span class="dt">char</span>&gt; used(<span class="dv">10</span>,<span class="kw">false</span>);</code></pre>
+<h2 id="bool"><a href="#bool">bool</a></h2>
+<p>true(==1)とかfalse(==0)を入れるためだけに使う。ただしvector<bool>は使ってはいけない。</p>
+<h2 id="補助関数"><a href="#補助関数">補助関数</a></h2>
+<p>上記の型に関する便利な関数。</p>
+<p>床関数、天井関数、および四捨五入。返り値はint。cmathをincludeする。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">double</span> x = <span class="fl">0.3</span>;
+<span class="dt">int</span> f = floor(x); <span class="co">// -&gt; 0</span>
+<span class="dt">int</span> c = ceil(x); <span class="co">// -&gt; 1</span>
+<span class="dt">int</span> r = round(x) <span class="co">// -&gt; 0</span></code></pre>
+<p>任意の場所で四捨五入したいときには、<span class="math">\(10^{n}\)</span>をかけて、roundした後に、 <span class="math">\(10^{n}\)</span>で割ればいい。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">double</span> x = <span class="fl">0.123456789</span>;
+<span class="co">//0.123</span>
+<span class="dt">double</span> r = round(x*<span class="dv">1000</span>) / <span class="fl">1000.0</span>;</code></pre>
+<h1 id="入出力"><a href="#入出力">入出力</a></h1>
+<p>基本はcin,coutを使おう。</p>
+<h2 id="cincout"><a href="#cincout">cin,cout</a></h2>
+<p>iostream,iomanipをincludeしておくこと。</p>
+<h3 id="cin"><a href="#cin">cin</a></h3>
+<p>基本的な使い方について。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> n;
+cin &gt;&gt; n;
+vector&lt;<span class="dt">int</span>&gt; V(n);
+rep(i,n) cin &gt;&gt; V[i];</code></pre>
+<p>こうすると、短く書ける。</p>
+<p>入力の最後まで読む。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> n;
+<span class="kw">while</span>(cin &gt;&gt; n){
+    <span class="co">//処理</span>
+}</code></pre>
+<p>n=0のとき終わりとかの場合は、条件に&amp;&amp;n!=0とかをつける。</p>
+<p>数値をカンマ区切りで読み込む。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> x,y;<span class="dt">char</span> c;
+<span class="co">//cにカンマが入る</span>
+cin &gt;&gt; x &gt;&gt; c &gt;&gt; y;</code></pre>
+<p>冗長かもだけど、一番楽。</p>
+<p>空白とか含めて一行読む。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">string s;
+getline(cin,s);</code></pre>
+<p>改行文字は、sに入らず、かつ読み捨てされる。 cinでは、改行文字は読み捨てないことに注意しよう。 つまり、数値&lt;改行&gt;文字列&lt;改行&gt;を読みたいときには、</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> n;string s;
+<span class="co">// 数値</span>
+cin &gt;&gt; n;
+<span class="co">// 改行よみとばし</span>
+cin.ignore();
+<span class="co">// 文字列</span>
+getline(cin,s);</code></pre>
+<p>とする。cinは改行文字を残すので、ignoreでそれを読み捨てないといけない。 また、ignoreの引数は読み捨てる文字数。引数なしの場合は1を渡したのと同等 の効果がある。</p>
+<h3 id="cout"><a href="#cout">cout</a></h3>
+<p>有効数字等が設定されている問題は、必ず多めに出力すること。多めに出す分に は大丈夫。</p>
+<p>基本の使い方</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> n;vector&lt;<span class="dt">int</span>&gt; V(n);
+cout &lt;&lt; n &lt;&lt; endl;
+rep(i,n) cout &lt;&lt; V[i] &lt;&lt; <span class="st">&quot; &quot;</span>;
+cout &lt;&lt; endl;</code></pre>
+<p>以下主なiomanipの使い方</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> n = <span class="dv">123</span>;<span class="dt">double</span> d = <span class="fl">1.23</span>;
+
+<span class="co">//10進数 −&gt; 123</span>
+cout &lt;&lt; dec &lt;&lt; n &lt;&lt; endl ;
+
+<span class="co">//8進数 −&gt; 173</span>
+cout &lt;&lt; oct &lt;&lt; n &lt;&lt; endl ;
+
+<span class="co">//16進数 −&gt; 7b</span>
+cout &lt;&lt; hex &lt;&lt; n &lt;&lt; endl ;
+
+<span class="co">//16進数かつ、大文字 −&gt; 7B</span>
+cout &lt;&lt; hex &lt;&lt; uppercase &lt;&lt; n &lt;&lt; endl;
+
+<span class="co">//10進数に戻す</span>
+cout &lt;&lt; dec;
+
+<span class="co">//幅が10になるようにする。デフォルトは右寄せ</span>
+<span class="co">// -&gt; xxxxxxx123 (default)</span>
+cout &lt;&lt; setfill(&#39;x&#39;) &lt;&lt; setw(<span class="dv">10</span>) &lt;&lt; right &lt;&lt; n &lt;&lt; endl;
+
+<span class="co">// -&gt; 123xxxxxxx</span>
+cout &lt;&lt; setfill(&#39;x&#39;) &lt;&lt; setw(<span class="dv">10</span>) &lt;&lt; left &lt;&lt; n &lt;&lt; endl;
+<span class="co">// -&gt; 123yyyyyyy</span>
+cout &lt;&lt; setfill(&#39;y&#39;) &lt;&lt; setw(<span class="dv">10</span>) &lt;&lt; n &lt;&lt; endl;
+
+<span class="co">//小数点以下10桁表示に。</span>
+cout &lt;&lt; fixed &lt;&lt; setprecision(<span class="dv">10</span>);
+
+<span class="co">// -&gt; 1.2300000000</span>
+cout &lt;&lt; d &lt;&lt; endl;
+<span class="co">// -&gt; 12.3000000000</span>
+cout &lt;&lt; <span class="dv">10</span>*d &lt;&lt; endl;
+
+<span class="co">//小数点の表示を元に戻す</span>
+std.unsetf(ios::fixed);
+<span class="co">// -&gt; 1.23</span>
+cout &lt;&lt; d &lt;&lt; endl;</code></pre>
+<p>基本的には、引数のあるマニピュレータの効果は保存される。</p>
+<h2 id="scanfprintf"><a href="#scanfprintf">scanf,printf</a></h2>
+<p>C++では、cstdioをinclude。複雑な書式とかが必要なときにはこっちを使うといいかもしれない。</p>
+<h3 id="scanf"><a href="#scanf">scanf</a></h3>
+<p>基本的な使い方</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> n;<span class="dt">char</span> tmp[<span class="dv">256</span>];
+scanf(<span class="st">&quot;%d</span><span class="ch">\n</span><span class="st">&quot;</span>,&amp;n);
+gets(tmp);</code></pre>
+<p>stringに直接いれるのはだめ。scanfはcinと同様に改行を残す。getlineするな らcin.ignore。getsするなら、直前のscanfで改行を読んでおく必要がある。 また、scanfで改行を読むのでなく、直後にgetc(stdin)してもいい。</p>
+<h3 id="printf"><a href="#printf">printf</a></h3>
+<p>基本的な使い方</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> n = <span class="dv">100</span>;
+printf(<span class="st">&quot;n is %d</span><span class="ch">\n</span><span class="st">&quot;</span>,n);</code></pre>
+<p>scanfとほとんど同様の使い方ができる。</p>
+<table>
+<caption>書式指定子</caption>
+<thead>
+<tr class="header">
+<th align="left">指定子</th>
+<th align="left">出力書式</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">%c</td>
+<td align="left">文字</td>
+</tr>
+<tr class="even">
+<td align="left">%s</td>
+<td align="left">文字列</td>
+</tr>
+<tr class="odd">
+<td align="left">%d</td>
+<td align="left">符号付き１０進整数</td>
+</tr>
+<tr class="even">
+<td align="left">%u</td>
+<td align="left">符号なし10進</td>
+</tr>
+<tr class="odd">
+<td align="left">%f</td>
+<td align="left">10進浮動小数点数</td>
+</tr>
+<tr class="even">
+<td align="left">%o</td>
+<td align="left">符号なし8進</td>
+</tr>
+<tr class="odd">
+<td align="left">%x</td>
+<td align="left">符号なし16進(Xなら大文字)</td>
+</tr>
+<tr class="even">
+<td align="left">%%</td>
+<td align="left">%記号</td>
+</tr>
+</tbody>
+</table>
+<h2 id="高速化"><a href="#高速化">高速化</a></h2>
+<p>以下のコードをmain関数の最初に書くことで、cin,coutの速度が2倍程度になる。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">ios::sync_with_stdio(<span class="kw">false</span>);
+cin.tie(<span class="dv">0</span>);</code></pre>
+<p>ただし、このコードはstdioとの同期を切るという意味なので、これを使うとき にはprintfやscanfを使用してはだめ。</p>
+<h1 id="stdvector"><a href="#stdvector">std::vector</a></h1>
+<p>ここでは、配列のSTL版である、vectorの使いかたについて書く。 ここに書かれている関数は、string等にも用いることができるものが多い。 ちなみに、vector&lt;bool&gt;は使ってはいけない。bitsetや、vector<char>をつかうこと。 また、all(vector)は、vector.begin(),vector.end()とdefineしている。</p>
+<h2 id="基本"><a href="#基本">基本</a></h2>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">//要素数10で、初期値は-1にする。</span>
+vector&lt;<span class="dt">int</span>&gt; vec(<span class="dv">10</span>,-<span class="dv">1</span>);
+<span class="co">//vecの最初から3つの要素をコピーする。</span>
+vector&lt;<span class="dt">int</span>&gt; newvec(vec.begin(),vec.begin()+<span class="dv">3</span>);
+<span class="co">//vecの最初から3つの要素を削除する。</span>
+vec.erase(vec.begin(),vec.begin()+<span class="dv">3</span>);</code></pre>
+<h2 id="並び換え"><a href="#並び換え">並び換え</a></h2>
+<h3 id="sort"><a href="#sort">sort</a></h3>
+<p>C++のsortは、<span class="math">\(O(n \log n)\)</span>で、おそらくクイックソート。何も指定しない場合には昇順にソートされる。 注意すべきなのは、C++11では、最悪ケースで<span class="math">\(O(n \log n)\)</span>となること。C++03では特に何も制限はないが、g++ならば<span class="math">\(O(n \log n)\)</span>だと思われる。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">//昇順 (sort(vec.begin(),vec.end())) (2,1,3) -&gt; (1,2,3)</span>
+sort(all(vec));
+<span class="co">//降順 (ただ単純にreverseしてもいい) (2,1,3) -&gt; (3,2,1)</span>
+sort(all(vec),greater&lt;<span class="dt">int</span>&gt;());</code></pre>
+<p>第三引数には関数を渡すことができる。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">bool</span> comp(<span class="dt">const</span> <span class="dt">int</span>&amp; a ,<span class="dt">const</span> <span class="dt">int</span>&amp; b){
+    <span class="kw">return</span> abs(a) &lt; abs(b);
+}
+<span class="dt">int</span> main(){
+    vector&lt;<span class="dt">int</span>&gt; vec(<span class="dv">10</span>);
+    <span class="co">//絶対値が小さい順にソート</span>
+    sort(all(vec),comp);
+}</code></pre>
+<h3 id="stable_sort"><a href="#stable_sort">stable_sort</a></h3>
+<p>sortとちがって、同じ優先順位の要素の順番は保存される。最悪計算量は<span class="math">\(O(n \log ^ 2 n)\)</span>である。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">stable_sort(all(vec),comp);</code></pre>
+<h2 id="unique"><a href="#unique">unique</a></h2>
+<p>隣あう同じ要素を一つにまとめる。eraseすることに注意。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> ints[] = {<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">1</span>};
+vector&lt;<span class="dt">int</span>&gt; vec(ints,ints<span class="dv">+5</span>);
+vec.erase(unique(all(vec)),vec.end());
+<span class="co">// 1 2 1</span>
+rep(i,vec.size()) cout &lt;&lt; vec[i] &lt;&lt; endl;</code></pre>
+<h2 id="rotate"><a href="#rotate">rotate</a></h2>
+<p>rotateは第二引数の場所を先頭にするように回転する。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span>[] ints = {<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>};
+vector&lt;<span class="dt">int</span>&gt; vec(ints,ints<span class="dv">+5</span>);
+rotate(vec.begin(),vec.begin()+<span class="dv">1</span>),vec.end()); <span class="co">//2,3,4,5,1</span>
+rotate(vec.begin(),vec.end()-<span class="dv">1</span>,vec.end()); <span class="co">//5,1,2,3,4</span></code></pre>
+<h2 id="next_permutation"><a href="#next_permutation">next_permutation</a></h2>
+<p>順列をすべて列挙する。<span class="math">\(N!\)</span>個なので、それなりの勢いで大きくなる。章末の付録参照。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">vector&lt;<span class="dt">int</span>&gt; V = {<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">4</span>};
+<span class="co">//ソートすること。</span>
+sort(all(V));
+
+<span class="kw">do</span>{
+   <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;V.size();i++){
+       cout &lt;&lt; V[i] &lt;&lt; <span class="st">&quot; &quot;</span>;
+   }
+   cout &lt;&lt; endl;
+}<span class="kw">while</span>(next_permutation(all(V)));</code></pre>
+<h1 id="探索"><a href="#探索">探索</a></h1>
+<h2 id="全探索"><a href="#全探索">全探索</a></h2>
+<p>全部しらべる。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> linear_search(vector&lt;<span class="dt">int</span>&gt; V,<span class="dt">int</span> val){
+    rep(i,V.size()){
+        <span class="kw">if</span>(V[i] == val) <span class="kw">return</span> i;
+    }
+    <span class="kw">return</span> -<span class="dv">1</span>;
+}</code></pre>
+<h2 id="二分探索"><a href="#二分探索">二分探索</a></h2>
+<p>ある条件を満たす最小のものを探す。ただし単調増加な物にしかつかえない。 叙述関数をPとすると、</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">double</span> lower = <span class="dv">0</span>,upper = <span class="dv">1000000</span>;
+<span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;<span class="dv">200</span>;i++){
+    <span class="dt">double</span> m = (lower+upper) / <span class="dv">2</span>;
+    <span class="kw">if</span>(P(m)){
+        upper = m;
+    }<span class="kw">else</span>{
+        lower = m;
+    }
+}</code></pre>
+<p>とすると、upperに求めたい値がはいる。もしみつからなかった場合には、値は 変わらない。なので、lower,upperには極端な値を設定すること。200という回数 は、すこし多め。100で十分。対象がvectorの場合は以下のように書ける。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
+<span class="ot">#include &lt;vector&gt;</span>
+<span class="ot">#include &lt;algorithm&gt;</span>
+
+<span class="kw">using</span> <span class="kw">namespace</span> std;
+
+<span class="dt">int</span> main(){
+    vector&lt;<span class="dt">int</span>&gt; v = {<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>};
+    <span class="co">// ソートする必要あり。</span>
+    <span class="co">//  i  0 1 2 3 4 5 6 7 8</span>
+    <span class="co">// -&gt; [1,1,1,2,2,2,3,3,3]</span>
+    sort(v.begin(),v.end());
+    <span class="co">// 2以上の数値が初めて現れる場所 -&gt; 3</span>
+    <span class="dt">int</span> lower = lower_bound(v.begin(),v.end(),<span class="dv">2</span>) - v.begin();
+    <span class="co">// 2より大きい数値が初めて表われる場所 -&gt; 6</span>
+    <span class="dt">int</span> upper = upper_bound(v.begin(),v.end(),<span class="dv">2</span>) - v.begin();
+    <span class="co">// 2の個数</span>
+    <span class="dt">int</span> number_of_2 = upper - lower;
+}</code></pre>
+<h1 id="文字列操作"><a href="#文字列操作">文字列操作</a></h1>
+<p>stringをincludeする。cctypeもいるかも。</p>
+<h2 id="stdstring"><a href="#stdstring">std::string</a></h2>
+<p>charをラップしたテンプレートクラス。 基本的な使い方について</p>
+<h3 id="部分列"><a href="#部分列">部分列</a></h3>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">          <span class="co">//0123456789</span>
+string str(<span class="st">&quot;abcdefghij&quot;</span>);
+<span class="co">// 5番目以降</span>
+str.substr(<span class="dv">5</span>);    <span class="co">// &quot;fghij&quot;</span>
+<span class="co">// 5番目から3つ</span>
+str.substr(<span class="dv">5</span>,<span class="dv">3</span>); <span class="co">// &quot;fgh&quot;</span>
+<span class="co">//全部小文字にする</span>
+transform(s.begin(),s.end(),s.begin(),::tolower);</code></pre>
+<p>substrは一つの引数でそこから先全部、二つの場合は第一引数の位置から、第二 引数の数だけ持ってくる。</p>
+<h3 id="検索"><a href="#検索">検索</a></h3>
+<p>stringには、いくつかのfindが定義されている。線形検索なので、早い検索が必 要なときには後述するKMP法やBM法を用いること。</p>
+<ul>
+<li><p>find 引数が最初に現れる位置</p></li>
+<li><p>rfind 引数が最後に表われる位置</p></li>
+<li><p>find_first_of 引数の文字のどれかが最初に表われる位置</p></li>
+<li><p>find_last_of 引数の文字のどれかが最後に表われる位置</p></li>
+<li><p>find_first_not_of 引数の文字のどれかではない文字が最初に表われる位置</p></li>
+<li><p>find_first_not_of 引数の文字のどれかではない文字が最後に表われる位置</p></li>
+</ul>
+<p>第二引数として探すための最初の位置を指定できる。</p>
+<h4 id="boyer-moore法"><a href="#boyer-moore法">Boyer Moore法</a></h4>
+<h4 id="kmp法"><a href="#kmp法">KMP法</a></h4>
+<h2 id="stringstream"><a href="#stringstream">stringstream</a></h2>
+<p>cinやcoutのようなstreamをstringを元に作成したりする。基本的には、string をフォーマットしたり、intやlongに、intやlongから変換するために使用する。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">stringstream ss;
+ss &lt;&lt; <span class="dv">102</span>;
+string s;
+ss &gt;&gt; s;</code></pre>
+<h2 id="再帰下降構文解析"><a href="#再帰下降構文解析">再帰下降構文解析</a></h2>
+<h1 id="整数論"><a href="#整数論">整数論</a></h1>
+<h2 id="最大公約数最小公倍数"><a href="#最大公約数最小公倍数">最大公約数,最小公倍数</a></h2>
+<p>ユークリッドの互除法を使う。intをlong longに置換してもいい。 <span class="math">\(O(\log n)\)</span></p>
+<h3 id="最大公約数"><a href="#最大公約数">最大公約数</a></h3>
+<p>~~~~~~{.cpp} int gcd(int a,int b){ return b==0 ? a : gcd(b,a%b); } ~~~~~</p>
+<h3 id="最小公倍数"><a href="#最小公倍数">最小公倍数</a></h3>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> lcm(<span class="dt">int</span> a,<span class="dt">int</span> b){
+    <span class="kw">return</span> a*b / gcd(a,b);
+}</code></pre>
+<h2 id="mod"><a href="#mod">mod</a></h2>
+<p>long longに入らないような答えのときにmodが登場する。</p>
+<h3 id="modの計算式について"><a href="#modの計算式について">modの計算式について</a></h3>
+<p><span class="math">\[\begin{aligned}
+a \equiv c &amp; \pmod m \\
+b \equiv d &amp; \pmod m\end{aligned}\]</span></p>
+<p>の条件下では以下の式が成り立つ。</p>
+<p><span class="math">\[\begin{aligned}
+a+b \equiv c+d  &amp; \pmod m \\
+a-b \equiv c-d  &amp; \pmod m \\
+a \times b \equiv c \times d  &amp; \pmod m\end{aligned}\]</span></p>
+<p>さらに、mが素数の場合、以下の関係が成り立つ。</p>
+<p><span class="math">\[\begin{aligned}
+a ^ m \equiv a \pmod m \\
+a ^ {m-1} \equiv 1 \pmod m \\
+a ^ {m-2} \equiv \frac{1}{a} \pmod m\end{aligned}\]</span></p>
+<p>つまり、<span class="math">\(a\)</span>で割ることと、<span class="math">\(a^{m-2}\)</span>を掛けることは同じである。<br />これは、<span class="math">\(C(10000,5000) \pmod p\)</span>といった式を計算する際、次の冪乗の演算と組みあわせて用いる。</p>
+<h3 id="冪乗のmod"><a href="#冪乗のmod">冪乗のmod</a></h3>
+<p>いわゆるmod_pow。計算量は<span class="math">\(O(\log n)\)</span>。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">ll mod_pow(ll x,ll n,ll mod){
+    <span class="kw">if</span>(n==<span class="dv">0</span>) <span class="kw">return</span> <span class="dv">1</span>;
+    ll ret = mod_pow(x * x % mod,n/<span class="dv">2</span>,mod);
+    <span class="kw">if</span>(n%<span class="dv">2</span>== <span class="dv">1</span>)  ret = ret * x % mod;
+    <span class="kw">return</span> ret;
+}</code></pre>
+<p>ちなみにC++のpowを使うときに、引数が整数で、返り値も整数であることを期待 するときには、上記のpowを使うべき。なぜならC++のpowは double,double-&gt;doubleな関数であるから。</p>
+<h2 id="素数"><a href="#素数">素数</a></h2>
+<h3 id="エラトステネスの篩"><a href="#エラトステネスの篩">エラトステネスの篩</a></h3>
+<p>素数のリストが欲しかったら、適当に突っ込むこと。 実際には<span class="math">\(O(n \log \log n)\)</span>だけれど、大体<span class="math">\(O(n)\)</span>だと思っていい。</p>
+<h2 id="コンビネーション"><a href="#コンビネーション">コンビネーション</a></h2>
+<p>くみあわせ。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
+<span class="ot">#include &lt;vector&gt;</span>
+
+<span class="kw">using</span> <span class="kw">namespace</span> std;
+<span class="kw">typedef</span> <span class="dt">long</span> <span class="dt">long</span> ll;
+
+<span class="co">//いい感じのやつ (n=61まで大丈夫)</span>
+ll combi2(<span class="dt">int</span> n,<span class="dt">int</span> r){
+    <span class="kw">if</span>(n &lt; r) <span class="kw">return</span> <span class="dv">0</span>;
+    ll ret = <span class="dv">1</span>;
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;r;i++){
+        ret *= n-i;
+        ret /= i<span class="dv">+1</span>;
+    }
+    <span class="kw">return</span> ret;
+}
+
+ll mod_combi(ll n,ll r,ll mod){
+    <span class="kw">if</span>(n &lt; r) <span class="kw">return</span> <span class="dv">0</span>;
+    ll ret = <span class="dv">1</span>;
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;r;i++){
+        ret = (ret * (n-i)) % mod;
+        ret = (ret * mod_pow(i<span class="dv">+1</span>,mod<span class="dv">-2</span>,mod)) % mod;
+    }
+    <span class="kw">return</span> ret;
+}
+
+<span class="co">//パスカルの三角形 (n=66まで大丈夫)</span>
+<span class="co">//たくさん必要になるときはこっちのほうがいい。</span>
+ll combi3(<span class="dt">int</span> n,<span class="dt">int</span> r){
+    <span class="dt">int</span> N = n<span class="dv">+1</span>;
+    vector&lt;vector&lt;ll&gt; &gt; memo(N,vector&lt;ll&gt;(N,<span class="dv">0</span>));
+    memo[<span class="dv">0</span>][<span class="dv">0</span>] = <span class="dv">1</span>;
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">1</span>;i&lt;N;i++){
+        memo[i][<span class="dv">0</span>] = memo[i<span class="dv">-1</span>][<span class="dv">0</span>];
+        <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">1</span>;j&lt;N;j++){
+            memo[i][j] = memo[i<span class="dv">-1</span>][j<span class="dv">-1</span>] + memo[i<span class="dv">-1</span>][j];
+        }
+    }
+    <span class="kw">return</span> memo[n][r];
+}</code></pre>
+<h3 id="素因数分解"><a href="#素因数分解">素因数分解</a></h3>
+<h2 id="ヨセフス数"><a href="#ヨセフス数">ヨセフス数</a></h2>
+<h2 id="乱数"><a href="#乱数">乱数</a></h2>
+<p>XORShiftをつかったらうれしいかもしれない。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> <span class="dt">long</span> xor128(){
+    <span class="dt">static</span> <span class="dt">unsigned</span> <span class="dt">long</span> x=<span class="dv">123456789</span>,y=<span class="dv">362436069</span>,z=<span class="dv">521288629</span>,w=<span class="dv">88675123</span>;
+    <span class="dt">unsigned</span> <span class="dt">long</span> t;
+    t=(x^(x&lt;&lt;<span class="dv">11</span>));x=y;y=z;z=w; <span class="kw">return</span>( w=(w^(w&gt;&gt;<span class="dv">19</span>))^(t^(t&gt;&gt;<span class="dv">8</span>)) );
+}</code></pre>
+<h1 id="データ構造"><a href="#データ構造">データ構造</a></h1>
+<h2 id="union-find"><a href="#union-find">Union-Find</a></h2>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> UnionFind{
+    vector&lt;<span class="dt">int</span>&gt; par; <span class="co">// 親</span>
+    vector&lt;<span class="dt">int</span>&gt; rank; <span class="co">// 木の深さ</span>
+    UnionFind(<span class="dt">int</span> n){
+        rep(i,n) par.push_back(i);
+        rank = vector&lt;<span class="dt">int</span>&gt;(n);
+    }
+    <span class="co">// 親を探す</span>
+    <span class="dt">int</span> root(<span class="dt">int</span> x){
+        <span class="kw">if</span>(par[x] == x){
+            <span class="kw">return</span> x;
+        }<span class="kw">else</span>{
+            <span class="co">// 縮約</span>
+            <span class="kw">return</span> par[x] = root(par[x]);
+        }
+    }
+    <span class="co">// x,yの含まれる集合を併合</span>
+    <span class="dt">void</span> unite(<span class="dt">int</span> x,<span class="dt">int</span> y){
+        x = root(x);
+        y = root(y);
+        <span class="kw">if</span>(x==y) <span class="kw">return</span>;
+        <span class="kw">if</span>(rank[x] &lt; rank[y]){
+            par[x] = y;
+        }<span class="kw">else</span>{
+            par[y] = x;
+            <span class="kw">if</span>(rank[x] == rank[y]) rank[x]++;
+        }
+    }
+    <span class="co">// 同じ集合にいるかどうか</span>
+    <span class="dt">bool</span> same(<span class="dt">int</span> x,<span class="dt">int</span> y){
+        <span class="kw">return</span> root(x) == root(y);
+    }
+};</code></pre>
+<h2 id="ヒープ"><a href="#ヒープ">ヒープ</a></h2>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;queue&gt;</span>
+<span class="ot">#include &lt;iostream&gt;</span>
+
+<span class="kw">using</span> <span class="kw">namespace</span> std;
+
+<span class="kw">typedef</span> pair&lt;<span class="dt">int</span>,<span class="dt">int</span>&gt; pii;
+
+<span class="kw">struct</span> Comp{
+    <span class="dt">bool</span> <span class="kw">operator</span>()(pii left,pii right){
+        <span class="kw">if</span>(left.second &lt; right.second) <span class="kw">return</span> <span class="kw">true</span>;
+        <span class="kw">else</span> <span class="kw">if</span>(left.second == right.second <span class="kw">and</span> left.first &gt; right.first) <span class="kw">return</span> <span class="kw">true</span>;
+        <span class="kw">else</span> <span class="kw">return</span> <span class="kw">false</span>;
+    };
+};
+
+<span class="dt">int</span> main(){
+    <span class="co">// 何も書かないと降順。(おっきい方からでてくる。)</span>
+    <span class="co">// これは降順にしたもの。</span>
+    priority_queue&lt;<span class="dt">int</span>,vector&lt;<span class="dt">int</span>&gt;,greater&lt;<span class="dt">int</span>&gt; &gt; Qi;
+    <span class="co">//関数オブジェクトを使っていい感じにもできる。</span>
+    priority_queue&lt;pii,vector&lt;pii&gt;,Comp&gt; Q;
+    Q.push(make_pair(<span class="dv">1</span>,<span class="dv">2</span>));
+    Q.push(make_pair(<span class="dv">2</span>,<span class="dv">2</span>));
+    Q.push(make_pair(<span class="dv">3</span>,<span class="dv">2</span>));
+    <span class="kw">while</span>(<span class="kw">not</span> Q.empty()){
+        cout &lt;&lt; Q.top().first &lt;&lt; <span class="st">&quot; &quot;</span> &lt;&lt; Q.top().second &lt;&lt; endl;
+        Q.pop();
+    }
+}</code></pre>
+<h2 id="bitset"><a href="#bitset">bitset</a></h2>
+<p>限られた大きさのvector&lt;bool&gt;を使いたいときに、bitsetを使うことができる。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
+<span class="ot">#include &lt;bitset&gt;</span>
+
+<span class="kw">using</span> <span class="kw">namespace</span> std;
+<span class="dt">const</span> <span class="dt">int</span> N = <span class="dv">10</span>;
+
+<span class="kw">struct</span> bit_cmp{
+    <span class="dt">bool</span> <span class="kw">operator</span>() (<span class="dt">const</span> bitset&lt;N&gt; &amp;left,<span class="dt">const</span> bitset&lt;N&gt; &amp;right) {
+        <span class="kw">for</span>(<span class="dt">int</span> i=N<span class="dv">-1</span>;i&gt;=<span class="dv">0</span>;i--){
+            <span class="kw">if</span>(left[i] &lt; right[i]) <span class="kw">return</span> <span class="kw">true</span>;
+            <span class="kw">if</span>(left[i] &gt; right[i]) <span class="kw">return</span> <span class="kw">false</span>;
+        }
+        <span class="kw">return</span> <span class="kw">false</span>;
+    }
+};
+
+
+<span class="dt">int</span> main(){
+    <span class="co">//定数じゃないとダメ。最初は全部false</span>
+    bitset&lt;N&gt; bits;
+    <span class="co">// すべての要素をtrue -&gt; 1111111111</span>
+    bits.set();
+    <span class="kw">if</span>(bits.all()) cout &lt;&lt; <span class="st">&quot;all&quot;</span> &lt;&lt; endl;
+    <span class="co">// 立っているbitの数 -&gt; 10</span>
+    cout &lt;&lt; bits.count() &lt;&lt; endl;
+    <span class="co">// すべての要素をfalse -&gt; 0000000000</span>
+    bits.reset();
+    <span class="kw">if</span>(bits.none()) cout &lt;&lt; <span class="st">&quot;none&quot;</span> &lt;&lt; endl;
+
+    <span class="co">//1番目の要素をtrue -&gt; 0100000000</span>
+    bits.set(<span class="dv">1</span>);
+    <span class="kw">if</span>(bits.any()) cout &lt;&lt; <span class="st">&quot;any&quot;</span> &lt;&lt; endl;
+
+    <span class="co">// 0110000000</span>
+    bits.set(<span class="dv">2</span>);
+    <span class="co">//1番目の要素をfalse -&gt; 0010000000</span>
+    bits.reset(<span class="dv">1</span>);
+
+    <span class="kw">if</span>(bits[<span class="dv">2</span>]) cout &lt;&lt; <span class="dv">2</span> &lt;&lt; endl;
+    cout &lt;&lt; bits &lt;&lt; endl;
+
+    bitset&lt;N&gt; newbits;
+    <span class="co">// 和を取る</span>
+    bits |= newbits;
+    <span class="co">// 積を取る</span>
+    bits &amp;= newbits;
+
+    <span class="co">// 関数オブジェクトを作る必要アリ</span>
+    map&lt;bitset&lt;N&gt;,<span class="dt">int</span>,bit_cmp&gt; M;
+}</code></pre>
+<h1 id="グラフ"><a href="#グラフ">グラフ</a></h1>
+<h2 id="構成要素"><a href="#構成要素">構成要素</a></h2>
+<p>隣接行列を使うか、vector&lt;Edge&gt;みたいのを使うかの二択。場合によってはNode みたいなのも使うかも。隣接行列を使うとメモリとか探すのとか重い。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> Edge{
+    <span class="dt">int</span> to,cost;
+    Edge(<span class="dt">int</span> to,<span class="dt">int</span> cost) : to(to),cost(cost) {};
+};</code></pre>
+<h2 id="ダイクストラ"><a href="#ダイクストラ">ダイクストラ</a></h2>
+<p>負の経路があったらダメ</p>
+<h2 id="ワーシャルフロイド"><a href="#ワーシャルフロイド">ワーシャルフロイド</a></h2>
+<p>負の経路があってもOK。すべてのノードに対してすべてのノードへの距離を求め る。もし負の閉路があったらiからiはマイナスになる。<span class="math">\(O(|V|^{3})\)</span></p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// m はノードの個数。NOはでかい数</span>
+vector&lt;vector&lt;<span class="dt">int</span>&gt; &gt; V(m,vector&lt;<span class="dt">int</span>&gt;(m,NO));
+<span class="co">// i-&gt;iは0にする。</span>
+rep(i,m){
+    V[i][i] = <span class="dv">0</span>;
+}
+
+<span class="kw">for</span>(<span class="dt">int</span> k=<span class="dv">0</span>;k&lt;m;k++){
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;m;i++){
+        <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;m;j++){
+            V[i][j] = min(V[i][j],V[i][k]+V[k][j]);
+        }
+    }
+}</code></pre>
+<h2 id="最小全域木"><a href="#最小全域木">最小全域木</a></h2>
+<p>プラム法による。<span class="math">\(O(N^3\)</span>)だと思う。最小コストを求めるコードが以下。 ただし、vector<Edge>を使えばもっとよい。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">typedef</span> pair&lt;<span class="dt">int</span>,<span class="dt">int</span>&gt; pii;
+
+<span class="dt">int</span> main(){
+    <span class="dt">int</span> N;
+    <span class="kw">while</span>(cin &gt;&gt; N){
+        vector&lt;vector&lt;<span class="dt">int</span>&gt; &gt; M(N,vector&lt;<span class="dt">int</span>&gt;(N));
+        <span class="co">// 距離行列を読みこむ</span>
+        rep(i,N) rep(j,N) cin &gt;&gt; M[i][j];
+        vector&lt;<span class="dt">char</span>&gt; used(N,<span class="kw">false</span>);
+        ll ret = <span class="dv">0</span>;
+        <span class="co">// cost , where.</span>
+        priority_queue&lt;pii,vector&lt;pii&gt;,greater&lt;pii&gt; &gt; Q;
+        Q.push(mp(<span class="dv">0</span>,<span class="dv">0</span>));
+        <span class="kw">while</span>(!Q.empty()){
+            <span class="dt">int</span> cost = Q.top().first;
+            <span class="dt">int</span> where = Q.top().second;
+            Q.pop();
+            <span class="kw">if</span>(used[where]) <span class="kw">continue</span>;
+            used[where] = <span class="kw">true</span>;
+            ret += cost;
+            <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;N;i++){
+                Q.push(mp(M[where][i],i));
+            }
+        }
+        cout &lt;&lt; ret &lt;&lt; endl;
+    }
+    <span class="kw">return</span> <span class="dv">0</span>;
+}</code></pre>
+<h1 id="幾何"><a href="#幾何">幾何</a></h1>
+<h2 id="基本要素"><a href="#基本要素">基本要素</a></h2>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;complex&gt;</span>
+<span class="kw">using</span> <span class="kw">namespace</span> std;
+
+<span class="kw">typedef</span> complex&lt;<span class="dt">double</span>&gt; point;
+<span class="dt">bool</span> <span class="kw">operator</span> &lt; (<span class="dt">const</span> point &amp;lhs,<span class="dt">const</span> point &amp;rhs){
+    <span class="kw">if</span>(real(lhs) == real(rhs)){
+        <span class="kw">return</span> imag(lhs) &lt; imag(rhs);
+    }<span class="kw">else</span>{
+        <span class="kw">return</span> real(lhs) &lt; real(rhs);
+    }
+}
+
+<span class="dt">double</span> cross(<span class="dt">const</span> point &amp;a,<span class="dt">const</span> point &amp;b){
+    <span class="kw">return</span> imag(conj(a)*b);
+}
+<span class="dt">double</span> dot(<span class="dt">const</span> point &amp;a,<span class="dt">const</span> point &amp;b){
+    <span class="kw">return</span> real(conj(a)*b);
+}
+
+<span class="co">// 点の進行方向</span>
+<span class="dt">int</span> ccw(point a,point b,point c){
+    b -= a;c -= a;
+    <span class="kw">if</span>(cross(b,c) &gt; <span class="dv">0</span>) <span class="kw">return</span> +<span class="dv">1</span>;    <span class="co">// counter clockwise</span>
+    <span class="kw">if</span>(cross(b,c) &lt; <span class="dv">0</span>) <span class="kw">return</span> -<span class="dv">1</span>;    <span class="co">// clockwise</span>
+    <span class="kw">if</span>(dot(b,c) &lt; <span class="dv">0</span>) <span class="kw">return</span> +<span class="dv">2</span>;      <span class="co">// c -- a -- b</span>
+    <span class="kw">if</span>(norm(b) &lt; norm(c)) <span class="kw">return</span> -<span class="dv">2</span>; <span class="co">// a -- b -- c</span>
+    <span class="kw">return</span> <span class="dv">0</span>;
+}
+
+<span class="kw">struct</span> line : vector&lt;point&gt; {
+    line(<span class="dt">const</span> point &amp;a,<span class="dt">const</span> point &amp;b){
+        push_back(a);push_back(b);
+    }
+};
+
+<span class="kw">struct</span> circle {
+    point center;<span class="dt">double</span> r;
+    circle(<span class="dt">const</span> point &amp;center,<span class="dt">double</span> r) : center(center),r(r) {}
+};</code></pre>
+<h1 id="ゲーム"><a href="#ゲーム">ゲーム</a></h1>
+<h2 id="nim"><a href="#nim">Nim</a></h2>
+<p>いくつかのコインの山がある。この中からプレイヤーは山を一つ選び、1個以上の任意の 数のコインを取る。最後のコインを取ったプレイヤーが勝ちである。この問題に 対しては以下のことが知られている。すべての山のxorをとったとき、それが0で あるとき、後攻の勝ち、それ以外のときは先攻の勝ち。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
+<span class="ot">#include &lt;vector&gt;</span>
+
+<span class="kw">using</span> <span class="kw">namespace</span> std;
+
+<span class="dt">int</span> main(){
+    <span class="dt">int</span> xor_sum = <span class="dv">0</span>;
+    vector&lt;<span class="dt">int</span>&gt; coins = {<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>};
+    <span class="kw">for</span>(size_t i=<span class="dv">0</span>;i&lt;coins.size();i++){
+        xor_sum = xor_sum ^ coins[i];
+    }
+    <span class="kw">if</span>(xor_sum != <span class="dv">0</span>) cout &lt;&lt; <span class="st">&quot;First Player Win&quot;</span> &lt;&lt; endl;
+    <span class="kw">else</span> cout &lt;&lt; <span class="st">&quot;Second Player Win&quot;</span> &lt;&lt; endl;
+}</code></pre>
+<h1 id="いろんなデータ"><a href="#いろんなデータ">いろんなデータ</a></h1>
+<h2 id="階乗"><a href="#階乗">階乗</a></h2>
+<table>
+<thead>
+<tr class="header">
+<th align="left"><span class="math">\(N\)</span></th>
+<th align="left"><span class="math">\(N!\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">0</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">2</td>
+<td align="left">2</td>
+</tr>
+<tr class="even">
+<td align="left">3</td>
+<td align="left">6</td>
+</tr>
+<tr class="odd">
+<td align="left">4</td>
+<td align="left">24</td>
+</tr>
+<tr class="even">
+<td align="left">5</td>
+<td align="left">120</td>
+</tr>
+<tr class="odd">
+<td align="left">6</td>
+<td align="left">720</td>
+</tr>
+<tr class="even">
+<td align="left">7</td>
+<td align="left">5040</td>
+</tr>
+<tr class="odd">
+<td align="left">8</td>
+<td align="left">40320</td>
+</tr>
+<tr class="even">
+<td align="left">9</td>
+<td align="left">362880</td>
+</tr>
+<tr class="odd">
+<td align="left">10</td>
+<td align="left">3628800</td>
+</tr>
+</tbody>
+</table>
+<h2 id="数単位変換"><a href="#数単位変換">数単位変換</a></h2>
+<table>
+<thead>
+<tr class="header">
+<th align="left">N</th>
+<th align="left">日本語</th>
+<th align="center">英語</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><span class="math">\(10^{0}\)</span></td>
+<td align="left">一</td>
+<td align="center">one</td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math">\(10^{1}\)</span></td>
+<td align="left">十</td>
+<td align="center">ten</td>
+</tr>
+<tr class="odd">
+<td align="left"><span class="math">\(10^{2}\)</span></td>
+<td align="left">百</td>
+<td align="center">hundred</td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math">\(10^{3}\)</span></td>
+<td align="left">千</td>
+<td align="center">thousand</td>
+</tr>
+<tr class="odd">
+<td align="left"><span class="math">\(10^{4}\)</span></td>
+<td align="left">万</td>
+<td align="center">ten thousand</td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math">\(10^{5}\)</span></td>
+<td align="left">十万</td>
+<td align="center">hundred thousand</td>
+</tr>
+<tr class="odd">
+<td align="left"><span class="math">\(10^{6}\)</span></td>
+<td align="left">百万</td>
+<td align="center">million</td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math">\(10^{7}\)</span></td>
+<td align="left">千万</td>
+<td align="center">ten million</td>
+</tr>
+<tr class="odd">
+<td align="left"><span class="math">\(10^{8}\)</span></td>
+<td align="left">億</td>
+<td align="center">hundred million</td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math">\(10^{9}\)</span></td>
+<td align="left">十億</td>
+<td align="center">billion</td>
+</tr>
+<tr class="odd">
+<td align="left"><span class="math">\(10^{10}\)</span></td>
+<td align="left">百億</td>
+<td align="center">ten billion</td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math">\(10^{11}\)</span></td>
+<td align="left">千億</td>
+<td align="center">hundred billion</td>
+</tr>
+</tbody>
+</table>
+<h2 id="アスキーコード"><a href="#アスキーコード">アスキーコード</a></h2>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Char</th>
+<th align="left">Dec</th>
+<th align="left">Oct</th>
+<th align="left">Hex</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(nul)</td>
+<td align="left">0</td>
+<td align="left">0000</td>
+<td align="left">0x00</td>
+</tr>
+<tr class="even">
+<td align="left">(soh)</td>
+<td align="left">1</td>
+<td align="left">0001</td>
+<td align="left">0x01</td>
+</tr>
+<tr class="odd">
+<td align="left">(stx)</td>
+<td align="left">2</td>
+<td align="left">0002</td>
+<td align="left">0x02</td>
+</tr>
+<tr class="even">
+<td align="left">(etx)</td>
+<td align="left">3</td>
+<td align="left">0003</td>
+<td align="left">0x03</td>
+</tr>
+<tr class="odd">
+<td align="left">(eot)</td>
+<td align="left">4</td>
+<td align="left">0004</td>
+<td align="left">0x04</td>
+</tr>
+<tr class="even">
+<td align="left">(enq)</td>
+<td align="left">5</td>
+<td align="left">0005</td>
+<td align="left">0x05</td>
+</tr>
+<tr class="odd">
+<td align="left">(ack)</td>
+<td align="left">6</td>
+<td align="left">0006</td>
+<td align="left">0x06</td>
+</tr>
+<tr class="even">
+<td align="left">(bel)</td>
+<td align="left">7</td>
+<td align="left">0007</td>
+<td align="left">0x07</td>
+</tr>
+<tr class="odd">
+<td align="left">(bs)</td>
+<td align="left">8</td>
+<td align="left">0010</td>
+<td align="left">0x08</td>
+</tr>
+<tr class="even">
+<td align="left">(ht)</td>
+<td align="left">9</td>
+<td align="left">0011</td>
+<td align="left">0x09</td>
+</tr>
+<tr class="odd">
+<td align="left">(nl)</td>
+<td align="left">10</td>
+<td align="left">0012</td>
+<td align="left">0x0a</td>
+</tr>
+<tr class="even">
+<td align="left">(vt)</td>
+<td align="left">11</td>
+<td align="left">0013</td>
+<td align="left">0x0b</td>
+</tr>
+<tr class="odd">
+<td align="left">(np)</td>
+<td align="left">12</td>
+<td align="left">0014</td>
+<td align="left">0x0c</td>
+</tr>
+<tr class="even">
+<td align="left">(cr)</td>
+<td align="left">13</td>
+<td align="left">0015</td>
+<td align="left">0x0d</td>
+</tr>
+<tr class="odd">
+<td align="left">(so)</td>
+<td align="left">14</td>
+<td align="left">0016</td>
+<td align="left">0x0e</td>
+</tr>
+<tr class="even">
+<td align="left">(si)</td>
+<td align="left">15</td>
+<td align="left">0017</td>
+<td align="left">0x0f</td>
+</tr>
+<tr class="odd">
+<td align="left">(dle)</td>
+<td align="left">16</td>
+<td align="left">0020</td>
+<td align="left">0x10</td>
+</tr>
+<tr class="even">
+<td align="left">(dc1)</td>
+<td align="left">17</td>
+<td align="left">0021</td>
+<td align="left">0x11</td>
+</tr>
+<tr class="odd">
+<td align="left">(dc2)</td>
+<td align="left">18</td>
+<td align="left">0022</td>
+<td align="left">0x12</td>
+</tr>
+<tr class="even">
+<td align="left">(dc3)</td>
+<td align="left">19</td>
+<td align="left">0023</td>
+<td align="left">0x13</td>
+</tr>
+<tr class="odd">
+<td align="left">(dc4)</td>
+<td align="left">20</td>
+<td align="left">0024</td>
+<td align="left">0x14</td>
+</tr>
+<tr class="even">
+<td align="left">(nak)</td>
+<td align="left">21</td>
+<td align="left">0025</td>
+<td align="left">0x15</td>
+</tr>
+<tr class="odd">
+<td align="left">(syn)</td>
+<td align="left">22</td>
+<td align="left">0026</td>
+<td align="left">0x16</td>
+</tr>
+<tr class="even">
+<td align="left">(etb)</td>
+<td align="left">23</td>
+<td align="left">0027</td>
+<td align="left">0x17</td>
+</tr>
+<tr class="odd">
+<td align="left">(can)</td>
+<td align="left">24</td>
+<td align="left">0030</td>
+<td align="left">0x18</td>
+</tr>
+<tr class="even">
+<td align="left">(em)</td>
+<td align="left">25</td>
+<td align="left">0031</td>
+<td align="left">0x19</td>
+</tr>
+<tr class="odd">
+<td align="left">(sub)</td>
+<td align="left">26</td>
+<td align="left">0032</td>
+<td align="left">0x1a</td>
+</tr>
+<tr class="even">
+<td align="left">(esc)</td>
+<td align="left">27</td>
+<td align="left">0033</td>
+<td align="left">0x1b</td>
+</tr>
+<tr class="odd">
+<td align="left">(fs)</td>
+<td align="left">28</td>
+<td align="left">0034</td>
+<td align="left">0x1c</td>
+</tr>
+<tr class="even">
+<td align="left">(gs)</td>
+<td align="left">29</td>
+<td align="left">0035</td>
+<td align="left">0x1d</td>
+</tr>
+<tr class="odd">
+<td align="left">(rs)</td>
+<td align="left">30</td>
+<td align="left">0036</td>
+<td align="left">0x1e</td>
+</tr>
+<tr class="even">
+<td align="left">(us)</td>
+<td align="left">31</td>
+<td align="left">0037</td>
+<td align="left">0x1f</td>
+</tr>
+<tr class="odd">
+<td align="left">(sp)</td>
+<td align="left">32</td>
+<td align="left">0040</td>
+<td align="left">0x20</td>
+</tr>
+<tr class="even">
+<td align="left">!</td>
+<td align="left">33</td>
+<td align="left">0041</td>
+<td align="left">0x21</td>
+</tr>
+<tr class="odd">
+<td align="left">&quot;</td>
+<td align="left">34</td>
+<td align="left">0042</td>
+<td align="left">0x22</td>
+</tr>
+<tr class="even">
+<td align="left">#</td>
+<td align="left">35</td>
+<td align="left">0043</td>
+<td align="left">0x23</td>
+</tr>
+<tr class="odd">
+<td align="left">$</td>
+<td align="left">36</td>
+<td align="left">0044</td>
+<td align="left">0x24</td>
+</tr>
+<tr class="even">
+<td align="left">%</td>
+<td align="left">37</td>
+<td align="left">0045</td>
+<td align="left">0x25</td>
+</tr>
+<tr class="odd">
+<td align="left">&amp;</td>
+<td align="left">38</td>
+<td align="left">0046</td>
+<td align="left">0x26</td>
+</tr>
+<tr class="even">
+<td align="left">'</td>
+<td align="left">39</td>
+<td align="left">0047</td>
+<td align="left">0x27</td>
+</tr>
+<tr class="odd">
+<td align="left">(</td>
+<td align="left">40</td>
+<td align="left">0050</td>
+<td align="left">0x28</td>
+</tr>
+<tr class="even">
+<td align="left">)</td>
+<td align="left">41</td>
+<td align="left">0051</td>
+<td align="left">0x29</td>
+</tr>
+<tr class="odd">
+<td align="left">*</td>
+<td align="left">42</td>
+<td align="left">0052</td>
+<td align="left">0x2a</td>
+</tr>
+<tr class="even">
+<td align="left">+</td>
+<td align="left">43</td>
+<td align="left">0053</td>
+<td align="left">0x2b</td>
+</tr>
+<tr class="odd">
+<td align="left">,</td>
+<td align="left">44</td>
+<td align="left">0054</td>
+<td align="left">0x2c</td>
+</tr>
+<tr class="even">
+<td align="left">-</td>
+<td align="left">45</td>
+<td align="left">0055</td>
+<td align="left">0x2d</td>
+</tr>
+<tr class="odd">
+<td align="left">.</td>
+<td align="left">46</td>
+<td align="left">0056</td>
+<td align="left">0x2e</td>
+</tr>
+<tr class="even">
+<td align="left">/</td>
+<td align="left">47</td>
+<td align="left">0057</td>
+<td align="left">0x2f</td>
+</tr>
+<tr class="odd">
+<td align="left">0</td>
+<td align="left">48</td>
+<td align="left">0060</td>
+<td align="left">0x30</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">49</td>
+<td align="left">0061</td>
+<td align="left">0x31</td>
+</tr>
+<tr class="odd">
+<td align="left">2</td>
+<td align="left">50</td>
+<td align="left">0062</td>
+<td align="left">0x32</td>
+</tr>
+<tr class="even">
+<td align="left">3</td>
+<td align="left">51</td>
+<td align="left">0063</td>
+<td align="left">0x33</td>
+</tr>
+<tr class="odd">
+<td align="left">4</td>
+<td align="left">52</td>
+<td align="left">0064</td>
+<td align="left">0x34</td>
+</tr>
+<tr class="even">
+<td align="left">5</td>
+<td align="left">53</td>
+<td align="left">0065</td>
+<td align="left">0x35</td>
+</tr>
+<tr class="odd">
+<td align="left">6</td>
+<td align="left">54</td>
+<td align="left">0066</td>
+<td align="left">0x36</td>
+</tr>
+<tr class="even">
+<td align="left">7</td>
+<td align="left">55</td>
+<td align="left">0067</td>
+<td align="left">0x37</td>
+</tr>
+<tr class="odd">
+<td align="left">8</td>
+<td align="left">56</td>
+<td align="left">0070</td>
+<td align="left">0x38</td>
+</tr>
+<tr class="even">
+<td align="left">9</td>
+<td align="left">57</td>
+<td align="left">0071</td>
+<td align="left">0x39</td>
+</tr>
+<tr class="odd">
+<td align="left">:</td>
+<td align="left">58</td>
+<td align="left">0072</td>
+<td align="left">0x3a</td>
+</tr>
+<tr class="even">
+<td align="left">;</td>
+<td align="left">59</td>
+<td align="left">0073</td>
+<td align="left">0x3b</td>
+</tr>
+<tr class="odd">
+<td align="left">&lt;</td>
+<td align="left">60</td>
+<td align="left">0074</td>
+<td align="left">0x3c</td>
+</tr>
+<tr class="even">
+<td align="left">=</td>
+<td align="left">61</td>
+<td align="left">0075</td>
+<td align="left">0x3d</td>
+</tr>
+<tr class="odd">
+<td align="left">&gt;</td>
+<td align="left">62</td>
+<td align="left">0076</td>
+<td align="left">0x3e</td>
+</tr>
+<tr class="even">
+<td align="left">?</td>
+<td align="left">63</td>
+<td align="left">0077</td>
+<td align="left">0x3f</td>
+</tr>
+<tr class="odd">
+<td align="left">@</td>
+<td align="left">64</td>
+<td align="left">0100</td>
+<td align="left">0x40</td>
+</tr>
+<tr class="even">
+<td align="left">A</td>
+<td align="left">65</td>
+<td align="left">0101</td>
+<td align="left">0x41</td>
+</tr>
+<tr class="odd">
+<td align="left">B</td>
+<td align="left">66</td>
+<td align="left">0102</td>
+<td align="left">0x42</td>
+</tr>
+<tr class="even">
+<td align="left">C</td>
+<td align="left">67</td>
+<td align="left">0103</td>
+<td align="left">0x43</td>
+</tr>
+<tr class="odd">
+<td align="left">D</td>
+<td align="left">68</td>
+<td align="left">0104</td>
+<td align="left">0x44</td>
+</tr>
+<tr class="even">
+<td align="left">E</td>
+<td align="left">69</td>
+<td align="left">0105</td>
+<td align="left">0x45</td>
+</tr>
+<tr class="odd">
+<td align="left">F</td>
+<td align="left">70</td>
+<td align="left">0106</td>
+<td align="left">0x46</td>
+</tr>
+<tr class="even">
+<td align="left">G</td>
+<td align="left">71</td>
+<td align="left">0107</td>
+<td align="left">0x47</td>
+</tr>
+<tr class="odd">
+<td align="left">H</td>
+<td align="left">72</td>
+<td align="left">0110</td>
+<td align="left">0x48</td>
+</tr>
+<tr class="even">
+<td align="left">I</td>
+<td align="left">73</td>
+<td align="left">0111</td>
+<td align="left">0x49</td>
+</tr>
+<tr class="odd">
+<td align="left">J</td>
+<td align="left">74</td>
+<td align="left">0112</td>
+<td align="left">0x4a</td>
+</tr>
+<tr class="even">
+<td align="left">K</td>
+<td align="left">75</td>
+<td align="left">0113</td>
+<td align="left">0x4b</td>
+</tr>
+<tr class="odd">
+<td align="left">L</td>
+<td align="left">76</td>
+<td align="left">0114</td>
+<td align="left">0x4c</td>
+</tr>
+<tr class="even">
+<td align="left">M</td>
+<td align="left">77</td>
+<td align="left">0115</td>
+<td align="left">0x4d</td>
+</tr>
+<tr class="odd">
+<td align="left">N</td>
+<td align="left">78</td>
+<td align="left">0116</td>
+<td align="left">0x4e</td>
+</tr>
+<tr class="even">
+<td align="left">O</td>
+<td align="left">79</td>
+<td align="left">0117</td>
+<td align="left">0x4f</td>
+</tr>
+<tr class="odd">
+<td align="left">P</td>
+<td align="left">80</td>
+<td align="left">0120</td>
+<td align="left">0x50</td>
+</tr>
+<tr class="even">
+<td align="left">Q</td>
+<td align="left">81</td>
+<td align="left">0121</td>
+<td align="left">0x51</td>
+</tr>
+<tr class="odd">
+<td align="left">R</td>
+<td align="left">82</td>
+<td align="left">0122</td>
+<td align="left">0x52</td>
+</tr>
+<tr class="even">
+<td align="left">S</td>
+<td align="left">83</td>
+<td align="left">0123</td>
+<td align="left">0x53</td>
+</tr>
+<tr class="odd">
+<td align="left">T</td>
+<td align="left">84</td>
+<td align="left">0124</td>
+<td align="left">0x54</td>
+</tr>
+<tr class="even">
+<td align="left">U</td>
+<td align="left">85</td>
+<td align="left">0125</td>
+<td align="left">0x55</td>
+</tr>
+<tr class="odd">
+<td align="left">V</td>
+<td align="left">86</td>
+<td align="left">0126</td>
+<td align="left">0x56</td>
+</tr>
+<tr class="even">
+<td align="left">W</td>
+<td align="left">87</td>
+<td align="left">0127</td>
+<td align="left">0x57</td>
+</tr>
+<tr class="odd">
+<td align="left">X</td>
+<td align="left">88</td>
+<td align="left">0130</td>
+<td align="left">0x58</td>
+</tr>
+<tr class="even">
+<td align="left">Y</td>
+<td align="left">89</td>
+<td align="left">0131</td>
+<td align="left">0x59</td>
+</tr>
+<tr class="odd">
+<td align="left">Z</td>
+<td align="left">90</td>
+<td align="left">0132</td>
+<td align="left">0x5a</td>
+</tr>
+<tr class="even">
+<td align="left">[</td>
+<td align="left">91</td>
+<td align="left">0133</td>
+<td align="left">0x5b</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">92</td>
+<td align="left">0134</td>
+<td align="left">0x5c</td>
+</tr>
+<tr class="even">
+<td align="left">]</td>
+<td align="left">93</td>
+<td align="left">0135</td>
+<td align="left">0x5d</td>
+</tr>
+<tr class="odd">
+<td align="left">^</td>
+<td align="left">94</td>
+<td align="left">0136</td>
+<td align="left">0x5e</td>
+</tr>
+<tr class="even">
+<td align="left">_</td>
+<td align="left">95</td>
+<td align="left">0137</td>
+<td align="left">0x5f</td>
+</tr>
+<tr class="odd">
+<td align="left">`</td>
+<td align="left">96</td>
+<td align="left">0140</td>
+<td align="left">0x60</td>
+</tr>
+<tr class="even">
+<td align="left">a</td>
+<td align="left">97</td>
+<td align="left">0141</td>
+<td align="left">0x61</td>
+</tr>
+<tr class="odd">
+<td align="left">b</td>
+<td align="left">98</td>
+<td align="left">0142</td>
+<td align="left">0x62</td>
+</tr>
+<tr class="even">
+<td align="left">c</td>
+<td align="left">99</td>
+<td align="left">0143</td>
+<td align="left">0x63</td>
+</tr>
+<tr class="odd">
+<td align="left">d</td>
+<td align="left">100</td>
+<td align="left">0144</td>
+<td align="left">0x64</td>
+</tr>
+<tr class="even">
+<td align="left">e</td>
+<td align="left">101</td>
+<td align="left">0145</td>
+<td align="left">0x65</td>
+</tr>
+<tr class="odd">
+<td align="left">f</td>
+<td align="left">102</td>
+<td align="left">0146</td>
+<td align="left">0x66</td>
+</tr>
+<tr class="even">
+<td align="left">g</td>
+<td align="left">103</td>
+<td align="left">0147</td>
+<td align="left">0x67</td>
+</tr>
+<tr class="odd">
+<td align="left">h</td>
+<td align="left">104</td>
+<td align="left">0150</td>
+<td align="left">0x68</td>
+</tr>
+<tr class="even">
+<td align="left">i</td>
+<td align="left">105</td>
+<td align="left">0151</td>
+<td align="left">0x69</td>
+</tr>
+<tr class="odd">
+<td align="left">j</td>
+<td align="left">106</td>
+<td align="left">0152</td>
+<td align="left">0x6a</td>
+</tr>
+<tr class="even">
+<td align="left">k</td>
+<td align="left">107</td>
+<td align="left">0153</td>
+<td align="left">0x6b</td>
+</tr>
+<tr class="odd">
+<td align="left">l</td>
+<td align="left">108</td>
+<td align="left">0154</td>
+<td align="left">0x6c</td>
+</tr>
+<tr class="even">
+<td align="left">m</td>
+<td align="left">109</td>
+<td align="left">0155</td>
+<td align="left">0x6d</td>
+</tr>
+<tr class="odd">
+<td align="left">n</td>
+<td align="left">110</td>
+<td align="left">0156</td>
+<td align="left">0x6e</td>
+</tr>
+<tr class="even">
+<td align="left">o</td>
+<td align="left">111</td>
+<td align="left">0157</td>
+<td align="left">0x6f</td>
+</tr>
+<tr class="odd">
+<td align="left">p</td>
+<td align="left">112</td>
+<td align="left">0160</td>
+<td align="left">0x70</td>
+</tr>
+<tr class="even">
+<td align="left">q</td>
+<td align="left">113</td>
+<td align="left">0161</td>
+<td align="left">0x71</td>
+</tr>
+<tr class="odd">
+<td align="left">r</td>
+<td align="left">114</td>
+<td align="left">0162</td>
+<td align="left">0x72</td>
+</tr>
+<tr class="even">
+<td align="left">s</td>
+<td align="left">115</td>
+<td align="left">0163</td>
+<td align="left">0x73</td>
+</tr>
+<tr class="odd">
+<td align="left">t</td>
+<td align="left">116</td>
+<td align="left">0164</td>
+<td align="left">0x74</td>
+</tr>
+<tr class="even">
+<td align="left">u</td>
+<td align="left">117</td>
+<td align="left">0165</td>
+<td align="left">0x75</td>
+</tr>
+<tr class="odd">
+<td align="left">v</td>
+<td align="left">118</td>
+<td align="left">0166</td>
+<td align="left">0x76</td>
+</tr>
+<tr class="even">
+<td align="left">w</td>
+<td align="left">119</td>
+<td align="left">0167</td>
+<td align="left">0x77</td>
+</tr>
+<tr class="odd">
+<td align="left">x</td>
+<td align="left">120</td>
+<td align="left">0170</td>
+<td align="left">0x78</td>
+</tr>
+<tr class="even">
+<td align="left">y</td>
+<td align="left">121</td>
+<td align="left">0171</td>
+<td align="left">0x79</td>
+</tr>
+<tr class="odd">
+<td align="left">z</td>
+<td align="left">122</td>
+<td align="left">0172</td>
+<td align="left">0x7a</td>
+</tr>
+<tr class="even">
+<td align="left">{</td>
+<td align="left">123</td>
+<td align="left">0173</td>
+<td align="left">0x7b</td>
+</tr>
+<tr class="odd">
+<td align="left">|</td>
+<td align="left">124</td>
+<td align="left">0174</td>
+<td align="left">0x7c</td>
+</tr>
+<tr class="even">
+<td align="left">}</td>
+<td align="left">125</td>
+<td align="left">0175</td>
+<td align="left">0x7d</td>
+</tr>
+<tr class="odd">
+<td align="left">~</td>
+<td align="left">126</td>
+<td align="left">0176</td>
+<td align="left">0x7e</td>
+</tr>
+<tr class="even">
+<td align="left">(del)</td>
+<td align="left">127</td>
+<td align="left">0177</td>
+<td align="left">0x7f</td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>
