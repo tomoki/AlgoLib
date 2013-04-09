@@ -556,6 +556,31 @@ a ^ {m-2} \equiv \frac{1}{a} \pmod m\end{aligned}\]</span></p>
 <p>ちなみにC++のpowを使うときに、引数が整数で、返り値も整数であることを期待 するときには、上記のpowを使うべき。なぜならC++のpowは double,double-&gt;doubleな関数であるから。</p>
 <h2 id="素数"><a href="#素数">素数</a></h2>
 <h3 id="エラトステネスの篩"><a href="#エラトステネスの篩">エラトステネスの篩</a></h3>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
+<span class="ot">#include &lt;vector&gt;</span>
+<span class="kw">using</span> <span class="kw">namespace</span> std;
+
+<span class="co">//上限より余裕を取ること。</span>
+<span class="dt">const</span> <span class="dt">int</span> M = <span class="fl">1e6</span><span class="dv">+10</span>;
+<span class="dt">bool</span> isPrime[M];
+
+<span class="dt">void</span> sieve(){
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">2</span>;i&lt;M;i++) isPrime[i] = <span class="kw">true</span>;
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">2</span>;i*i &lt; M;i++){
+        <span class="kw">if</span>(!isPrime[i]) <span class="kw">continue</span>;
+        <span class="kw">for</span>(<span class="dt">int</span> j=i*i;j&lt;M;j+=i){
+            isPrime[j] = <span class="kw">false</span>;
+        }
+    }
+}
+
+<span class="dt">int</span> main(){
+    sieve();
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;M;i++){
+        <span class="kw">if</span>(isPrime[i]) cout &lt;&lt; i &lt;&lt; endl;
+    }
+    <span class="kw">return</span> <span class="dv">0</span>;
+}</code></pre>
 <p>素数のリストが欲しかったら、適当に突っ込むこと。 実際には<span class="math">\(O(n \log \log n)\)</span>だけれど、大体<span class="math">\(O(n)\)</span>だと思っていい。</p>
 <h2 id="コンビネーション"><a href="#コンビネーション">コンビネーション</a></h2>
 <p>くみあわせ。</p>

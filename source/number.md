@@ -65,6 +65,33 @@ double,double->doubleな関数であるから。
 
 ### エラトステネスの篩
 
+~~~~~~{.cpp}
+#include <iostream>
+#include <vector>
+using namespace std;
+
+//上限より余裕を取ること。
+const int M = 1e6+10;
+bool isPrime[M];
+
+void sieve(){
+    for(int i=2;i<M;i++) isPrime[i] = true;
+    for(int i=2;i*i < M;i++){
+        if(!isPrime[i]) continue;
+        for(int j=i*i;j<M;j+=i){
+            isPrime[j] = false;
+        }
+    }
+}
+
+int main(){
+    sieve();
+    for(int i=0;i<M;i++){
+        if(isPrime[i]) cout << i << endl;
+    }
+    return 0;
+}
+~~~~~~
 素数のリストが欲しかったら、適当に突っ込むこと。
 実際には$O(n \log \log n)$だけれど、大体$O(n)$だと思っていい。
 
