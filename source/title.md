@@ -1,5 +1,6 @@
 % Algorithm And Tips For Competitive Programming
 % Tomoki Imai
+% 2013
 
 このライブラリはzlib/libpngライセンスの元に配布されます。
 
@@ -11,8 +12,6 @@ In no event will the authors be held liable for any damages arising from the use
 Permission is granted to anyone to use this software for any purpose,
 including commercial applications, and to alter it and redistribute it freely,
  subject to the following restrictions:
-
-
 
 * The origin of this software must not be misrepresented; you must
        not claim that you wrote the original software. If you use this

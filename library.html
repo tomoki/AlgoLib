@@ -27,13 +27,14 @@ code > span.al { color: #ef2929; }
 code > span.fu { color: #000000; }
 code > span.er { font-weight: bold; }
   </style>
-  <link rel="stylesheet" href="buttondown.css" type="text/css" />
+  <link rel="stylesheet" href="library.css" type="text/css" />
   <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 </head>
 <body>
 <div id="header">
 <h1 class="title">Algorithm And Tips For Competitive Programming</h1>
 <h2 class="author">Tomoki Imai</h2>
+<h3 class="date">2013</h3>
 </div>
 <div id="TOC">
 <ul>
@@ -226,7 +227,7 @@ code > span.er { font-weight: bold; }
 <h2 id="double"><a href="#double">double</a></h2>
 <p>floatは使ってはだめ。絶対値を得たいときには、complexの中にある、fabsを使う。</p>
 <h2 id="char"><a href="#char">char</a></h2>
-<p>-128 ~ 128くらい。ちいさい。基本的には文字を入れるのに使う。vector<char>を vector<bool>の代わりに使ってもいい。</p>
+<p>-128 ~ 128くらい。ちいさい。基本的には文字を入れるのに使う。vector&lt;char&gt;を vector&lt;bool&gt;の代わりに使ってもいい。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">char</span> c = &#39;a&#39;;
 <span class="co">//cctypeが必要。大文字に変換する。すでに大文字のときは何も起こらない。</span>
 c = toupper(c);
@@ -235,7 +236,7 @@ c = tolower(c);
 <span class="co">//vector&lt;bool&gt;の代わり。</span>
 vector&lt;<span class="dt">char</span>&gt; used(<span class="dv">10</span>,<span class="kw">false</span>);</code></pre>
 <h2 id="bool"><a href="#bool">bool</a></h2>
-<p>true(==1)とかfalse(==0)を入れるためだけに使う。ただしvector<bool>は使ってはいけない。</p>
+<p>true(==1)とかfalse(==0)を入れるためだけに使う。ただしvector&lt;bool&gt;は使ってはいけない。</p>
 <h2 id="補助関数"><a href="#補助関数">補助関数</a></h2>
 <p>上記の型に関する便利な関数。</p>
 <p>床関数、天井関数、および四捨五入。返り値はint。cmathをincludeする。</p>
@@ -520,7 +521,9 @@ ss &gt;&gt; s;</code></pre>
 <h2 id="最大公約数最小公倍数"><a href="#最大公約数最小公倍数">最大公約数,最小公倍数</a></h2>
 <p>ユークリッドの互除法を使う。intをlong longに置換してもいい。 <span class="math">\(O(\log n)\)</span></p>
 <h3 id="最大公約数"><a href="#最大公約数">最大公約数</a></h3>
-<p>~~~~~~{.cpp} int gcd(int a,int b){ return b==0 ? a : gcd(b,a%b); } ~~~~~</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> gcd(<span class="dt">int</span> a,<span class="dt">int</span> b){
+    <span class="kw">return</span> b==<span class="dv">0</span> ? a : gcd(b,a%b);
+}</code></pre>
 <h3 id="最小公倍数"><a href="#最小公倍数">最小公倍数</a></h3>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> lcm(<span class="dt">int</span> a,<span class="dt">int</span> b){
     <span class="kw">return</span> a*b / gcd(a,b);

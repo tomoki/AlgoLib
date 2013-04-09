@@ -10,8 +10,8 @@
 floatは使ってはだめ。絶対値を得たいときには、complexの中にある、fabsを使う。
 
 ## char
--128 ~ 128くらい。ちいさい。基本的には文字を入れるのに使う。vector<char>を
-vector<bool>の代わりに使ってもいい。
+-128 ~ 128くらい。ちいさい。基本的には文字を入れるのに使う。vector\<char\>を
+vector\<bool\>の代わりに使ってもいい。
 
 ~~~~~~{.cpp}
 char c = 'a';
@@ -24,7 +24,7 @@ vector<char> used(10,false);
 ~~~~~~
 
 ## bool
-true(==1)とかfalse(==0)を入れるためだけに使う。ただしvector<bool>は使ってはいけない。
+true(==1)とかfalse(==0)を入れるためだけに使う。ただしvector\<bool\>は使ってはいけない。
 
 
 ## 補助関数

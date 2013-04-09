@@ -5,11 +5,12 @@
 ユークリッドの互除法を使う。intをlong longに置換してもいい。 $O(\log n)$
 
 ### 最大公約数
+
 ~~~~~~{.cpp}
 int gcd(int a,int b){
     return b==0 ? a : gcd(b,a%b);
 }
-~~~~~
+~~~~~~
 
 ### 最小公倍数
 ~~~~~~{.cpp}
