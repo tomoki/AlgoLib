@@ -58,7 +58,7 @@ struct Comp{
 
 int main(){
     // 何も書かないと降順。(おっきい方からでてくる。)
-    // これは降順にしたもの。
+    // これは昇順(ちいさいほうから出てくる)にしたもの。
     priority_queue<int,vector<int>,greater<int> > Qi;
     //関数オブジェクトを使っていい感じにもできる。
     priority_queue<pii,vector<pii>,Comp> Q;

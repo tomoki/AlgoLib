@@ -401,7 +401,7 @@ vector&lt;<span class="dt">int</span>&gt; newvec(vec.begin(),vec.begin()+<span c
 vec.erase(vec.begin(),vec.begin()+<span class="dv">3</span>);</code></pre>
 <h2 id="並び換え"><a href="#並び換え">並び換え</a></h2>
 <h3 id="sort"><a href="#sort">sort</a></h3>
-<p>C++のsortは、<span class="math">\(O(n \log n)\)</span>で、おそらくクイックソート。何も指定しない場合には昇順にソートされる。 注意すべきなのは、C++11では、最悪ケースで<span class="math">\(O(n \log n)\)</span>となること。C++03では特に何も制限はないが、g++ならば<span class="math">\(O(n \log n)\)</span>だと思われる。</p>
+<p>C++のsortは、<span class="math">\(O(n \log n)\)</span>で、introsort。何も指定しない場合には昇順にソートされる。 注意すべきなのは、C++11では、最悪ケースで<span class="math">\(O(n \log n)\)</span>となること。C++03では特に何も制限はないが、g++ならば<span class="math">\(O(n \log n)\)</span>である。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">//昇順 (sort(vec.begin(),vec.end())) (2,1,3) -&gt; (1,2,3)</span>
 sort(all(vec));
 <span class="co">//降順 (ただ単純にreverseしてもいい) (2,1,3) -&gt; (3,2,1)</span>
@@ -687,7 +687,7 @@ ll combi3(<span class="dt">int</span> n,<span class="dt">int</span> r){
 
 <span class="dt">int</span> main(){
     <span class="co">// 何も書かないと降順。(おっきい方からでてくる。)</span>
-    <span class="co">// これは降順にしたもの。</span>
+    <span class="co">// これは昇順(ちいさいほうから出てくる)にしたもの。</span>
     priority_queue&lt;<span class="dt">int</span>,vector&lt;<span class="dt">int</span>&gt;,greater&lt;<span class="dt">int</span>&gt; &gt; Qi;
     <span class="co">//関数オブジェクトを使っていい感じにもできる。</span>
     priority_queue&lt;pii,vector&lt;pii&gt;,Comp&gt; Q;
@@ -760,6 +760,62 @@ ll combi3(<span class="dt">int</span> n,<span class="dt">int</span> r){
 };</code></pre>
 <h2 id="ダイクストラ"><a href="#ダイクストラ">ダイクストラ</a></h2>
 <p>負の経路があったらダメ</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
+<span class="ot">#include &lt;vector&gt;</span>
+<span class="ot">#include &lt;queue&gt;</span>
+<span class="ot">#include &lt;utility&gt;</span>
+<span class="ot">#include &lt;algorithm&gt;</span>
+<span class="ot">#include &lt;functional&gt;</span>
+
+<span class="kw">using</span> <span class="kw">namespace</span> std;
+
+<span class="kw">typedef</span> pair&lt;<span class="dt">int</span>,<span class="dt">int</span>&gt; pii;
+
+<span class="kw">struct</span> Edge{
+    <span class="dt">int</span> from,to,cost;
+    Edge(<span class="dt">int</span> from,<span class="dt">int</span> to,<span class="dt">int</span> cost)
+        : from(from),to(to),cost(cost) {};
+};
+
+<span class="dt">int</span> main(){
+    <span class="dt">int</span> n,m;
+    cin &gt;&gt; n &gt;&gt; m;
+    vector&lt;vector&lt;Edge&gt; &gt; V(m);
+
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;n;i++){
+        <span class="dt">int</span> a,b,cost;
+        cin &gt;&gt; a &gt;&gt; b &gt;&gt; cost;
+        V[a].push_back(Edge(a,b,cost));
+        V[b].push_back(Edge(b,a,cost));
+    }
+
+    <span class="dt">int</span> k;
+    cin &gt;&gt; k;
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;k;i++){
+        <span class="dt">int</span> p,q;
+        cin &gt;&gt; p &gt;&gt; q;
+        vector&lt;<span class="dt">char</span>&gt; visited(m,<span class="kw">false</span>);
+        <span class="co">//                 cost,where</span>
+        priority_queue&lt;pii,vector&lt;pii&gt;, greater&lt;pii&gt; &gt; Q;
+        Q.push(make_pair(<span class="dv">0</span>,p));
+        <span class="kw">while</span>(!Q.empty()){
+            <span class="dt">int</span> cost,where;
+            cost = Q.top().first;
+            where = Q.top().second;
+            Q.pop();
+            <span class="kw">if</span>(visited[where]) <span class="kw">continue</span>;
+            <span class="kw">if</span>(where == q){
+                cout &lt;&lt; cost &lt;&lt; endl;
+                <span class="kw">break</span>;
+            }
+            visited[where] = <span class="kw">true</span>;
+            <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;(<span class="dt">int</span>)V[where].size();j++){
+                Q.push(make_pair(V[where][j].cost+cost,V[where][j].to));
+            }
+        }
+    }
+    <span class="kw">return</span> <span class="dv">0</span>;
+}</code></pre>
 <h2 id="ワーシャルフロイド"><a href="#ワーシャルフロイド">ワーシャルフロイド</a></h2>
 <p>負の経路があってもOK。すべてのノードに対してすべてのノードへの距離を求め る。もし負の閉路があったらiからiはマイナスになる。<span class="math">\(O(|V|^{3})\)</span></p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// m はノードの個数。NOはでかい数</span>
