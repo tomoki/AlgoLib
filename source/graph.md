@@ -14,8 +14,66 @@ struct Edge{
 
 ## ダイクストラ
 
-
 負の経路があったらダメ
+
+~~~~~~{.cpp}
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <utility>
+#include <algorithm>
+#include <functional>
+
+using namespace std;
+
+typedef pair<int,int> pii;
+
+struct Edge{
+    int from,to,cost;
+    Edge(int from,int to,int cost)
+        : from(from),to(to),cost(cost) {};
+};
+
+int main(){
+    int n,m;
+    cin >> n >> m;
+    vector<vector<Edge> > V(m);
+
+    for(int i=0;i<n;i++){
+        int a,b,cost;
+        cin >> a >> b >> cost;
+        V[a].push_back(Edge(a,b,cost));
+        V[b].push_back(Edge(b,a,cost));
+    }
+
+    int ret = -1;
+    int p,q;
+    cin >> p >> q;
+    vector<char> visited(m,false);
+    //                 cost,where
+    priority_queue<pii,vector<pii>, greater<pii> > Q;
+    Q.push(make_pair(0,p));
+    while(!Q.empty()){
+        int cost,where;
+        cost = Q.top().first;
+        where = Q.top().second;
+        Q.pop();
+        if(visited[where]) continue;
+        if(where == q){
+             ret = cost;
+             break;
+        }
+        visited[where] = true;
+        for(int j=0;j<(int)V[where].size();j++){
+            Q.push(make_pair(V[where][j].cost+cost,V[where][j].to));
+        }
+    }
+    // 到達不能なときは-1
+    cout << ret << endl;
+    return 0;
+}
+~~~~~~
+
 
 ## ワーシャルフロイド
 
