@@ -789,31 +789,30 @@ ll combi3(<span class="dt">int</span> n,<span class="dt">int</span> r){
         V[b].push_back(Edge(b,a,cost));
     }
 
-    <span class="dt">int</span> k;
-    cin &gt;&gt; k;
-    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;k;i++){
-        <span class="dt">int</span> p,q;
-        cin &gt;&gt; p &gt;&gt; q;
-        vector&lt;<span class="dt">char</span>&gt; visited(m,<span class="kw">false</span>);
-        <span class="co">//                 cost,where</span>
-        priority_queue&lt;pii,vector&lt;pii&gt;, greater&lt;pii&gt; &gt; Q;
-        Q.push(make_pair(<span class="dv">0</span>,p));
-        <span class="kw">while</span>(!Q.empty()){
-            <span class="dt">int</span> cost,where;
-            cost = Q.top().first;
-            where = Q.top().second;
-            Q.pop();
-            <span class="kw">if</span>(visited[where]) <span class="kw">continue</span>;
-            <span class="kw">if</span>(where == q){
-                cout &lt;&lt; cost &lt;&lt; endl;
-                <span class="kw">break</span>;
-            }
-            visited[where] = <span class="kw">true</span>;
-            <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;(<span class="dt">int</span>)V[where].size();j++){
-                Q.push(make_pair(V[where][j].cost+cost,V[where][j].to));
-            }
+    <span class="dt">int</span> ret = -<span class="dv">1</span>;
+    <span class="dt">int</span> p,q;
+    cin &gt;&gt; p &gt;&gt; q;
+    vector&lt;<span class="dt">char</span>&gt; visited(m,<span class="kw">false</span>);
+    <span class="co">//                 cost,where</span>
+    priority_queue&lt;pii,vector&lt;pii&gt;, greater&lt;pii&gt; &gt; Q;
+    Q.push(make_pair(<span class="dv">0</span>,p));
+    <span class="kw">while</span>(!Q.empty()){
+        <span class="dt">int</span> cost,where;
+        cost = Q.top().first;
+        where = Q.top().second;
+        Q.pop();
+        <span class="kw">if</span>(visited[where]) <span class="kw">continue</span>;
+        <span class="kw">if</span>(where == q){
+             ret = cost;
+             <span class="kw">break</span>;
+        }
+        visited[where] = <span class="kw">true</span>;
+        <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;(<span class="dt">int</span>)V[where].size();j++){
+            Q.push(make_pair(V[where][j].cost+cost,V[where][j].to));
         }
     }
+    <span class="co">// 到達不能なときは-1</span>
+    cout &lt;&lt; ret &lt;&lt; endl;
     <span class="kw">return</span> <span class="dv">0</span>;
 }</code></pre>
 <h2 id="ワーシャルフロイド"><a href="#ワーシャルフロイド">ワーシャルフロイド</a></h2>
