@@ -116,12 +116,16 @@ ll combi2(int n,int r){
     return ret;
 }
 
+// これはまちがっています。要修正
+// http://stackoverflow.com/questions/3537360/calculating-binomial-coefficient-nck-for-large-n-k
 ll mod_combi(ll n,ll r,ll mod){
     if(n < r) return 0;
     ll ret = 1;
     for(int i=0;i<r;i++){
-        ret = (ret * (n-i)) % mod;
         ret = (ret * mod_pow(i+1,mod-2,mod)) % mod;
+    }
+    for(int i=0;i<r;i++){
+        ret = (ret * (n-i)) % mod;
     }
     return ret;
 }
