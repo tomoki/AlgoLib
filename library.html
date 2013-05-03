@@ -109,6 +109,7 @@ code > span.er { font-weight: bold; }
 <li><a href="#ワーシャルフロイド"><span class="toc-section-number">9.3</span> ワーシャルフロイド</a></li>
 <li><a href="#最小全域木"><span class="toc-section-number">9.4</span> 最小全域木</a></li>
 <li><a href="#最大流"><span class="toc-section-number">9.5</span> 最大流</a></li>
+<li><a href="#最小費用流"><span class="toc-section-number">9.6</span> 最小費用流</a></li>
 </ul></li>
 <li><a href="#幾何"><span class="toc-section-number">10</span> 幾何</a><ul>
 <li><a href="#基本要素"><span class="toc-section-number">10.1</span> 基本要素</a></li>
@@ -392,7 +393,7 @@ printf(<span class="st">&quot;n is %d</span><span class="ch">\n</span><span clas
 cin.tie(<span class="dv">0</span>);</code></pre>
 <p>ただし、このコードはstdioとの同期を切るという意味なので、これを使うとき にはprintfやscanfを使用してはだめ。</p>
 <h1 id="stdvector"><a href="#stdvector"><span class="header-section-number">4</span> std::vector</a></h1>
-<p>ここでは、配列のSTL版である、vectorの使いかたについて書く。 ここに書かれている関数は、string等にも用いることができるものが多い。 ちなみに、vector&lt;bool&gt;は使ってはいけない。bitsetや、vector<char>をつかうこと。 また、all(vector)は、vector.begin(),vector.end()とdefineしている。</p>
+<p>ここでは、配列のSTL版である、vectorの使いかたについて書く。 ここに書かれている関数は、string等にも用いることができるものが多い。 ちなみに、vector&lt;bool&gt;は使ってはいけない。bitsetや、vector&lt;char&gt;をつかうこと。 また、all(vector)は、vector.begin(),vector.end()とdefineしている。</p>
 <h2 id="基本"><a href="#基本"><span class="header-section-number">4.1</span> 基本</a></h2>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">//要素数10で、初期値は-1にする。</span>
 vector&lt;<span class="dt">int</span>&gt; vec(<span class="dv">10</span>,-<span class="dv">1</span>);
@@ -956,6 +957,109 @@ vector&lt;<span class="dt">int</span>&gt; levels(vector&lt;vector&lt;Edge&gt; &g
         }
 
         cout &lt;&lt; max_flow(E,s,t) &lt;&lt; endl;
+    }
+    <span class="kw">return</span> <span class="dv">0</span>;
+}</code></pre>
+<h2 id="最小費用流"><a href="#最小費用流"><span class="header-section-number">9.6</span> 最小費用流</a></h2>
+<p>Primal-Dual法による。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">typedef</span> pair&lt;<span class="dt">int</span>,<span class="dt">int</span>&gt; pii;
+
+<span class="kw">struct</span> Edge{
+    <span class="dt">int</span> to,cap,cost,rev;
+    Edge(<span class="dt">int</span> to,<span class="dt">int</span> cap,<span class="dt">int</span> cost,<span class="dt">int</span> rev)
+        : to(to),cap(cap),cost(cost),rev(rev) {};
+};
+
+<span class="dt">void</span> add_edge(vector&lt;vector&lt;Edge&gt; &gt; &amp;E,<span class="dt">int</span> from,<span class="dt">int</span> to,<span class="dt">int</span> cap,<span class="dt">int</span> cost){
+    E[from].push_back(Edge(to,cap,cost,E[to].size()));
+    E[to].push_back(Edge(from,<span class="dv">0</span>,-cost,E[from].size()-<span class="dv">1</span>));
+}
+
+<span class="co">// s -&gt; t (flow f)</span>
+<span class="co">//  if cant, return -1.</span>
+<span class="dt">int</span> min_cost_flow(vector&lt;vector&lt;Edge&gt; &gt; E,<span class="dt">int</span> s,<span class="dt">int</span> t,<span class="dt">int</span> f){
+    <span class="dt">const</span> <span class="dt">int</span> INF = <span class="dv">1</span> &lt;&lt; <span class="dv">30</span>;
+    <span class="dt">int</span> ret = <span class="dv">0</span>;
+    <span class="co">// potential</span>
+    vector&lt;<span class="dt">int</span>&gt; h(E.size());
+    vector&lt;<span class="dt">int</span>&gt; prevv(E.size());
+    vector&lt;<span class="dt">int</span>&gt; preve(E.size());
+
+    <span class="kw">while</span>(f &gt; <span class="dv">0</span>){
+        vector&lt;<span class="dt">int</span>&gt; dist(E.size(),INF);
+        dist[s] = <span class="dv">0</span>;
+        priority_queue&lt;pii,vector&lt;pii&gt;,greater&lt;pii&gt; &gt; que;
+        que.push(make_pair(<span class="dv">0</span>,s));
+        <span class="kw">while</span>(!que.empty()){
+            pii p = que.top();
+            que.pop();
+            <span class="dt">int</span> pf = p.first,ps = p.second;
+            <span class="kw">if</span>(dist[ps] &lt; pf) <span class="kw">continue</span>;
+            <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;E[ps].size();i++){
+                Edge &amp;e = E[ps][i];
+                <span class="kw">if</span>(e.cap &gt; <span class="dv">0</span> <span class="kw">and</span> dist[e.to] &gt; dist[ps] + e.cost + h[ps] - h[e.to]){
+                    dist[e.to] = dist[ps] + e.cost + h[ps] - h[e.to];
+                    prevv[e.to] = ps;
+                    preve[e.to] = i;
+                    que.push(make_pair(dist[e.to],e.to));
+                }
+            }
+        }
+        <span class="kw">if</span>(dist[t] == INF){
+            <span class="kw">return</span> -<span class="dv">1</span>;
+        }
+        <span class="kw">for</span>(<span class="dt">int</span> v=<span class="dv">0</span>;v&lt;E.size();v++){
+            h[v] += dist[v];
+        }
+        <span class="dt">int</span> d = f;
+        <span class="kw">for</span>(<span class="dt">int</span> v=t;v!=s;v=prevv[v]){
+            d = min(d,E[prevv[v]][preve[v]].cap);
+        }
+        f -= d;
+        ret += d * h[t];
+        <span class="kw">for</span>(<span class="dt">int</span> v=t;v!=s;v=prevv[v]){
+            Edge &amp;e = E[prevv[v]][preve[v]];
+            e.cap -= d;
+            E[v][e.rev].cap += d;
+        }
+    }
+    <span class="kw">return</span> ret;
+}
+
+<span class="dt">int</span> main(){
+    <span class="kw">while</span>(<span class="kw">true</span>){
+        <span class="dt">int</span> N,M;
+        cin &gt;&gt; N &gt;&gt; M;
+        <span class="kw">if</span>(N == <span class="dv">0</span> <span class="kw">and</span> M == <span class="dv">0</span>) <span class="kw">break</span>;
+        vector&lt;pair&lt;<span class="dt">int</span>,<span class="dt">int</span>&gt; &gt; men;
+        vector&lt;pair&lt;<span class="dt">int</span>,<span class="dt">int</span>&gt; &gt; houses;
+        <span class="kw">for</span>(<span class="dt">int</span> h=<span class="dv">0</span>;h&lt;N;h++){
+            <span class="kw">for</span>(<span class="dt">int</span> w=<span class="dv">0</span>;w&lt;M;w++){
+                <span class="dt">char</span> x;
+                cin &gt;&gt; x;
+                <span class="kw">if</span>(x == &#39;H&#39;) houses.push_back(make_pair(h,w));
+                <span class="kw">else</span> <span class="kw">if</span>(x == &#39;m&#39;) men.push_back(make_pair(h,w));
+            }
+        }
+
+        vector&lt;vector&lt;Edge&gt; &gt; E(men.size()+houses.size()+<span class="dv">2</span>);
+        <span class="dt">int</span> s = men.size()+houses.size();
+        <span class="dt">int</span> t = s<span class="dv">+1</span>;
+
+        <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;men.size();i++){
+            add_edge(E,s,i,<span class="dv">1</span>,<span class="dv">0</span>);
+            <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;houses.size();j++){
+                <span class="dt">int</span> dist = abs(men[i].first - houses[j].first)
+                    + abs(men[i].second - houses[j].second);
+                add_edge(E,i,men.size()+j,<span class="dv">1</span>,dist);
+            }
+        }
+
+        <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;houses.size();i++){
+            add_edge(E,men.size()+i,t,<span class="dv">1</span>,<span class="dv">0</span>);
+        }
+
+        cout &lt;&lt; min_cost_flow(E,s,t,men.size()) &lt;&lt; endl;
     }
     <span class="kw">return</span> <span class="dv">0</span>;
 }</code></pre>

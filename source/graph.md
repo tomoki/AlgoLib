@@ -231,3 +231,112 @@ int main(){
 }
 
 ~~~~~~
+
+## 最小費用流
+
+Primal-Dual法による。
+
+~~~~~~{.cpp}
+typedef pair<int,int> pii;
+
+struct Edge{
+    int to,cap,cost,rev;
+    Edge(int to,int cap,int cost,int rev)
+        : to(to),cap(cap),cost(cost),rev(rev) {};
+};
+
+void add_edge(vector<vector<Edge> > &E,int from,int to,int cap,int cost){
+    E[from].push_back(Edge(to,cap,cost,E[to].size()));
+    E[to].push_back(Edge(from,0,-cost,E[from].size()-1));
+}
+
+// s -> t (flow f)
+//  if cant, return -1.
+int min_cost_flow(vector<vector<Edge> > E,int s,int t,int f){
+    const int INF = 1 << 30;
+    int ret = 0;
+    // potential
+    vector<int> h(E.size());
+    vector<int> prevv(E.size());
+    vector<int> preve(E.size());
+
+    while(f > 0){
+        vector<int> dist(E.size(),INF);
+        dist[s] = 0;
+        priority_queue<pii,vector<pii>,greater<pii> > que;
+        que.push(make_pair(0,s));
+        while(!que.empty()){
+            pii p = que.top();
+            que.pop();
+            int pf = p.first,ps = p.second;
+            if(dist[ps] < pf) continue;
+            for(int i=0;i<E[ps].size();i++){
+                Edge &e = E[ps][i];
+                if(e.cap > 0 and dist[e.to] > dist[ps] + e.cost + h[ps] - h[e.to]){
+                    dist[e.to] = dist[ps] + e.cost + h[ps] - h[e.to];
+                    prevv[e.to] = ps;
+                    preve[e.to] = i;
+                    que.push(make_pair(dist[e.to],e.to));
+                }
+            }
+        }
+        if(dist[t] == INF){
+            return -1;
+        }
+        for(int v=0;v<E.size();v++){
+            h[v] += dist[v];
+        }
+        int d = f;
+        for(int v=t;v!=s;v=prevv[v]){
+            d = min(d,E[prevv[v]][preve[v]].cap);
+        }
+        f -= d;
+        ret += d * h[t];
+        for(int v=t;v!=s;v=prevv[v]){
+            Edge &e = E[prevv[v]][preve[v]];
+            e.cap -= d;
+            E[v][e.rev].cap += d;
+        }
+    }
+    return ret;
+}
+
+int main(){
+    while(true){
+        int N,M;
+        cin >> N >> M;
+        if(N == 0 and M == 0) break;
+        vector<pair<int,int> > men;
+        vector<pair<int,int> > houses;
+        for(int h=0;h<N;h++){
+            for(int w=0;w<M;w++){
+                char x;
+                cin >> x;
+                if(x == 'H') houses.push_back(make_pair(h,w));
+                else if(x == 'm') men.push_back(make_pair(h,w));
+            }
+        }
+
+        vector<vector<Edge> > E(men.size()+houses.size()+2);
+        int s = men.size()+houses.size();
+        int t = s+1;
+
+        for(int i=0;i<men.size();i++){
+            add_edge(E,s,i,1,0);
+            for(int j=0;j<houses.size();j++){
+                int dist = abs(men[i].first - houses[j].first)
+                    + abs(men[i].second - houses[j].second);
+                add_edge(E,i,men.size()+j,1,dist);
+            }
+        }
+
+        for(int i=0;i<houses.size();i++){
+            add_edge(E,men.size()+i,t,1,0);
+        }
+
+        cout << min_cost_flow(E,s,t,men.size()) << endl;
+    }
+    return 0;
+}
+
+~~~~~~

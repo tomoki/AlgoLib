@@ -2,7 +2,7 @@
 
 ここでは、配列のSTL版である、vectorの使いかたについて書く。
 ここに書かれている関数は、string等にも用いることができるものが多い。
-ちなみに、vector\<bool\>は使ってはいけない。bitsetや、vector<char>をつかうこと。
+ちなみに、vector\<bool\>は使ってはいけない。bitsetや、vector\<char\>をつかうこと。
 また、all(vector)は、vector.begin(),vector.end()とdefineしている。
 
 ## 基本
