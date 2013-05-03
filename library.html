@@ -91,9 +91,11 @@ code > span.er { font-weight: bold; }
 </ul></li>
 <li><a href="#素数"><span class="toc-section-number">7.3</span> 素数</a><ul>
 <li><a href="#エラトステネスの篩"><span class="toc-section-number">7.3.1</span> エラトステネスの篩</a></li>
+<li><a href="#素因数分解"><span class="toc-section-number">7.3.2</span> 素因数分解</a></li>
 </ul></li>
 <li><a href="#コンビネーション"><span class="toc-section-number">7.4</span> コンビネーション</a><ul>
-<li><a href="#素因数分解"><span class="toc-section-number">7.4.1</span> 素因数分解</a></li>
+<li><a href="#コンビネーションの数"><span class="toc-section-number">7.4.1</span> コンビネーションの数</a></li>
+<li><a href="#列挙"><span class="toc-section-number">7.4.2</span> 列挙</a></li>
 </ul></li>
 <li><a href="#ヨセフス数"><span class="toc-section-number">7.5</span> ヨセフス数</a></li>
 <li><a href="#乱数"><span class="toc-section-number">7.6</span> 乱数</a></li>
@@ -584,8 +586,10 @@ a ^ {m-2} \equiv \frac{1}{a} \pmod m\end{aligned}\]</span></p>
     <span class="kw">return</span> <span class="dv">0</span>;
 }</code></pre>
 <p>素数のリストが欲しかったら、適当に突っ込むこと。 実際には<span class="math">\(O(n \log \log n)\)</span>だけれど、大体<span class="math">\(O(n)\)</span>だと思っていい。</p>
+<h3 id="素因数分解"><a href="#素因数分解"><span class="header-section-number">7.3.2</span> 素因数分解</a></h3>
 <h2 id="コンビネーション"><a href="#コンビネーション"><span class="header-section-number">7.4</span> コンビネーション</a></h2>
 <p>くみあわせ。</p>
+<h3 id="コンビネーションの数"><a href="#コンビネーションの数"><span class="header-section-number">7.4.1</span> コンビネーションの数</a></h3>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
 <span class="ot">#include &lt;vector&gt;</span>
 
@@ -631,7 +635,44 @@ ll combi3(<span class="dt">int</span> n,<span class="dt">int</span> r){
     }
     <span class="kw">return</span> memo[n][r];
 }</code></pre>
-<h3 id="素因数分解"><a href="#素因数分解"><span class="header-section-number">7.4.1</span> 素因数分解</a></h3>
+<h3 id="列挙"><a href="#列挙"><span class="header-section-number">7.4.2</span> 列挙</a></h3>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main(){
+    <span class="dt">int</span> N,M;
+    cin &gt;&gt; N &gt;&gt; M;
+
+    vector&lt;<span class="dt">int</span>&gt; numbers(N);
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;N;i++) numbers[i] = i;
+
+    stack&lt;pair&lt;<span class="dt">int</span>,vector&lt;<span class="dt">int</span>&gt; &gt; &gt; stack;
+    stack.push(make_pair(<span class="dv">0</span>,vector&lt;<span class="dt">int</span>&gt;()));
+
+    vector&lt;vector&lt;<span class="dt">int</span>&gt; &gt; combis;
+    <span class="kw">while</span>(!stack.empty()){
+        <span class="dt">int</span> lower = stack.top().first;
+        vector&lt;<span class="dt">int</span>&gt; choose = stack.top().second;
+        stack.pop();
+
+        <span class="kw">if</span>(choose.size() == M){
+            combis.push_back(choose);
+            <span class="kw">continue</span>;
+        }
+
+        <span class="kw">for</span>(<span class="dt">int</span> i=lower;i&lt;N-M+choose.size()+<span class="dv">1</span>;i++){
+            vector&lt;<span class="dt">int</span>&gt; cop = choose;
+            cop.push_back(numbers[i]);
+            stack.push(make_pair(i<span class="dv">+1</span>,cop));
+        }
+    }
+
+    cout &lt;&lt; <span class="st">&quot;size :&quot;</span> &lt;&lt; combis.size() &lt;&lt; endl;
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;combis.size();i++){
+        <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;combis[i].size();j++){
+            cout &lt;&lt; combis[i][j] &lt;&lt; <span class="st">&quot; &quot;</span>;
+        }
+        cout &lt;&lt; endl;
+    }
+    <span class="kw">return</span> <span class="dv">0</span>;
+}</code></pre>
 <h2 id="ヨセフス数"><a href="#ヨセフス数"><span class="header-section-number">7.5</span> ヨセフス数</a></h2>
 <h2 id="乱数"><a href="#乱数"><span class="header-section-number">7.6</span> 乱数</a></h2>
 <p>XORShiftをつかったらうれしいかもしれない。</p>

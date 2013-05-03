@@ -95,8 +95,12 @@ int main(){
 素数のリストが欲しかったら、適当に突っ込むこと。
 実際には$O(n \log \log n)$だけれど、大体$O(n)$だと思っていい。
 
+### 素因数分解
+
 ## コンビネーション
 くみあわせ。
+
+### コンビネーションの数
 
 ~~~~~~{.cpp}
 #include <iostream>
@@ -146,7 +150,48 @@ ll combi3(int n,int r){
 }
 ~~~~~~
 
-### 素因数分解
+### 列挙
+
+~~~~~~{.cpp}
+int main(){
+    int N,M;
+    cin >> N >> M;
+
+    vector<int> numbers(N);
+    for(int i=0;i<N;i++) numbers[i] = i;
+
+    stack<pair<int,vector<int> > > stack;
+    stack.push(make_pair(0,vector<int>()));
+
+    vector<vector<int> > combis;
+    while(!stack.empty()){
+        int lower = stack.top().first;
+        vector<int> choose = stack.top().second;
+        stack.pop();
+
+        if(choose.size() == M){
+            combis.push_back(choose);
+            continue;
+        }
+
+        for(int i=lower;i<N-M+choose.size()+1;i++){
+            vector<int> cop = choose;
+            cop.push_back(numbers[i]);
+            stack.push(make_pair(i+1,cop));
+        }
+    }
+
+    cout << "size :" << combis.size() << endl;
+    for(int i=0;i<combis.size();i++){
+        for(int j=0;j<combis[i].size();j++){
+            cout << combis[i][j] << " ";
+        }
+        cout << endl;
+    }
+    return 0;
+}
+~~~~~~
+
 
 ## ヨセフス数
 
