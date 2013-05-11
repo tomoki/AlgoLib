@@ -107,11 +107,12 @@ code > span.er { font-weight: bold; }
 </ul></li>
 <li><a href="#グラフ"><span class="toc-section-number">9</span> グラフ</a><ul>
 <li><a href="#構成要素"><span class="toc-section-number">9.1</span> 構成要素</a></li>
-<li><a href="#ダイクストラ"><span class="toc-section-number">9.2</span> ダイクストラ</a></li>
-<li><a href="#ワーシャルフロイド"><span class="toc-section-number">9.3</span> ワーシャルフロイド</a></li>
-<li><a href="#最小全域木"><span class="toc-section-number">9.4</span> 最小全域木</a></li>
-<li><a href="#最大流"><span class="toc-section-number">9.5</span> 最大流</a></li>
-<li><a href="#最小費用流"><span class="toc-section-number">9.6</span> 最小費用流</a></li>
+<li><a href="#ベルマンフォード"><span class="toc-section-number">9.2</span> ベルマンフォード</a></li>
+<li><a href="#ダイクストラ"><span class="toc-section-number">9.3</span> ダイクストラ</a></li>
+<li><a href="#ワーシャルフロイド"><span class="toc-section-number">9.4</span> ワーシャルフロイド</a></li>
+<li><a href="#最小全域木"><span class="toc-section-number">9.5</span> 最小全域木</a></li>
+<li><a href="#最大流"><span class="toc-section-number">9.6</span> 最大流</a></li>
+<li><a href="#最小費用流"><span class="toc-section-number">9.7</span> 最小費用流</a></li>
 </ul></li>
 <li><a href="#幾何"><span class="toc-section-number">10</span> 幾何</a><ul>
 <li><a href="#基本要素"><span class="toc-section-number">10.1</span> 基本要素</a></li>
@@ -805,7 +806,35 @@ ll combi3(<span class="dt">int</span> n,<span class="dt">int</span> r){
     <span class="dt">int</span> to,cost;
     Edge(<span class="dt">int</span> to,<span class="dt">int</span> cost) : to(to),cost(cost) {};
 };</code></pre>
-<h2 id="ダイクストラ"><a href="#ダイクストラ"><span class="header-section-number">9.2</span> ダイクストラ</a></h2>
+<h2 id="ベルマンフォード"><a href="#ベルマンフォード"><span class="header-section-number">9.2</span> ベルマンフォード</a></h2>
+<p>O(N|E|)</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">const</span> <span class="dt">int</span> INF = <span class="dv">1</span> &lt;&lt; <span class="dv">30</span>;
+<span class="co">// s:始点,dist:距離,prev:最短経路木</span>
+<span class="dt">bool</span> bellman(<span class="dt">const</span> vector&lt;vector&lt;Edge&gt; &gt;&amp; graph,<span class="dt">int</span> s,vector&lt;<span class="dt">int</span>&gt; &amp;dist,vector&lt;<span class="dt">int</span>&gt; &amp;prev){
+    <span class="dt">int</span> n = graph.size();
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;n;i++) dist[i] = INF;
+    dist[s] = <span class="dv">0</span>;
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;n;i++) prev[i] = -<span class="dv">1</span>;
+
+    <span class="dt">bool</span> neg_cycle = <span class="kw">false</span>;
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;n;i++){
+        <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;n;j++){
+            <span class="kw">for</span>(<span class="dt">int</span> k=<span class="dv">0</span>;k&lt;graph[j].size();k++){
+                <span class="dt">const</span> Edge &amp;e = graph[j][k];
+                <span class="kw">if</span>(dist[e.to] &gt; dist[e.from] + e.cost){
+                    dist[e.to] = dist[e.from] + e.cost;
+                    prev[e.to] = e.from;
+                    <span class="kw">if</span>(i == n<span class="dv">-1</span>){
+                        dist[e.to] = -INF;
+                        neg_cycle = <span class="kw">true</span>;
+                    }
+                }
+            }
+        }
+    }
+    <span class="kw">return</span> !neg_cycle;
+}</code></pre>
+<h2 id="ダイクストラ"><a href="#ダイクストラ"><span class="header-section-number">9.3</span> ダイクストラ</a></h2>
 <p>負の経路があったらダメ</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
 <span class="ot">#include &lt;vector&gt;</span>
@@ -862,7 +891,7 @@ ll combi3(<span class="dt">int</span> n,<span class="dt">int</span> r){
     cout &lt;&lt; ret &lt;&lt; endl;
     <span class="kw">return</span> <span class="dv">0</span>;
 }</code></pre>
-<h2 id="ワーシャルフロイド"><a href="#ワーシャルフロイド"><span class="header-section-number">9.3</span> ワーシャルフロイド</a></h2>
+<h2 id="ワーシャルフロイド"><a href="#ワーシャルフロイド"><span class="header-section-number">9.4</span> ワーシャルフロイド</a></h2>
 <p>負の経路があってもOK。すべてのノードに対してすべてのノードへの距離を求め る。もし負の閉路があったらiからiはマイナスになる。<span class="math">\(O(|V|^{3})\)</span></p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// m はノードの個数。NOはでかい数</span>
 vector&lt;vector&lt;<span class="dt">int</span>&gt; &gt; V(m,vector&lt;<span class="dt">int</span>&gt;(m,NO));
@@ -878,7 +907,7 @@ rep(i,m){
         }
     }
 }</code></pre>
-<h2 id="最小全域木"><a href="#最小全域木"><span class="header-section-number">9.4</span> 最小全域木</a></h2>
+<h2 id="最小全域木"><a href="#最小全域木"><span class="header-section-number">9.5</span> 最小全域木</a></h2>
 <p>プラム法による。<span class="math">\(O(N^3\)</span>)だと思う。最小コストを求めるコードが以下。 ただし、vector<Edge>を使えばもっとよい。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">typedef</span> pair&lt;<span class="dt">int</span>,<span class="dt">int</span>&gt; pii;
 
@@ -908,7 +937,7 @@ rep(i,m){
     }
     <span class="kw">return</span> <span class="dv">0</span>;
 }</code></pre>
-<h2 id="最大流"><a href="#最大流"><span class="header-section-number">9.5</span> 最大流</a></h2>
+<h2 id="最大流"><a href="#最大流"><span class="header-section-number">9.6</span> 最大流</a></h2>
 <p>Dinic法による。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> Edge{
     <span class="dt">int</span> to,cap,rev;
@@ -1001,7 +1030,7 @@ vector&lt;<span class="dt">int</span>&gt; levels(vector&lt;vector&lt;Edge&gt; &g
     }
     <span class="kw">return</span> <span class="dv">0</span>;
 }</code></pre>
-<h2 id="最小費用流"><a href="#最小費用流"><span class="header-section-number">9.6</span> 最小費用流</a></h2>
+<h2 id="最小費用流"><a href="#最小費用流"><span class="header-section-number">9.7</span> 最小費用流</a></h2>
 <p>Primal-Dual法による。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">typedef</span> pair&lt;<span class="dt">int</span>,<span class="dt">int</span>&gt; pii;
 

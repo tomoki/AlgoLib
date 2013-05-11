@@ -12,6 +12,37 @@ struct Edge{
 };
 ~~~~~~
 
+## ベルマンフォード
+O(N|E|)
+
+~~~~~~{.cpp}
+const int INF = 1 << 30;
+// s:始点,dist:距離,prev:最短経路木
+bool bellman(const vector<vector<Edge> >& graph,int s,vector<int> &dist,vector<int> &prev){
+    int n = graph.size();
+    for(int i=0;i<n;i++) dist[i] = INF;
+    dist[s] = 0;
+    for(int i=0;i<n;i++) prev[i] = -1;
+
+    bool neg_cycle = false;
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            for(int k=0;k<graph[j].size();k++){
+                const Edge &e = graph[j][k];
+                if(dist[e.to] > dist[e.from] + e.cost){
+                    dist[e.to] = dist[e.from] + e.cost;
+                    prev[e.to] = e.from;
+                    if(i == n-1){
+                        dist[e.to] = -INF;
+                        neg_cycle = true;
+                    }
+                }
+            }
+        }
+    }
+    return !neg_cycle;
+}
+~~~~~~
 ## ダイクストラ
 
 負の経路があったらダメ
