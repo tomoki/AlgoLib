@@ -230,9 +230,9 @@ code > span.er { font-weight: bold; }
 <h2 id="long-long"><a href="#long-long"><span class="header-section-number">2.2</span> long long</a></h2>
 <p>大きい整数。<span class="math">\(10^{18}\)</span>?くらい。</p>
 <h2 id="double"><a href="#double"><span class="header-section-number">2.3</span> double</a></h2>
-<p>floatは使ってはだめ。絶対値を得たいときには、complexの中にある、fabsを使う。</p>
+<p>floatは使ってはだめ。</p>
 <h2 id="char"><a href="#char"><span class="header-section-number">2.4</span> char</a></h2>
-<p>-128 ~ 128くらい。ちいさい。基本的には文字を入れるのに使う。vector&lt;char&gt;を vector&lt;bool&gt;の代わりに使ってもいい。</p>
+<p>-128 ~ 127くらい。ちいさい。基本的には文字を入れるのに使う。vector&lt;char&gt;を vector&lt;bool&gt;の代わりに使ってもいい。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">char</span> c = &#39;a&#39;;
 <span class="co">//cctypeが必要。大文字に変換する。すでに大文字のときは何も起こらない。</span>
 c = toupper(c);
@@ -244,7 +244,7 @@ vector&lt;<span class="dt">char</span>&gt; used(<span class="dv">10</span>,<span
 <p>true(==1)とかfalse(==0)を入れるためだけに使う。ただしvector&lt;bool&gt;は使ってはいけない。</p>
 <h2 id="補助関数"><a href="#補助関数"><span class="header-section-number">2.6</span> 補助関数</a></h2>
 <p>上記の型に関する便利な関数。</p>
-<p>床関数、天井関数、および四捨五入。返り値はint。cmathをincludeする。</p>
+<p>床関数、天井関数、および四捨五入。返り値はdouble。cmathをincludeする。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">double</span> x = <span class="fl">0.3</span>;
 <span class="dt">int</span> f = floor(x); <span class="co">// -&gt; 0</span>
 <span class="dt">int</span> c = ceil(x); <span class="co">// -&gt; 1</span>
