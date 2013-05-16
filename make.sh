@@ -2,7 +2,7 @@
 
 BASE_DIR=$(cd $(dirname $0);pwd)
 files=( title.md template.md type.md io.md vector.md search.md string.md
-        number.md structure.md graph.md geometry.md game.md data.md)
+        number.md matrix.md structure.md graph.md geometry.md game.md data.md )
 
 cd ${BASE_DIR}
 cd source

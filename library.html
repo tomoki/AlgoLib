@@ -100,10 +100,18 @@ code > span.er { font-weight: bold; }
 <li><a href="#ヨセフス数"><span class="toc-section-number">7.5</span> ヨセフス数</a></li>
 <li><a href="#乱数"><span class="toc-section-number">7.6</span> 乱数</a></li>
 </ul></li>
-<li><a href="#データ構造"><span class="toc-section-number">8</span> データ構造</a><ul>
-<li><a href="#union-find"><span class="toc-section-number">8.1</span> Union-Find</a></li>
-<li><a href="#ヒープ"><span class="toc-section-number">8.2</span> ヒープ</a></li>
-<li><a href="#bitset"><span class="toc-section-number">8.3</span> bitset</a></li>
+<li><a href="#行列"><span class="toc-section-number">8</span> 行列</a><ul>
+<li><a href="#データ構造"><span class="toc-section-number">8.1</span> データ構造</a></li>
+<li><a href="#基本演算"><span class="toc-section-number">8.2</span> 基本演算</a></li>
+<li><a href="#基本操作"><span class="toc-section-number">8.3</span> 基本操作</a><ul>
+<li><a href="#累乗"><span class="toc-section-number">8.3.1</span> 累乗</a></li>
+<li><a href="#表示"><span class="toc-section-number">8.3.2</span> 表示</a></li>
+<li><a href="#ベクトルとのかけ算"><span class="toc-section-number">8.3.3</span> ベクトルとのかけ算</a></li>
+</ul></li>
+<li><a href="#テスト"><span class="toc-section-number">8.4</span> テスト</a></li>
+<li><a href="#union-find"><span class="toc-section-number">8.5</span> Union-Find</a></li>
+<li><a href="#ヒープ"><span class="toc-section-number">8.6</span> ヒープ</a></li>
+<li><a href="#bitset"><span class="toc-section-number">8.7</span> bitset</a></li>
 </ul></li>
 <li><a href="#グラフ"><span class="toc-section-number">9</span> グラフ</a><ul>
 <li><a href="#構成要素"><span class="toc-section-number">9.1</span> 構成要素</a></li>
@@ -123,7 +131,8 @@ code > span.er { font-weight: bold; }
 <li><a href="#いろんなデータ"><span class="toc-section-number">12</span> いろんなデータ</a><ul>
 <li><a href="#階乗"><span class="toc-section-number">12.1</span> 階乗</a></li>
 <li><a href="#数単位変換"><span class="toc-section-number">12.2</span> 数単位変換</a></li>
-<li><a href="#アスキーコード"><span class="toc-section-number">12.3</span> アスキーコード</a></li>
+<li><a href="#bit"><span class="toc-section-number">12.3</span> bit</a></li>
+<li><a href="#アスキーコード"><span class="toc-section-number">12.4</span> アスキーコード</a></li>
 </ul></li>
 </ul>
 </div>
@@ -682,8 +691,78 @@ ll combi3(<span class="dt">int</span> n,<span class="dt">int</span> r){
     <span class="dt">unsigned</span> <span class="dt">long</span> t;
     t=(x^(x&lt;&lt;<span class="dv">11</span>));x=y;y=z;z=w; <span class="kw">return</span>( w=(w^(w&gt;&gt;<span class="dv">19</span>))^(t^(t&gt;&gt;<span class="dv">8</span>)) );
 }</code></pre>
-<h1 id="データ構造"><a href="#データ構造"><span class="header-section-number">8</span> データ構造</a></h1>
-<h2 id="union-find"><a href="#union-find"><span class="header-section-number">8.1</span> Union-Find</a></h2>
+<h1 id="行列"><a href="#行列"><span class="header-section-number">8</span> 行列</a></h1>
+<h2 id="データ構造"><a href="#データ構造"><span class="header-section-number">8.1</span> データ構造</a></h2>
+<p>正方行列用 //いつかなおす。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// 適宜intにしたりすること。</span>
+<span class="kw">typedef</span> vector&lt;vector&lt;ll&gt; &gt; ll_mat;</code></pre>
+<h2 id="基本演算"><a href="#基本演算"><span class="header-section-number">8.2</span> 基本演算</a></h2>
+<p>かけ算とmod。たしざんはcoming soon.</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">namespace</span> std{
+    ll_mat <span class="kw">operator</span>*(<span class="dt">const</span> ll_mat&amp; lhs,<span class="dt">const</span> ll_mat&amp; rhs){
+        <span class="dt">int</span> N = lhs.size();
+        ll_mat ret(N,vector&lt;ll&gt;(N));
+        <span class="kw">for</span>(<span class="dt">int</span> row=<span class="dv">0</span>;row&lt;N;row++){
+            <span class="kw">for</span>(<span class="dt">int</span> col=<span class="dv">0</span>;col&lt;N;col++){
+                <span class="dt">int</span> c = <span class="dv">0</span>;
+                <span class="kw">for</span>(<span class="dt">int</span> k=<span class="dv">0</span>;k&lt;N;k++){
+                    c+= rhs[row][k] * lhs[k][col];
+                }
+                ret[row][col] = c;
+            }
+        }
+        <span class="kw">return</span> ret;
+    }
+
+    ll_mat <span class="kw">operator</span>%(ll_mat lhs,ll rhs){
+        <span class="dt">int</span> N = lhs.size();
+        ll_mat ret = lhs;
+        <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;N;i++){
+            <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;N;j++){
+                ret[i][j] = ret[i][j] % rhs;
+            }
+        }
+        <span class="kw">return</span> ret;
+    }
+};</code></pre>
+<h2 id="基本操作"><a href="#基本操作"><span class="header-section-number">8.3</span> 基本操作</a></h2>
+<h3 id="累乗"><a href="#累乗"><span class="header-section-number">8.3.1</span> 累乗</a></h3>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">vector&lt;vector&lt;ll&gt; &gt;  mod_pow(vector&lt;vector&lt;ll&gt; &gt; x,ll n,ll mod){
+    <span class="kw">if</span>(n==<span class="dv">0</span>){
+        vector&lt;vector&lt;ll&gt; &gt; E(x.size(),vector&lt;ll&gt;(x.size()));
+        <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;x.size();i++){
+            E[i][i] = <span class="dv">1</span>;
+        }
+        <span class="kw">return</span> E;
+    }
+    vector&lt;vector&lt;ll&gt; &gt; ret = mod_pow(x * x % mod,n/<span class="dv">2</span>,mod);
+    <span class="kw">if</span>(n%<span class="dv">2</span> == <span class="dv">1</span>)  ret = ret * x % mod;
+    <span class="kw">return</span> ret;
+}</code></pre>
+<h3 id="表示"><a href="#表示"><span class="header-section-number">8.3.2</span> 表示</a></h3>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> display_matrix(vector&lt;vector&lt;ll&gt; &gt; mat){
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;mat.size();i++){
+        <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;mat[<span class="dv">0</span>].size();j++){
+            cerr &lt;&lt; mat[i][j] &lt;&lt; <span class="st">&quot; &quot;</span>;
+        }
+        cerr &lt;&lt; endl;
+    }
+}</code></pre>
+<h3 id="ベクトルとのかけ算"><a href="#ベクトルとのかけ算"><span class="header-section-number">8.3.3</span> ベクトルとのかけ算</a></h3>
+<p>一次元列ベクトルとのかけ算</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">vector&lt;ll&gt; mat_multi(vector&lt;vector&lt;ll&gt; &gt; lhs,vector&lt;ll&gt; rhs,<span class="dt">int</span> mod){
+    vector&lt;ll&gt; ret(rhs.size());
+    <span class="dt">int</span> N = lhs.size();
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;N;i++){
+        <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;N;j++){
+            ret[i] = (ret[i] + lhs[i][j] * rhs[j]) % mod;;
+        }
+    }
+    <span class="kw">return</span> ret;
+}</code></pre>
+<h2 id="テスト"><a href="#テスト"><span class="header-section-number">8.4</span> テスト</a></h2>
+<p>AOJ 1327 # データ構造</p>
+<h2 id="union-find"><a href="#union-find"><span class="header-section-number">8.5</span> Union-Find</a></h2>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> UnionFind{
     vector&lt;<span class="dt">int</span>&gt; par; <span class="co">// 親</span>
     vector&lt;<span class="dt">int</span>&gt; rank; <span class="co">// 木の深さ</span>
@@ -717,7 +796,7 @@ ll combi3(<span class="dt">int</span> n,<span class="dt">int</span> r){
         <span class="kw">return</span> root(x) == root(y);
     }
 };</code></pre>
-<h2 id="ヒープ"><a href="#ヒープ"><span class="header-section-number">8.2</span> ヒープ</a></h2>
+<h2 id="ヒープ"><a href="#ヒープ"><span class="header-section-number">8.6</span> ヒープ</a></h2>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;queue&gt;</span>
 <span class="ot">#include &lt;iostream&gt;</span>
 
@@ -747,7 +826,7 @@ ll combi3(<span class="dt">int</span> n,<span class="dt">int</span> r){
         Q.pop();
     }
 }</code></pre>
-<h2 id="bitset"><a href="#bitset"><span class="header-section-number">8.3</span> bitset</a></h2>
+<h2 id="bitset"><a href="#bitset"><span class="header-section-number">8.7</span> bitset</a></h2>
 <p>限られた大きさのvector&lt;bool&gt;を使いたいときに、bitsetを使うことができる。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
 <span class="ot">#include &lt;bitset&gt;</span>
@@ -1319,7 +1398,89 @@ vector&lt;<span class="dt">int</span>&gt; levels(vector&lt;vector&lt;Edge&gt; &g
 </tr>
 </tbody>
 </table>
-<h2 id="アスキーコード"><a href="#アスキーコード"><span class="header-section-number">12.3</span> アスキーコード</a></h2>
+<h2 id="bit"><a href="#bit"><span class="header-section-number">12.3</span> bit</a></h2>
+<table>
+<thead>
+<tr class="header">
+<th align="left">N</th>
+<th align="left"><span class="math">\(2^N\)</span></th>
+<th align="left">備考</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">2</td>
+<td align="left">boolの大きさ</td>
+</tr>
+<tr class="odd">
+<td align="left">2</td>
+<td align="left">4</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">3</td>
+<td align="left">8</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">4</td>
+<td align="left">16</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">7</td>
+<td align="left">128</td>
+<td align="left">charの最大値+1</td>
+</tr>
+<tr class="odd">
+<td align="left">8</td>
+<td align="left">256</td>
+<td align="left">unsigned charの最大値+1</td>
+</tr>
+<tr class="even">
+<td align="left">16</td>
+<td align="left">65,534</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">24</td>
+<td align="left">16,777,216</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">31</td>
+<td align="left">2,147,483,648</td>
+<td align="left">intの最大値+1(about 2*10^9)</td>
+</tr>
+<tr class="odd">
+<td align="left">32</td>
+<td align="left">4,294,967,296</td>
+<td align="left">unsigned intの最大値+1</td>
+</tr>
+<tr class="even">
+<td align="left">52</td>
+<td align="left">4,503,599,627,370,496</td>
+<td align="left">doubleのprecision</td>
+</tr>
+<tr class="odd">
+<td align="left">63</td>
+<td align="left">9,223,372,036,854,775,808</td>
+<td align="left">long longの最大値+1</td>
+</tr>
+<tr class="even">
+<td align="left">64</td>
+<td align="left">18,446,744,073,709,551,616</td>
+<td align="left">unsigned long longの最大値+1(about 10^19)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="アスキーコード"><a href="#アスキーコード"><span class="header-section-number">12.4</span> アスキーコード</a></h2>
 <table>
 <thead>
 <tr class="header">
