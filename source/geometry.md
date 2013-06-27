@@ -60,6 +60,17 @@ bool is_intersected_linesegment(point a1,point a2,point b1,point b2) {
         ( cross(b2-b1, a1-b1) * cross(b2-b1, a2-b1) < EPS );
 }
 
+// a1,a2を端点とする線分(la)とb1,b2を端点とする線分(lb)の交点計算
+point intersection_point_linesegment(point a1,point a2,point b1,point b2) {
+    if(a1 == b1 or a1 == b2) return a1;
+    if(a2 == b1 or a2 == b2) return a2;
+    point b = b2-b1;
+    double d1 = abs(cross(b, a1-b1));
+    double d2 = abs(cross(b, a2-b1));
+    double t = d1 / (d1 + d2);
+    return a1 + (a2-a1) * t;
+}
+
 
 // 2直線の直交判定 : a⊥b <=> dot(a, b) = 0
 // みけんしょう
@@ -70,17 +81,6 @@ bool is_orthogonal(point a1,point a2,point b1,point b2) {
 // 2直線の平行判定 : a//b <=> cross(a, b) = 0
 bool is_parallel(point a1,point a2,point b1,point b2) {
     return abs(cross(a2-a1,b2-b1)) < EPS;
-}
-
-// a1,a2を端点とする線分(la)とb1,b2を端点とする線分(lb)の交点計算
-point intersection_point_linesegment(point a1,point a2,point b1,point b2) {
-    if(a1 == b1 or a1 == b2) return a1;
-    if(a2 == b1 or a2 == b2) return a2;
-    point b = b2-b1;
-    double d1 = abs(cross(b, a1-b1));
-    double d2 = abs(cross(b, a2-b1));
-    double t = d1 / (d1 + d2);
-    return a1 + (a2-a1) * t;
 }
 
 // a1,a2を通る直線とb1,b2を通る直線の交差判定
@@ -94,6 +94,26 @@ point intersection_line(point a1,point a2,point b1,point b2) {
     return a1 + a * cross(b, b1-a1) / cross(b, a);
 }
 
+// 直線と点との距離
+double dist_line_and_point(point a1,point a2,point b){
+    return abs(cross(a2-a1,b-a1)) / abs(a2-a1);
+}
+
+// 線分と点との距離
+double dist_linesegment_and_point(point a1,point a2,point b){
+    if(dot(a2-a1,b-a1) < EPS) return abs(b-a1);
+    if(dot(a1-a2,b-a2) < EPS) return abs(b-a2);
+    return dist_line_and_point(a1,a2,b);
+}
+
+
+// 円と線分の交差判定
+bool is_cross_linesegment_and_circle(point c,double r,point a1,point a2){
+    return (dist_linesegment_and_point(a1,a2,c) < r+EPS and
+             (r < abs(c-a1) + EPS or r < abs(c-a2) + EPS));
+}
+
+
 // 点の進行方向
 int ccw(point a,point b,point c){
     b -= a;c -= a;
@@ -104,58 +124,29 @@ int ccw(point a,point b,point c){
     return 0;
 }
 
-// 多角形の面積
-double vertex_area(vertex v){
-    double ret = 0;
-    for(int i=0;i<v.size();i++){
-        ret += cross(v[i],v[(i+1)%v.size()]);
+// 点が多角形の中にはいっているか
+bool is_inner_point_vertex(vector<point> ps,point a){
+    int cc = ccw(ps[0],ps[1],a);
+    if(not(cc == 1 or cc == -1)) return false;
+    for(int i=0;i<ps.size();i++){
+        if(cc != ccw(ps[i],ps[(i+1)%ps.size()],a)) return false;
     }
-    return ret/2;
+    return true;
 }
 
-// 角からには未対応(みけんしょう)
-// AOJ 2442 解けない。
-point find_opposite_point(vertex v,point p,int where_is_point){
-    double total_area = vertex_area(v);
-    vertex alr;
-    alr.push_back(p);
-    for(int i=1;i<v.size();i++){
-        int one = (where_is_point+i) % v.size();
-        int two = (where_is_point+i+1) % v.size();
-        alr.push_back(v[one]);
 
-        point vec;
-        vec = v[two] - v[one];
-        point u = unit_vector(vec);
-        double len = abs(vec);
+// clockwiseだと負
+double triangle_area(point a,point b,point c){
+    return cross(b-a,c-a)/2;
+}
 
-        double upper = len;
-        double lower = 0;
-        for(int j=0;j<100;j++){
-            // np is on one-two.
-            double mid = (upper + lower)/2;
-            point np = v[one] + u * mid;
-            alr.push_back(np);
-            if(vertex_area(alr) > total_area/2-EPS){
-                upper = mid;
-            }else{
-                lower = mid;
-            }
-            alr.pop_back();
-        }
-        point np = v[one] + u*upper;
-        alr.push_back(np);
-        if(abs(vertex_area(alr)-total_area/2) < EPS){
-            return np;
-        }
-        alr.pop_back();
-        np = v[one] + u*lower;
-        alr.push_back(np);
-        if(abs(vertex_area(alr)-total_area/2) < EPS){
-            return np;
-        }
-        alr.pop_back();
+// clockwiseだと負
+double vertex_area(vector<point> v){
+    double ret = 0;
+    for(int i=1;i<v.size()-1;i++){
+        ret += triangle_area(v[0],v[i],v[i+1]);
     }
+    return ret;
 }
 
 ~~~~~~

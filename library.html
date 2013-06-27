@@ -1417,6 +1417,17 @@ pair&lt;point,point&gt; normal_vector(point a){
         ( cross(b2-b1, a1-b1) * cross(b2-b1, a2-b1) &lt; EPS );
 }
 
+<span class="co">// a1,a2を端点とする線分(la)とb1,b2を端点とする線分(lb)の交点計算</span>
+point intersection_point_linesegment(point a1,point a2,point b1,point b2) {
+    <span class="kw">if</span>(a1 == b1 <span class="kw">or</span> a1 == b2) <span class="kw">return</span> a1;
+    <span class="kw">if</span>(a2 == b1 <span class="kw">or</span> a2 == b2) <span class="kw">return</span> a2;
+    point b = b2-b1;
+    <span class="dt">double</span> d1 = abs(cross(b, a1-b1));
+    <span class="dt">double</span> d2 = abs(cross(b, a2-b1));
+    <span class="dt">double</span> t = d1 / (d1 + d2);
+    <span class="kw">return</span> a1 + (a2-a1) * t;
+}
+
 
 <span class="co">// 2直線の直交判定 : a⊥b &lt;=&gt; dot(a, b) = 0</span>
 <span class="co">// みけんしょう</span>
@@ -1427,17 +1438,6 @@ pair&lt;point,point&gt; normal_vector(point a){
 <span class="co">// 2直線の平行判定 : a//b &lt;=&gt; cross(a, b) = 0</span>
 <span class="dt">bool</span> is_parallel(point a1,point a2,point b1,point b2) {
     <span class="kw">return</span> abs(cross(a2-a1,b2-b1)) &lt; EPS;
-}
-
-<span class="co">// a1,a2を端点とする線分(la)とb1,b2を端点とする線分(lb)の交点計算</span>
-point intersection_point_linesegment(point a1,point a2,point b1,point b2) {
-    <span class="kw">if</span>(a1 == b1 <span class="kw">or</span> a1 == b2) <span class="kw">return</span> a1;
-    <span class="kw">if</span>(a2 == b1 <span class="kw">or</span> a2 == b2) <span class="kw">return</span> a2;
-    point b = b2-b1;
-    <span class="dt">double</span> d1 = abs(cross(b, a1-b1));
-    <span class="dt">double</span> d2 = abs(cross(b, a2-b1));
-    <span class="dt">double</span> t = d1 / (d1 + d2);
-    <span class="kw">return</span> a1 + (a2-a1) * t;
 }
 
 <span class="co">// a1,a2を通る直線とb1,b2を通る直線の交差判定</span>
@@ -1451,6 +1451,26 @@ point intersection_line(point a1,point a2,point b1,point b2) {
     <span class="kw">return</span> a1 + a * cross(b, b1-a1) / cross(b, a);
 }
 
+<span class="co">// 直線と点との距離</span>
+<span class="dt">double</span> dist_line_and_point(point a1,point a2,point b){
+    <span class="kw">return</span> abs(cross(a2-a1,b-a1)) / abs(a2-a1);
+}
+
+<span class="co">// 線分と点との距離</span>
+<span class="dt">double</span> dist_linesegment_and_point(point a1,point a2,point b){
+    <span class="kw">if</span>(dot(a2-a1,b-a1) &lt; EPS) <span class="kw">return</span> abs(b-a1);
+    <span class="kw">if</span>(dot(a1-a2,b-a2) &lt; EPS) <span class="kw">return</span> abs(b-a2);
+    <span class="kw">return</span> dist_line_and_point(a1,a2,b);
+}
+
+
+<span class="co">// 円と線分の交差判定</span>
+<span class="dt">bool</span> is_cross_linesegment_and_circle(point c,<span class="dt">double</span> r,point a1,point a2){
+    <span class="kw">return</span> (dist_linesegment_and_point(a1,a2,c) &lt; r+EPS <span class="kw">and</span>
+             (r &lt; abs(c-a1) + EPS <span class="kw">or</span> r &lt; abs(c-a2) + EPS));
+}
+
+
 <span class="co">// 点の進行方向</span>
 <span class="dt">int</span> ccw(point a,point b,point c){
     b -= a;c -= a;
@@ -1461,58 +1481,29 @@ point intersection_line(point a1,point a2,point b1,point b2) {
     <span class="kw">return</span> <span class="dv">0</span>;
 }
 
-<span class="co">// 多角形の面積</span>
-<span class="dt">double</span> vertex_area(vertex v){
-    <span class="dt">double</span> ret = <span class="dv">0</span>;
-    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;v.size();i++){
-        ret += cross(v[i],v[(i<span class="dv">+1</span>)%v.size()]);
+<span class="co">// 点が多角形の中にはいっているか</span>
+<span class="dt">bool</span> is_inner_point_vertex(vector&lt;point&gt; ps,point a){
+    <span class="dt">int</span> cc = ccw(ps[<span class="dv">0</span>],ps[<span class="dv">1</span>],a);
+    <span class="kw">if</span>(<span class="kw">not</span>(cc == <span class="dv">1</span> <span class="kw">or</span> cc == -<span class="dv">1</span>)) <span class="kw">return</span> <span class="kw">false</span>;
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;ps.size();i++){
+        <span class="kw">if</span>(cc != ccw(ps[i],ps[(i<span class="dv">+1</span>)%ps.size()],a)) <span class="kw">return</span> <span class="kw">false</span>;
     }
-    <span class="kw">return</span> ret/<span class="dv">2</span>;
+    <span class="kw">return</span> <span class="kw">true</span>;
 }
 
-<span class="co">// 角からには未対応(みけんしょう)</span>
-<span class="co">// AOJ 2442 解けない。</span>
-point find_opposite_point(vertex v,point p,<span class="dt">int</span> where_is_point){
-    <span class="dt">double</span> total_area = vertex_area(v);
-    vertex alr;
-    alr.push_back(p);
-    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">1</span>;i&lt;v.size();i++){
-        <span class="dt">int</span> one = (where_is_point+i) % v.size();
-        <span class="dt">int</span> two = (where_is_point+i<span class="dv">+1</span>) % v.size();
-        alr.push_back(v[one]);
 
-        point vec;
-        vec = v[two] - v[one];
-        point u = unit_vector(vec);
-        <span class="dt">double</span> len = abs(vec);
+<span class="co">// clockwiseだと負</span>
+<span class="dt">double</span> triangle_area(point a,point b,point c){
+    <span class="kw">return</span> cross(b-a,c-a)/<span class="dv">2</span>;
+}
 
-        <span class="dt">double</span> upper = len;
-        <span class="dt">double</span> lower = <span class="dv">0</span>;
-        <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;<span class="dv">100</span>;j++){
-            <span class="co">// np is on one-two.</span>
-            <span class="dt">double</span> mid = (upper + lower)/<span class="dv">2</span>;
-            point np = v[one] + u * mid;
-            alr.push_back(np);
-            <span class="kw">if</span>(vertex_area(alr) &gt; total_area/<span class="dv">2</span>-EPS){
-                upper = mid;
-            }<span class="kw">else</span>{
-                lower = mid;
-            }
-            alr.pop_back();
-        }
-        point np = v[one] + u*upper;
-        alr.push_back(np);
-        <span class="kw">if</span>(abs(vertex_area(alr)-total_area/<span class="dv">2</span>) &lt; EPS){
-            <span class="kw">return</span> np;
-        }
-        alr.pop_back();
-        np = v[one] + u*lower;
-        alr.push_back(np);
-        <span class="kw">if</span>(abs(vertex_area(alr)-total_area/<span class="dv">2</span>) &lt; EPS){
-            <span class="kw">return</span> np;
-        }
-        alr.pop_back();
+<span class="co">// clockwiseだと負</span>
+<span class="dt">double</span> vertex_area(vector&lt;point&gt; v){
+    <span class="dt">double</span> ret = <span class="dv">0</span>;
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">1</span>;i&lt;v.size()-<span class="dv">1</span>;i++){
+        ret += triangle_area(v[<span class="dv">0</span>],v[i],v[i<span class="dv">+1</span>]);
     }
+    <span class="kw">return</span> ret;
 }</code></pre>
 <h1 id="ゲーム"><a href="#ゲーム"><span class="header-section-number">13</span> ゲーム</a></h1>
 <h2 id="nim"><a href="#nim"><span class="header-section-number">13.1</span> Nim</a></h2>
