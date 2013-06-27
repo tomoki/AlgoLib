@@ -6,4 +6,7 @@ Longest common sequence.
 Longest increasing subsequence.
 
 ## 巡回セールスマン問題
-bit演算をする。bitのループを先に回すこと。
+bit演算をする。bitのループを先に回すこと。$O(N^2\times2^{N})$
+
+~~~~~~{.cpp}
+~~~~~~

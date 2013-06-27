@@ -56,12 +56,28 @@ struct Comp{
     };
 };
 
+struct Robot{
+    int y,x,dir,step;
+    Robot(int y,int x,int dir,int step) : y(y),x(x),dir(dir),step(step) {};
+};
+
+// <,>を定義すればless<Robot>みたいに扱える。
+bool operator<(const Robot& lhs,const Robot& rhs){
+    return lhs.step < rhs.step;
+}
+bool operator>(const Robot& lhs,const Robot& rhs){
+    return lhs.step > rhs.step;
+}
+
 int main(){
     // 何も書かないと降順。(おっきい方からでてくる。)
     // これは昇順(ちいさいほうから出てくる)にしたもの。
     priority_queue<int,vector<int>,greater<int> > Qi;
     //関数オブジェクトを使っていい感じにもできる。
     priority_queue<pii,vector<pii>,Comp> Q;
+    // 自作クラスの場合はこんな感じ
+    priority_queue<Robot,vector<Robot>,greater<Robot> > que;
+
     Q.push(make_pair(1,2));
     Q.push(make_pair(2,2));
     Q.push(make_pair(3,2));

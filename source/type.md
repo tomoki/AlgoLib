@@ -6,6 +6,48 @@
 ## long long
 大きい整数。$10^{18}$?くらい。
 
+### ビット演算
+ビットDPとかに使う。
+
+~~~~~~{.cpp}
+// 立ってるbitの数を数える
+int popcount(ll x){
+    int ret = 0;
+    while(x){
+        x &= x-1;
+        ret++;
+    }
+    return ret;
+}
+// 下から2番目のビットを立てる。1llと書くことに注意
+x |= (1ll << 1);
+
+// 集合演算
+// 和
+ll z = x | y;
+// 積
+ll z = x & y;
+// xor
+ll z = x ^ y;
+// ループ
+for(int i=0;i<N;i++){
+    // i番目が立っていれば
+    if(x & (1ll << i)){
+        //something.
+    }
+}
+
+ll dp[1 << N][N];
+dp[0][0] = 1;
+// Bitのほうが先!
+for(int i=0;i<(1<<N);i++){
+    for(int j=0;j<N;j++){
+        //something.
+    }
+}
+
+~~~~~~
+
 ## double
 floatは使ってはだめ。
 

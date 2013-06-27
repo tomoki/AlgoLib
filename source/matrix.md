@@ -19,11 +19,9 @@ namespace std{
         ll_mat ret(N,vector<ll>(N));
         for(int row=0;row<N;row++){
             for(int col=0;col<N;col++){
-                int c = 0;
                 for(int k=0;k<N;k++){
-                    c+= rhs[row][k] * lhs[k][col];
+                    ret[row][col] += rhs[row][k] * lhs[k][col];
                 }
-                ret[row][col] = c;
             }
         }
         return ret;

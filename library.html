@@ -41,7 +41,9 @@ code > span.er { font-weight: bold; }
 <li><a href="#テンプレート"><span class="toc-section-number">1</span> テンプレート</a></li>
 <li><a href="#算術型"><span class="toc-section-number">2</span> 算術型</a><ul>
 <li><a href="#int"><span class="toc-section-number">2.1</span> int</a></li>
-<li><a href="#long-long"><span class="toc-section-number">2.2</span> long long</a></li>
+<li><a href="#long-long"><span class="toc-section-number">2.2</span> long long</a><ul>
+<li><a href="#ビット演算"><span class="toc-section-number">2.2.1</span> ビット演算</a></li>
+</ul></li>
 <li><a href="#double"><span class="toc-section-number">2.3</span> double</a></li>
 <li><a href="#char"><span class="toc-section-number">2.4</span> char</a></li>
 <li><a href="#bool"><span class="toc-section-number">2.5</span> bool</a></li>
@@ -141,15 +143,6 @@ code > span.er { font-weight: bold; }
 </ul></li>
 </ul>
 </div>
-<p>このライブラリはzlib/libpngライセンスの元に配布されます。</p>
-<p>The zlib/libpng License Copyright (c) 2012-2013 Tomoki Imai</p>
-<p>This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.</p>
-<p>Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:</p>
-<ul>
-<li><p>The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.</p></li>
-<li><p>Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.</p></li>
-<li><p>This notice may not be removed or altered from any source distribution.</p></li>
-</ul>
 <h1 id="テンプレート"><a href="#テンプレート"><span class="header-section-number">1</span> テンプレート</a></h1>
 <p>各種バッドノウハウを含む。</p>
 <table class="sourceCode cpp numberLines"><tr class="sourceCode"><td class="lineNumbers"><pre>1
@@ -243,6 +236,43 @@ code > span.er { font-weight: bold; }
 <p>基本中の基本。<span class="math">\(10^{9}\)</span>くらい。こわいときにはlong longを使うことを推奨。</p>
 <h2 id="long-long"><a href="#long-long"><span class="header-section-number">2.2</span> long long</a></h2>
 <p>大きい整数。<span class="math">\(10^{18}\)</span>?くらい。</p>
+<h3 id="ビット演算"><a href="#ビット演算"><span class="header-section-number">2.2.1</span> ビット演算</a></h3>
+<p>ビットDPとかに使う。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// 立ってるbitの数を数える</span>
+<span class="dt">int</span> popcount(ll x){
+    <span class="dt">int</span> ret = <span class="dv">0</span>;
+    <span class="kw">while</span>(x){
+        x &amp;= x<span class="dv">-1</span>;
+        ret++;
+    }
+    <span class="kw">return</span> ret;
+}
+<span class="co">// 下から2番目のビットを立てる。1llと書くことに注意</span>
+x |= (1ll &lt;&lt; <span class="dv">1</span>);
+
+<span class="co">// 集合演算</span>
+<span class="co">// 和</span>
+ll z = x | y;
+<span class="co">// 積</span>
+ll z = x &amp; y;
+<span class="co">// xor</span>
+ll z = x ^ y;
+<span class="co">// ループ</span>
+<span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;N;i++){
+    <span class="co">// i番目が立っていれば</span>
+    <span class="kw">if</span>(x &amp; (1ll &lt;&lt; i)){
+        <span class="co">//something.</span>
+    }
+}
+
+ll dp[<span class="dv">1</span> &lt;&lt; N][N];
+dp[<span class="dv">0</span>][<span class="dv">0</span>] = <span class="dv">1</span>;
+<span class="co">// Bitのほうが先!</span>
+<span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;(<span class="dv">1</span>&lt;&lt;N);i++){
+    <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;N;j++){
+        <span class="co">//something.</span>
+    }
+}</code></pre>
 <h2 id="double"><a href="#double"><span class="header-section-number">2.3</span> double</a></h2>
 <p>floatは使ってはだめ。</p>
 <h2 id="char"><a href="#char"><span class="header-section-number">2.4</span> char</a></h2>
@@ -536,6 +566,93 @@ ss &lt;&lt; <span class="dv">102</span>;
 string s;
 ss &gt;&gt; s;</code></pre>
 <h2 id="再帰下降構文解析"><a href="#再帰下降構文解析"><span class="header-section-number">6.3</span> 再帰下降構文解析</a></h2>
+<p>BNFを書いて、それにしたがっていく。左再帰除去を忘れずに。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
+<span class="ot">#include &lt;string&gt;</span>
+<span class="ot">#include &lt;cctype&gt;</span>
+<span class="ot">#include &lt;sstream&gt;</span>
+
+<span class="kw">using</span> <span class="kw">namespace</span> std;
+
+<span class="kw">typedef</span> string::const_iterator Cursor;
+<span class="kw">class</span> ParseError{};
+
+<span class="co">// &lt;四則演算の式&gt; ::= &lt;乗算除算の式&gt; (+ or -) &lt;乗算除算の式&gt; (+ or -) ...</span>
+<span class="co">// &lt;乗算除算の式&gt; ::= &lt;括弧か数&gt; (* or /) &lt;括弧か数&gt; (* or /) ...</span>
+<span class="co">// &lt;括弧か数&gt;     ::= &#39;(&#39; &lt;四則演算の式&gt; &#39;)&#39; or &lt;数&gt;</span>
+<span class="co">// &lt;数&gt;           ::= (0|1|2|3|4|5|6|7|8|9)+</span>
+
+<span class="dt">int</span> expression(Cursor&amp;);
+<span class="dt">int</span> term(Cursor&amp;);
+<span class="dt">int</span> factor(Cursor&amp;);
+<span class="dt">int</span> number(Cursor&amp;);
+
+<span class="co">// &lt;四則演算の式&gt; ::= &lt;乗算除算の式&gt; (+ or -) &lt;乗算除算の式&gt; (+ or -) ...</span>
+<span class="dt">int</span> expression(Cursor &amp;c){
+    <span class="dt">int</span> ret = term(c);
+    <span class="kw">while</span>(*c == &#39;+&#39; <span class="kw">or</span> *c == &#39;-&#39;){
+        <span class="kw">if</span>(*c == &#39;+&#39;){
+            c++;
+            ret += term(c);
+        }<span class="kw">else</span>{
+            c++;
+            ret -= term(c);
+        }
+    }
+    <span class="kw">return</span> ret;
+}
+
+<span class="co">// &lt;乗算除算の式&gt; ::= &lt;括弧か数&gt; (* or /) &lt;括弧か数&gt; (* or /) ...</span>
+<span class="dt">int</span> term(Cursor &amp;c){
+    <span class="dt">int</span> ret = factor(c);
+    <span class="kw">while</span>(*c == &#39;*&#39; <span class="kw">or</span> *c == &#39;/&#39;){
+        <span class="kw">if</span>(*c == &#39;*&#39;){
+            c++;
+            ret *= factor(c);
+        }<span class="kw">else</span>{
+            c++;
+            ret /= factor(c);
+        }
+    }
+    <span class="kw">return</span> ret;
+}
+
+<span class="co">// &lt;括弧か数&gt;     ::= &#39;(&#39; &lt;四則演算の式&gt; &#39;)&#39; or &lt;数&gt;</span>
+<span class="dt">int</span> factor(Cursor &amp;c){
+    <span class="kw">if</span>(*c == &#39;(&#39;){
+        c++;
+        <span class="dt">int</span> ret = expression(c);
+        c++; <span class="co">// &#39;)&#39;</span>
+        <span class="kw">return</span> ret;
+    }<span class="kw">else</span>{
+        <span class="kw">return</span> number(c);
+    }
+}
+
+<span class="co">// &lt;数&gt;           ::= (0|1|2|3|4|5|6|7|8|9)+</span>
+<span class="dt">int</span> number(Cursor &amp;c){
+    stringstream ss;
+    <span class="kw">while</span>(isdigit(*c)){
+        ss &lt;&lt; *c;
+        c++;
+    }
+    <span class="dt">int</span> ret;
+    ss &gt;&gt; ret;
+    <span class="kw">return</span> ret;
+}
+
+<span class="dt">int</span> main(){
+    <span class="dt">int</span> test_case;
+    cin &gt;&gt; test_case;
+    cin.ignore();
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;test_case;i++){
+        string s;
+        getline(cin,s);
+        Cursor c = s.begin();
+        cout &lt;&lt; expression(c) &lt;&lt; endl;
+    }
+    <span class="kw">return</span> <span class="dv">0</span>;
+}</code></pre>
 <h1 id="整数論"><a href="#整数論"><span class="header-section-number">7</span> 整数論</a></h1>
 <h2 id="最大公約数最小公倍数"><a href="#最大公約数最小公倍数"><span class="header-section-number">7.1</span> 最大公約数,最小公倍数</a></h2>
 <p>ユークリッドの互除法を使う。intをlong longに置換してもいい。 <span class="math">\(O(\log n)\)</span></p>
@@ -709,11 +826,9 @@ ll combi3(<span class="dt">int</span> n,<span class="dt">int</span> r){
         ll_mat ret(N,vector&lt;ll&gt;(N));
         <span class="kw">for</span>(<span class="dt">int</span> row=<span class="dv">0</span>;row&lt;N;row++){
             <span class="kw">for</span>(<span class="dt">int</span> col=<span class="dv">0</span>;col&lt;N;col++){
-                <span class="dt">int</span> c = <span class="dv">0</span>;
                 <span class="kw">for</span>(<span class="dt">int</span> k=<span class="dv">0</span>;k&lt;N;k++){
-                    c+= rhs[row][k] * lhs[k][col];
+                    ret[row][col] += rhs[row][k] * lhs[k][col];
                 }
-                ret[row][col] = c;
             }
         }
         <span class="kw">return</span> ret;
@@ -773,7 +888,8 @@ ll combi3(<span class="dt">int</span> n,<span class="dt">int</span> r){
 <h2 id="lis"><a href="#lis"><span class="header-section-number">9.2</span> LIS</a></h2>
 <p>Longest increasing subsequence.</p>
 <h2 id="巡回セールスマン問題"><a href="#巡回セールスマン問題"><span class="header-section-number">9.3</span> 巡回セールスマン問題</a></h2>
-<p>bit演算をする。bitのループを先に回すこと。</p>
+<p>bit演算をする。bitのループを先に回すこと。<span class="math">\(O(N^2\times2^{N})\)</span></p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"></code></pre>
 <h1 id="データ構造"><a href="#データ構造"><span class="header-section-number">10</span> データ構造</a></h1>
 <h2 id="union-find"><a href="#union-find"><span class="header-section-number">10.1</span> Union-Find</a></h2>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> UnionFind{
@@ -825,12 +941,28 @@ ll combi3(<span class="dt">int</span> n,<span class="dt">int</span> r){
     };
 };
 
+<span class="kw">struct</span> Robot{
+    <span class="dt">int</span> y,x,dir,step;
+    Robot(<span class="dt">int</span> y,<span class="dt">int</span> x,<span class="dt">int</span> dir,<span class="dt">int</span> step) : y(y),x(x),dir(dir),step(step) {};
+};
+
+<span class="co">// &lt;,&gt;を定義すればless&lt;Robot&gt;みたいに扱える。</span>
+<span class="dt">bool</span> <span class="kw">operator</span>&lt;(<span class="dt">const</span> Robot&amp; lhs,<span class="dt">const</span> Robot&amp; rhs){
+    <span class="kw">return</span> lhs.step &lt; rhs.step;
+}
+<span class="dt">bool</span> <span class="kw">operator</span>&gt;(<span class="dt">const</span> Robot&amp; lhs,<span class="dt">const</span> Robot&amp; rhs){
+    <span class="kw">return</span> lhs.step &gt; rhs.step;
+}
+
 <span class="dt">int</span> main(){
     <span class="co">// 何も書かないと降順。(おっきい方からでてくる。)</span>
     <span class="co">// これは昇順(ちいさいほうから出てくる)にしたもの。</span>
     priority_queue&lt;<span class="dt">int</span>,vector&lt;<span class="dt">int</span>&gt;,greater&lt;<span class="dt">int</span>&gt; &gt; Qi;
     <span class="co">//関数オブジェクトを使っていい感じにもできる。</span>
     priority_queue&lt;pii,vector&lt;pii&gt;,Comp&gt; Q;
+    <span class="co">// 自作クラスの場合はこんな感じ</span>
+    priority_queue&lt;Robot,vector&lt;Robot&gt;,greater&lt;Robot&gt; &gt; que;
+
     Q.push(make_pair(<span class="dv">1</span>,<span class="dv">2</span>));
     Q.push(make_pair(<span class="dv">2</span>,<span class="dv">2</span>));
     Q.push(make_pair(<span class="dv">3</span>,<span class="dv">2</span>));
@@ -1231,7 +1363,6 @@ vector&lt;<span class="dt">int</span>&gt; levels(vector&lt;vector&lt;Edge&gt; &g
 
 <span class="dt">const</span> <span class="dt">double</span> EPS = <span class="fl">1e-9</span>;
 <span class="kw">typedef</span> complex&lt;<span class="dt">double</span>&gt; point;
-<span class="kw">typedef</span> pair&lt;point,point&gt; line;
 <span class="kw">typedef</span> vector&lt;point&gt; vertex;
 
 <span class="kw">namespace</span> std{
@@ -1275,15 +1406,13 @@ pair&lt;point,point&gt; normal_vector(point a){
     <span class="kw">return</span> real(conj(a)*b);
 }
 
-<span class="co">// 外積 (cross product) : a×b = |a||b|sinΘ</span>
+<span class="co">// 外積 (cross product) : |a×b| = |a||b|sinΘ</span>
 <span class="dt">double</span> cross(point a,point b){
     <span class="kw">return</span> imag(conj(a)*b);
 }
 
 <span class="co">// a1,a2を端点とする線分(la)とb1,b2を端点(lb)とする線分の交差判定</span>
-<span class="dt">bool</span> is_intersected_linesegment(line la,line lb) {
-    point a1=la.first,a2=la.second;
-    point b1=lb.first,b2=lb.second;
+<span class="dt">bool</span> is_intersected_linesegment(point a1,point a2,point b1,point b2) {
     <span class="kw">return</span> ( cross(a2-a1, b1-a1) * cross(a2-a1, b2-a1) &lt; EPS ) &amp;&amp;
         ( cross(b2-b1, a1-b1) * cross(b2-b1, a2-b1) &lt; EPS );
 }
@@ -1291,20 +1420,17 @@ pair&lt;point,point&gt; normal_vector(point a){
 
 <span class="co">// 2直線の直交判定 : a⊥b &lt;=&gt; dot(a, b) = 0</span>
 <span class="co">// みけんしょう</span>
-<span class="dt">bool</span> is_orthogonal(line a,line b) {
-  <span class="kw">return</span> dot(a.first-a.second, b.first-b.second) &lt; EPS;
+<span class="dt">bool</span> is_orthogonal(point a1,point a2,point b1,point b2) {
+    <span class="kw">return</span> dot(a1-a2,b1-b2) &lt; EPS;
 }
 
 <span class="co">// 2直線の平行判定 : a//b &lt;=&gt; cross(a, b) = 0</span>
-<span class="co">// みけんしょう</span>
-<span class="dt">bool</span> is_parallel(line a,line b) {
-    <span class="kw">return</span> cross(a.first-a.second,b.first-b.second) &lt; EPS;
+<span class="dt">bool</span> is_parallel(point a1,point a2,point b1,point b2) {
+    <span class="kw">return</span> abs(cross(a2-a1,b2-b1)) &lt; EPS;
 }
 
 <span class="co">// a1,a2を端点とする線分(la)とb1,b2を端点とする線分(lb)の交点計算</span>
-point intersection_point_linesegment(line la,line lb) {
-    point a1 = la.first,a2=la.second;
-    point b1 = lb.first,b2=lb.second;
+point intersection_point_linesegment(point a1,point a2,point b1,point b2) {
     <span class="kw">if</span>(a1 == b1 <span class="kw">or</span> a1 == b2) <span class="kw">return</span> a1;
     <span class="kw">if</span>(a2 == b1 <span class="kw">or</span> a2 == b2) <span class="kw">return</span> a2;
     point b = b2-b1;
@@ -1315,14 +1441,12 @@ point intersection_point_linesegment(line la,line lb) {
 }
 
 <span class="co">// a1,a2を通る直線とb1,b2を通る直線の交差判定</span>
-<span class="dt">bool</span> is_intersected_l(line la,line lb) {
-    <span class="kw">return</span> <span class="kw">not</span> is_parallel(la,lb);
+<span class="dt">bool</span> is_intersected_line(point a1,point a2,point b1,point b2) {
+    <span class="kw">return</span> <span class="kw">not</span> is_parallel(a1,a2,b1,b2);
 }
 
 <span class="co">// a1,a2を通る直線とb1,b2を通る直線の交点計算</span>
-point intersection_l(line la,line lb) {
-    point a1 = la.first,a2=la.second;
-    point b1 = lb.first,b2=lb.second;
+point intersection_line(point a1,point a2,point b1,point b2) {
     point a = a2 - a1,b = b2 - b1;
     <span class="kw">return</span> a1 + a * cross(b, b1-a1) / cross(b, a);
 }
