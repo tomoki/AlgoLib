@@ -889,7 +889,14 @@ ll combi3(<span class="dt">int</span> n,<span class="dt">int</span> r){
 <p>Longest increasing subsequence.</p>
 <h2 id="巡回セールスマン問題"><a href="#巡回セールスマン問題"><span class="header-section-number">9.3</span> 巡回セールスマン問題</a></h2>
 <p>bit演算をする。bitのループを先に回すこと。<span class="math">\(O(N^2\times2^{N})\)</span></p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"></code></pre>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">ll dp[<span class="dv">1</span> &lt;&lt; N][N];
+dp[<span class="dv">0</span>][<span class="dv">0</span>] = <span class="dv">1</span>;
+<span class="co">// Bitのほうが先!</span>
+<span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;(<span class="dv">1</span>&lt;&lt;N);i++){
+    <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;N;j++){
+        <span class="co">//something.</span>
+    }
+}</code></pre>
 <h1 id="データ構造"><a href="#データ構造"><span class="header-section-number">10</span> データ構造</a></h1>
 <h2 id="union-find"><a href="#union-find"><span class="header-section-number">10.1</span> Union-Find</a></h2>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> UnionFind{
@@ -1412,10 +1419,16 @@ pair&lt;point,point&gt; normal_vector(point a){
 }
 
 <span class="co">// a1,a2を端点とする線分(la)とb1,b2を端点(lb)とする線分の交差判定</span>
-<span class="dt">bool</span> is_intersected_linesegment(point a1,point a2,point b1,point b2) {
-    <span class="kw">return</span> ( cross(a2-a1, b1-a1) * cross(a2-a1, b2-a1) &lt; EPS ) &amp;&amp;
-        ( cross(b2-b1, a1-b1) * cross(b2-b1, a2-b1) &lt; EPS );
+<span class="dt">bool</span> is_intersected_linesegment(point a1,point a2,point b1,point b2){
+    <span class="kw">if</span>(max(a1.real(),a2.real()) + EPS &lt; min(b1.real(),b2.real())) <span class="kw">return</span> <span class="kw">false</span>;
+    <span class="kw">if</span>(max(b1.real(),b2.real()) + EPS &lt; min(a1.real(),a2.real())) <span class="kw">return</span> <span class="kw">false</span>;
+    <span class="kw">if</span>(max(a1.imag(),a2.imag()) + EPS &lt; min(b1.imag(),b2.imag())) <span class="kw">return</span> <span class="kw">false</span>;
+    <span class="kw">if</span>(max(b1.imag(),b2.imag()) + EPS &lt; min(a1.imag(),a2.imag())) <span class="kw">return</span> <span class="kw">false</span>;
+    <span class="kw">return</span> (cross(a2-a1,b1-a1)*cross(a2-a1,b2-a1) &lt; EPS) <span class="kw">and</span>
+           (cross(b2-b1,a1-b1)*cross(b2-b1,a2-b1) &lt; EPS);
+
 }
+
 
 <span class="co">// a1,a2を端点とする線分(la)とb1,b2を端点とする線分(lb)の交点計算</span>
 point intersection_point_linesegment(point a1,point a2,point b1,point b2) {
@@ -1426,6 +1439,17 @@ point intersection_point_linesegment(point a1,point a2,point b1,point b2) {
     <span class="dt">double</span> d2 = abs(cross(b, a2-b1));
     <span class="dt">double</span> t = d1 / (d1 + d2);
     <span class="kw">return</span> a1 + (a2-a1) * t;
+}
+
+<span class="co">// 線分同士の最短距離</span>
+<span class="dt">double</span> dist_linesegment_and_linesegment(point a1,point a2,point b1,point b2){
+    <span class="kw">if</span>(is_intersected_linesegment(a1,a2,b1,b2)){
+        <span class="kw">return</span> <span class="dv">0</span>;
+    }
+    <span class="kw">return</span> min(min(dist_linesegment_and_point(a1,a2,b1),
+               dist_linesegment_and_point(a1,a2,b2)),
+           min(dist_linesegment_and_point(b1,b2,a1),
+               dist_linesegment_and_point(b1,b2,a2)));
 }
 
 
@@ -1481,7 +1505,7 @@ point intersection_line(point a1,point a2,point b1,point b2) {
     <span class="kw">return</span> <span class="dv">0</span>;
 }
 
-<span class="co">// 点が多角形の中にはいっているか</span>
+<span class="co">// 点が真に多角形の中にはいっているか</span>
 <span class="dt">bool</span> is_inner_point_vertex(vector&lt;point&gt; ps,point a){
     <span class="dt">int</span> cc = ccw(ps[<span class="dv">0</span>],ps[<span class="dv">1</span>],a);
     <span class="kw">if</span>(<span class="kw">not</span>(cc == <span class="dv">1</span> <span class="kw">or</span> cc == -<span class="dv">1</span>)) <span class="kw">return</span> <span class="kw">false</span>;
@@ -1491,6 +1515,54 @@ point intersection_line(point a1,point a2,point b1,point b2) {
     <span class="kw">return</span> <span class="kw">true</span>;
 }
 
+<span class="co">// 点が辺上、もしくは内部にある。(未検証)</span>
+<span class="dt">bool</span> is_inner_point_vertex_or_line(vector&lt;point&gt; ps,point a){
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;ps.size();i++){
+        <span class="kw">if</span>(ccw(ps[i],ps[(i<span class="dv">+1</span>)%ps.size()],a) == +<span class="dv">2</span> <span class="kw">or</span>
+           abs(ps[i]-a) &lt; EPS ){
+            <span class="kw">return</span> <span class="kw">true</span>;
+        }
+    }
+    <span class="dt">int</span> cc = ccw(ps[<span class="dv">0</span>],ps[<span class="dv">1</span>],a);
+    <span class="kw">if</span>(<span class="kw">not</span>(cc == <span class="dv">1</span> <span class="kw">or</span> cc == -<span class="dv">1</span>)) <span class="kw">return</span> <span class="kw">false</span>;
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;ps.size();i++){
+        <span class="kw">if</span>(cc != ccw(ps[i],ps[(i<span class="dv">+1</span>)%ps.size()],a)) <span class="kw">return</span> <span class="kw">false</span>;
+    }
+    <span class="kw">return</span> <span class="kw">true</span>;
+}
+
+
+<span class="co">// 凸包 (UVA 109)</span>
+vector&lt;point&gt; convex_hull(vector&lt;point&gt; ps){
+    <span class="dt">int</span> n = ps.size();
+    <span class="dt">int</span> k = <span class="dv">0</span>;
+    sort(ps.begin(),ps.end());
+    vector&lt;point&gt; ch(<span class="dv">2</span>*n);
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;n;ch[k++] = ps[i++]){
+        <span class="kw">while</span>(k &gt;= <span class="dv">2</span> <span class="kw">and</span> ccw(ch[k<span class="dv">-2</span>],ch[k<span class="dv">-1</span>],ps[i]) &lt;= <span class="dv">0</span>) --k;
+    }
+    <span class="kw">for</span>(<span class="dt">int</span> i=n<span class="dv">-2</span>,t=k<span class="dv">+1</span>;i&gt;=<span class="dv">0</span>;ch[k++]=ps[i--]){
+        <span class="kw">while</span>(k &gt;= t <span class="kw">and</span> ccw(ch[k<span class="dv">-2</span>],ch[k<span class="dv">-1</span>],ps[i]) &lt;= <span class="dv">0</span>) --k;
+    }
+    ch.resize(k<span class="dv">-1</span>);
+    <span class="kw">return</span> ch;
+}
+
+<span class="co">// 円と円の交点(2点ある前提)</span>
+vector&lt;point&gt; circles_point(point c1,<span class="dt">double</span> r1,point c2,<span class="dt">double</span> r2){
+    <span class="dt">double</span> d = abs(c1-c2);
+    <span class="dt">double</span> s = (r1+r2+d) / <span class="dv">2</span>;
+    <span class="dt">double</span> S = sqrt(s*(s-r1)*(s-r2)*(s-d));
+    <span class="dt">double</span> h = <span class="dv">2</span> * S / d;
+    point v = (c2-c1) / (abs(c2-c1));
+
+    <span class="dt">double</span> m = sqrt(r1*r1 - h*h);
+
+    vector&lt;point&gt; ret;
+    ret.push_back(c1 + m*v+h*v*point(<span class="dv">0</span>,<span class="dv">1</span>));
+    ret.push_back(c1 + m*v-h*v*point(<span class="dv">0</span>,<span class="dv">1</span>));
+    <span class="kw">return</span> ret;
+}
 
 <span class="co">// clockwiseだと負</span>
 <span class="dt">double</span> triangle_area(point a,point b,point c){
