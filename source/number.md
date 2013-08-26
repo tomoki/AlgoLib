@@ -71,27 +71,36 @@ double,double->doubleな関数であるから。
 using namespace std;
 
 //上限より余裕を取ること。
-const int M = 1e6+10;
-bool isPrime[M];
 
-void sieve(){
+vector<bool> sieve(const int M){
+    vector<bool> isPrime(M);
     for(int i=2;i<M;i++) isPrime[i] = true;
     for(int i=2;i*i < M;i++){
-        if(!isPrime[i]) continue;
+        if(not isPrime[i]) continue;
         for(int j=i*i;j<M;j+=i){
             isPrime[j] = false;
         }
     }
-}
-
-int main(){
-    sieve();
-    for(int i=0;i<M;i++){
-        if(isPrime[i]) cout << i << endl;
-    }
-    return 0;
+    return isPrime;
 }
 ~~~~~~
+
+~~~~~~{.py}
+from math import *
+
+def sieve(N):
+    primes = set()
+    for i in range(2,N):
+        primes.add(i)
+
+    for i in range(2,ceil(sqrt(N))):
+        if i in primes:
+            for j in range(i*i,N,i):
+                primes.discard(j)
+
+    return primes
+~~~~~~
+
 素数のリストが欲しかったら、適当に突っ込むこと。
 実際には$O(n \log \log n)$だけれど、大体$O(n)$だと思っていい。
 

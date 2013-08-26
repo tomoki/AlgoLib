@@ -123,7 +123,17 @@ double dist_linesegment_and_point(point a1,point a2,point b){
     return dist_line_and_point(a1,a2,b);
 }
 
+// 直線と点の最短距離を実現する直線の点(すいせんの足)(みけんしょう)
+point nearest_point_line_and_point(point a1,point a2,point b){
+    return a1 + (a2-a1) * dot((a2-a1),(b-a1)) / norm(a2-a1);
+}
 
+// 線分と点の最短距離を実現する線分嬢の点(みけんしょう)
+point nearest_point_linesegment_and_point(point a1,point a2,point b){
+    if(dot(a2-a1,b-a1) < EPS) return a1;
+    if(dot(a1-a2,b-a2) < EPS) return a2;
+    return nearest_point_line_and_point(a1,a2,b);
+}
 // 円と線分の交差判定
 bool is_cross_linesegment_and_circle(point c,double r,point a1,point a2){
     return (dist_linesegment_and_point(a1,a2,c) < r+EPS and

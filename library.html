@@ -139,7 +139,9 @@ code > span.er { font-weight: bold; }
 <li><a href="#階乗"><span class="toc-section-number">14.1</span> 階乗</a></li>
 <li><a href="#数単位変換"><span class="toc-section-number">14.2</span> 数単位変換</a></li>
 <li><a href="#bit"><span class="toc-section-number">14.3</span> bit</a></li>
-<li><a href="#アスキーコード"><span class="toc-section-number">14.4</span> アスキーコード</a></li>
+<li><a href="#最低限の設定ファイル"><span class="toc-section-number">14.4</span> 最低限の設定ファイル</a><ul>
+<li><a href="#vim用"><span class="toc-section-number">14.4.1</span> vim用</a></li>
+</ul></li>
 </ul></li>
 </ul>
 </div>
@@ -697,26 +699,31 @@ a ^ {m-2} \equiv \frac{1}{a} \pmod m\end{aligned}\]</span></p>
 <span class="kw">using</span> <span class="kw">namespace</span> std;
 
 <span class="co">//上限より余裕を取ること。</span>
-<span class="dt">const</span> <span class="dt">int</span> M = <span class="fl">1e6</span><span class="dv">+10</span>;
-<span class="dt">bool</span> isPrime[M];
 
-<span class="dt">void</span> sieve(){
+vector&lt;<span class="dt">bool</span>&gt; sieve(<span class="dt">const</span> <span class="dt">int</span> M){
+    vector&lt;<span class="dt">bool</span>&gt; isPrime(M);
     <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">2</span>;i&lt;M;i++) isPrime[i] = <span class="kw">true</span>;
     <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">2</span>;i*i &lt; M;i++){
-        <span class="kw">if</span>(!isPrime[i]) <span class="kw">continue</span>;
+        <span class="kw">if</span>(<span class="kw">not</span> isPrime[i]) <span class="kw">continue</span>;
         <span class="kw">for</span>(<span class="dt">int</span> j=i*i;j&lt;M;j+=i){
             isPrime[j] = <span class="kw">false</span>;
         }
     }
-}
-
-<span class="dt">int</span> main(){
-    sieve();
-    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;M;i++){
-        <span class="kw">if</span>(isPrime[i]) cout &lt;&lt; i &lt;&lt; endl;
-    }
-    <span class="kw">return</span> <span class="dv">0</span>;
+    <span class="kw">return</span> isPrime;
 }</code></pre>
+<pre class="py"><code>from math import *
+
+def sieve(N):
+    primes = set()
+    for i in range(2,N):
+        primes.add(i)
+
+    for i in range(2,ceil(sqrt(N))):
+        if i in primes:
+            for j in range(i*i,N,i):
+                primes.discard(j)
+
+    return primes</code></pre>
 <p>素数のリストが欲しかったら、適当に突っ込むこと。 実際には<span class="math">\(O(n \log \log n)\)</span>だけれど、大体<span class="math">\(O(n)\)</span>だと思っていい。</p>
 <h3 id="素因数分解"><a href="#素因数分解"><span class="header-section-number">7.3.2</span> 素因数分解</a></h3>
 <h2 id="コンビネーション"><a href="#コンビネーション"><span class="header-section-number">7.4</span> コンビネーション</a></h2>
@@ -1487,7 +1494,17 @@ point intersection_line(point a1,point a2,point b1,point b2) {
     <span class="kw">return</span> dist_line_and_point(a1,a2,b);
 }
 
+<span class="co">// 直線と点の最短距離を実現する直線の点(すいせんの足)(みけんしょう)</span>
+point nearest_point_line_and_point(point a1,point a2,point b){
+    <span class="kw">return</span> a1 + (a2-a1) * dot((a2-a1),(b-a1)) / norm(a2-a1);
+}
 
+<span class="co">// 線分と点の最短距離を実現する線分嬢の点(みけんしょう)</span>
+point nearest_point_linesegment_and_point(point a1,point a2,point b){
+    <span class="kw">if</span>(dot(a2-a1,b-a1) &lt; EPS) <span class="kw">return</span> a1;
+    <span class="kw">if</span>(dot(a1-a2,b-a2) &lt; EPS) <span class="kw">return</span> a2;
+    <span class="kw">return</span> nearest_point_line_and_point(a1,a2,b);
+}
 <span class="co">// 円と線分の交差判定</span>
 <span class="dt">bool</span> is_cross_linesegment_and_circle(point c,<span class="dt">double</span> r,point a1,point a2){
     <span class="kw">return</span> (dist_linesegment_and_point(a1,a2,c) &lt; r+EPS <span class="kw">and</span>
@@ -1804,786 +1821,175 @@ vector&lt;point&gt; circles_point(point c1,<span class="dt">double</span> r1,poi
 </tr>
 </tbody>
 </table>
-<h2 id="アスキーコード"><a href="#アスキーコード"><span class="header-section-number">14.4</span> アスキーコード</a></h2>
-<table>
-<thead>
-<tr class="header">
-<th align="left">Char</th>
-<th align="left">Dec</th>
-<th align="left">Oct</th>
-<th align="left">Hex</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">(nul)</td>
-<td align="left">0</td>
-<td align="left">0000</td>
-<td align="left">0x00</td>
-</tr>
-<tr class="even">
-<td align="left">(soh)</td>
-<td align="left">1</td>
-<td align="left">0001</td>
-<td align="left">0x01</td>
-</tr>
-<tr class="odd">
-<td align="left">(stx)</td>
-<td align="left">2</td>
-<td align="left">0002</td>
-<td align="left">0x02</td>
-</tr>
-<tr class="even">
-<td align="left">(etx)</td>
-<td align="left">3</td>
-<td align="left">0003</td>
-<td align="left">0x03</td>
-</tr>
-<tr class="odd">
-<td align="left">(eot)</td>
-<td align="left">4</td>
-<td align="left">0004</td>
-<td align="left">0x04</td>
-</tr>
-<tr class="even">
-<td align="left">(enq)</td>
-<td align="left">5</td>
-<td align="left">0005</td>
-<td align="left">0x05</td>
-</tr>
-<tr class="odd">
-<td align="left">(ack)</td>
-<td align="left">6</td>
-<td align="left">0006</td>
-<td align="left">0x06</td>
-</tr>
-<tr class="even">
-<td align="left">(bel)</td>
-<td align="left">7</td>
-<td align="left">0007</td>
-<td align="left">0x07</td>
-</tr>
-<tr class="odd">
-<td align="left">(bs)</td>
-<td align="left">8</td>
-<td align="left">0010</td>
-<td align="left">0x08</td>
-</tr>
-<tr class="even">
-<td align="left">(ht)</td>
-<td align="left">9</td>
-<td align="left">0011</td>
-<td align="left">0x09</td>
-</tr>
-<tr class="odd">
-<td align="left">(nl)</td>
-<td align="left">10</td>
-<td align="left">0012</td>
-<td align="left">0x0a</td>
-</tr>
-<tr class="even">
-<td align="left">(vt)</td>
-<td align="left">11</td>
-<td align="left">0013</td>
-<td align="left">0x0b</td>
-</tr>
-<tr class="odd">
-<td align="left">(np)</td>
-<td align="left">12</td>
-<td align="left">0014</td>
-<td align="left">0x0c</td>
-</tr>
-<tr class="even">
-<td align="left">(cr)</td>
-<td align="left">13</td>
-<td align="left">0015</td>
-<td align="left">0x0d</td>
-</tr>
-<tr class="odd">
-<td align="left">(so)</td>
-<td align="left">14</td>
-<td align="left">0016</td>
-<td align="left">0x0e</td>
-</tr>
-<tr class="even">
-<td align="left">(si)</td>
-<td align="left">15</td>
-<td align="left">0017</td>
-<td align="left">0x0f</td>
-</tr>
-<tr class="odd">
-<td align="left">(dle)</td>
-<td align="left">16</td>
-<td align="left">0020</td>
-<td align="left">0x10</td>
-</tr>
-<tr class="even">
-<td align="left">(dc1)</td>
-<td align="left">17</td>
-<td align="left">0021</td>
-<td align="left">0x11</td>
-</tr>
-<tr class="odd">
-<td align="left">(dc2)</td>
-<td align="left">18</td>
-<td align="left">0022</td>
-<td align="left">0x12</td>
-</tr>
-<tr class="even">
-<td align="left">(dc3)</td>
-<td align="left">19</td>
-<td align="left">0023</td>
-<td align="left">0x13</td>
-</tr>
-<tr class="odd">
-<td align="left">(dc4)</td>
-<td align="left">20</td>
-<td align="left">0024</td>
-<td align="left">0x14</td>
-</tr>
-<tr class="even">
-<td align="left">(nak)</td>
-<td align="left">21</td>
-<td align="left">0025</td>
-<td align="left">0x15</td>
-</tr>
-<tr class="odd">
-<td align="left">(syn)</td>
-<td align="left">22</td>
-<td align="left">0026</td>
-<td align="left">0x16</td>
-</tr>
-<tr class="even">
-<td align="left">(etb)</td>
-<td align="left">23</td>
-<td align="left">0027</td>
-<td align="left">0x17</td>
-</tr>
-<tr class="odd">
-<td align="left">(can)</td>
-<td align="left">24</td>
-<td align="left">0030</td>
-<td align="left">0x18</td>
-</tr>
-<tr class="even">
-<td align="left">(em)</td>
-<td align="left">25</td>
-<td align="left">0031</td>
-<td align="left">0x19</td>
-</tr>
-<tr class="odd">
-<td align="left">(sub)</td>
-<td align="left">26</td>
-<td align="left">0032</td>
-<td align="left">0x1a</td>
-</tr>
-<tr class="even">
-<td align="left">(esc)</td>
-<td align="left">27</td>
-<td align="left">0033</td>
-<td align="left">0x1b</td>
-</tr>
-<tr class="odd">
-<td align="left">(fs)</td>
-<td align="left">28</td>
-<td align="left">0034</td>
-<td align="left">0x1c</td>
-</tr>
-<tr class="even">
-<td align="left">(gs)</td>
-<td align="left">29</td>
-<td align="left">0035</td>
-<td align="left">0x1d</td>
-</tr>
-<tr class="odd">
-<td align="left">(rs)</td>
-<td align="left">30</td>
-<td align="left">0036</td>
-<td align="left">0x1e</td>
-</tr>
-<tr class="even">
-<td align="left">(us)</td>
-<td align="left">31</td>
-<td align="left">0037</td>
-<td align="left">0x1f</td>
-</tr>
-<tr class="odd">
-<td align="left">(sp)</td>
-<td align="left">32</td>
-<td align="left">0040</td>
-<td align="left">0x20</td>
-</tr>
-<tr class="even">
-<td align="left">!</td>
-<td align="left">33</td>
-<td align="left">0041</td>
-<td align="left">0x21</td>
-</tr>
-<tr class="odd">
-<td align="left">&quot;</td>
-<td align="left">34</td>
-<td align="left">0042</td>
-<td align="left">0x22</td>
-</tr>
-<tr class="even">
-<td align="left">#</td>
-<td align="left">35</td>
-<td align="left">0043</td>
-<td align="left">0x23</td>
-</tr>
-<tr class="odd">
-<td align="left">$</td>
-<td align="left">36</td>
-<td align="left">0044</td>
-<td align="left">0x24</td>
-</tr>
-<tr class="even">
-<td align="left">%</td>
-<td align="left">37</td>
-<td align="left">0045</td>
-<td align="left">0x25</td>
-</tr>
-<tr class="odd">
-<td align="left">&amp;</td>
-<td align="left">38</td>
-<td align="left">0046</td>
-<td align="left">0x26</td>
-</tr>
-<tr class="even">
-<td align="left">'</td>
-<td align="left">39</td>
-<td align="left">0047</td>
-<td align="left">0x27</td>
-</tr>
-<tr class="odd">
-<td align="left">(</td>
-<td align="left">40</td>
-<td align="left">0050</td>
-<td align="left">0x28</td>
-</tr>
-<tr class="even">
-<td align="left">)</td>
-<td align="left">41</td>
-<td align="left">0051</td>
-<td align="left">0x29</td>
-</tr>
-<tr class="odd">
-<td align="left">*</td>
-<td align="left">42</td>
-<td align="left">0052</td>
-<td align="left">0x2a</td>
-</tr>
-<tr class="even">
-<td align="left">+</td>
-<td align="left">43</td>
-<td align="left">0053</td>
-<td align="left">0x2b</td>
-</tr>
-<tr class="odd">
-<td align="left">,</td>
-<td align="left">44</td>
-<td align="left">0054</td>
-<td align="left">0x2c</td>
-</tr>
-<tr class="even">
-<td align="left">-</td>
-<td align="left">45</td>
-<td align="left">0055</td>
-<td align="left">0x2d</td>
-</tr>
-<tr class="odd">
-<td align="left">.</td>
-<td align="left">46</td>
-<td align="left">0056</td>
-<td align="left">0x2e</td>
-</tr>
-<tr class="even">
-<td align="left">/</td>
-<td align="left">47</td>
-<td align="left">0057</td>
-<td align="left">0x2f</td>
-</tr>
-<tr class="odd">
-<td align="left">0</td>
-<td align="left">48</td>
-<td align="left">0060</td>
-<td align="left">0x30</td>
-</tr>
-<tr class="even">
-<td align="left">1</td>
-<td align="left">49</td>
-<td align="left">0061</td>
-<td align="left">0x31</td>
-</tr>
-<tr class="odd">
-<td align="left">2</td>
-<td align="left">50</td>
-<td align="left">0062</td>
-<td align="left">0x32</td>
-</tr>
-<tr class="even">
-<td align="left">3</td>
-<td align="left">51</td>
-<td align="left">0063</td>
-<td align="left">0x33</td>
-</tr>
-<tr class="odd">
-<td align="left">4</td>
-<td align="left">52</td>
-<td align="left">0064</td>
-<td align="left">0x34</td>
-</tr>
-<tr class="even">
-<td align="left">5</td>
-<td align="left">53</td>
-<td align="left">0065</td>
-<td align="left">0x35</td>
-</tr>
-<tr class="odd">
-<td align="left">6</td>
-<td align="left">54</td>
-<td align="left">0066</td>
-<td align="left">0x36</td>
-</tr>
-<tr class="even">
-<td align="left">7</td>
-<td align="left">55</td>
-<td align="left">0067</td>
-<td align="left">0x37</td>
-</tr>
-<tr class="odd">
-<td align="left">8</td>
-<td align="left">56</td>
-<td align="left">0070</td>
-<td align="left">0x38</td>
-</tr>
-<tr class="even">
-<td align="left">9</td>
-<td align="left">57</td>
-<td align="left">0071</td>
-<td align="left">0x39</td>
-</tr>
-<tr class="odd">
-<td align="left">:</td>
-<td align="left">58</td>
-<td align="left">0072</td>
-<td align="left">0x3a</td>
-</tr>
-<tr class="even">
-<td align="left">;</td>
-<td align="left">59</td>
-<td align="left">0073</td>
-<td align="left">0x3b</td>
-</tr>
-<tr class="odd">
-<td align="left">&lt;</td>
-<td align="left">60</td>
-<td align="left">0074</td>
-<td align="left">0x3c</td>
-</tr>
-<tr class="even">
-<td align="left">=</td>
-<td align="left">61</td>
-<td align="left">0075</td>
-<td align="left">0x3d</td>
-</tr>
-<tr class="odd">
-<td align="left">&gt;</td>
-<td align="left">62</td>
-<td align="left">0076</td>
-<td align="left">0x3e</td>
-</tr>
-<tr class="even">
-<td align="left">?</td>
-<td align="left">63</td>
-<td align="left">0077</td>
-<td align="left">0x3f</td>
-</tr>
-<tr class="odd">
-<td align="left">@</td>
-<td align="left">64</td>
-<td align="left">0100</td>
-<td align="left">0x40</td>
-</tr>
-<tr class="even">
-<td align="left">A</td>
-<td align="left">65</td>
-<td align="left">0101</td>
-<td align="left">0x41</td>
-</tr>
-<tr class="odd">
-<td align="left">B</td>
-<td align="left">66</td>
-<td align="left">0102</td>
-<td align="left">0x42</td>
-</tr>
-<tr class="even">
-<td align="left">C</td>
-<td align="left">67</td>
-<td align="left">0103</td>
-<td align="left">0x43</td>
-</tr>
-<tr class="odd">
-<td align="left">D</td>
-<td align="left">68</td>
-<td align="left">0104</td>
-<td align="left">0x44</td>
-</tr>
-<tr class="even">
-<td align="left">E</td>
-<td align="left">69</td>
-<td align="left">0105</td>
-<td align="left">0x45</td>
-</tr>
-<tr class="odd">
-<td align="left">F</td>
-<td align="left">70</td>
-<td align="left">0106</td>
-<td align="left">0x46</td>
-</tr>
-<tr class="even">
-<td align="left">G</td>
-<td align="left">71</td>
-<td align="left">0107</td>
-<td align="left">0x47</td>
-</tr>
-<tr class="odd">
-<td align="left">H</td>
-<td align="left">72</td>
-<td align="left">0110</td>
-<td align="left">0x48</td>
-</tr>
-<tr class="even">
-<td align="left">I</td>
-<td align="left">73</td>
-<td align="left">0111</td>
-<td align="left">0x49</td>
-</tr>
-<tr class="odd">
-<td align="left">J</td>
-<td align="left">74</td>
-<td align="left">0112</td>
-<td align="left">0x4a</td>
-</tr>
-<tr class="even">
-<td align="left">K</td>
-<td align="left">75</td>
-<td align="left">0113</td>
-<td align="left">0x4b</td>
-</tr>
-<tr class="odd">
-<td align="left">L</td>
-<td align="left">76</td>
-<td align="left">0114</td>
-<td align="left">0x4c</td>
-</tr>
-<tr class="even">
-<td align="left">M</td>
-<td align="left">77</td>
-<td align="left">0115</td>
-<td align="left">0x4d</td>
-</tr>
-<tr class="odd">
-<td align="left">N</td>
-<td align="left">78</td>
-<td align="left">0116</td>
-<td align="left">0x4e</td>
-</tr>
-<tr class="even">
-<td align="left">O</td>
-<td align="left">79</td>
-<td align="left">0117</td>
-<td align="left">0x4f</td>
-</tr>
-<tr class="odd">
-<td align="left">P</td>
-<td align="left">80</td>
-<td align="left">0120</td>
-<td align="left">0x50</td>
-</tr>
-<tr class="even">
-<td align="left">Q</td>
-<td align="left">81</td>
-<td align="left">0121</td>
-<td align="left">0x51</td>
-</tr>
-<tr class="odd">
-<td align="left">R</td>
-<td align="left">82</td>
-<td align="left">0122</td>
-<td align="left">0x52</td>
-</tr>
-<tr class="even">
-<td align="left">S</td>
-<td align="left">83</td>
-<td align="left">0123</td>
-<td align="left">0x53</td>
-</tr>
-<tr class="odd">
-<td align="left">T</td>
-<td align="left">84</td>
-<td align="left">0124</td>
-<td align="left">0x54</td>
-</tr>
-<tr class="even">
-<td align="left">U</td>
-<td align="left">85</td>
-<td align="left">0125</td>
-<td align="left">0x55</td>
-</tr>
-<tr class="odd">
-<td align="left">V</td>
-<td align="left">86</td>
-<td align="left">0126</td>
-<td align="left">0x56</td>
-</tr>
-<tr class="even">
-<td align="left">W</td>
-<td align="left">87</td>
-<td align="left">0127</td>
-<td align="left">0x57</td>
-</tr>
-<tr class="odd">
-<td align="left">X</td>
-<td align="left">88</td>
-<td align="left">0130</td>
-<td align="left">0x58</td>
-</tr>
-<tr class="even">
-<td align="left">Y</td>
-<td align="left">89</td>
-<td align="left">0131</td>
-<td align="left">0x59</td>
-</tr>
-<tr class="odd">
-<td align="left">Z</td>
-<td align="left">90</td>
-<td align="left">0132</td>
-<td align="left">0x5a</td>
-</tr>
-<tr class="even">
-<td align="left">[</td>
-<td align="left">91</td>
-<td align="left">0133</td>
-<td align="left">0x5b</td>
-</tr>
-<tr class="odd">
-<td align="left"></td>
-<td align="left">92</td>
-<td align="left">0134</td>
-<td align="left">0x5c</td>
-</tr>
-<tr class="even">
-<td align="left">]</td>
-<td align="left">93</td>
-<td align="left">0135</td>
-<td align="left">0x5d</td>
-</tr>
-<tr class="odd">
-<td align="left">^</td>
-<td align="left">94</td>
-<td align="left">0136</td>
-<td align="left">0x5e</td>
-</tr>
-<tr class="even">
-<td align="left">_</td>
-<td align="left">95</td>
-<td align="left">0137</td>
-<td align="left">0x5f</td>
-</tr>
-<tr class="odd">
-<td align="left">`</td>
-<td align="left">96</td>
-<td align="left">0140</td>
-<td align="left">0x60</td>
-</tr>
-<tr class="even">
-<td align="left">a</td>
-<td align="left">97</td>
-<td align="left">0141</td>
-<td align="left">0x61</td>
-</tr>
-<tr class="odd">
-<td align="left">b</td>
-<td align="left">98</td>
-<td align="left">0142</td>
-<td align="left">0x62</td>
-</tr>
-<tr class="even">
-<td align="left">c</td>
-<td align="left">99</td>
-<td align="left">0143</td>
-<td align="left">0x63</td>
-</tr>
-<tr class="odd">
-<td align="left">d</td>
-<td align="left">100</td>
-<td align="left">0144</td>
-<td align="left">0x64</td>
-</tr>
-<tr class="even">
-<td align="left">e</td>
-<td align="left">101</td>
-<td align="left">0145</td>
-<td align="left">0x65</td>
-</tr>
-<tr class="odd">
-<td align="left">f</td>
-<td align="left">102</td>
-<td align="left">0146</td>
-<td align="left">0x66</td>
-</tr>
-<tr class="even">
-<td align="left">g</td>
-<td align="left">103</td>
-<td align="left">0147</td>
-<td align="left">0x67</td>
-</tr>
-<tr class="odd">
-<td align="left">h</td>
-<td align="left">104</td>
-<td align="left">0150</td>
-<td align="left">0x68</td>
-</tr>
-<tr class="even">
-<td align="left">i</td>
-<td align="left">105</td>
-<td align="left">0151</td>
-<td align="left">0x69</td>
-</tr>
-<tr class="odd">
-<td align="left">j</td>
-<td align="left">106</td>
-<td align="left">0152</td>
-<td align="left">0x6a</td>
-</tr>
-<tr class="even">
-<td align="left">k</td>
-<td align="left">107</td>
-<td align="left">0153</td>
-<td align="left">0x6b</td>
-</tr>
-<tr class="odd">
-<td align="left">l</td>
-<td align="left">108</td>
-<td align="left">0154</td>
-<td align="left">0x6c</td>
-</tr>
-<tr class="even">
-<td align="left">m</td>
-<td align="left">109</td>
-<td align="left">0155</td>
-<td align="left">0x6d</td>
-</tr>
-<tr class="odd">
-<td align="left">n</td>
-<td align="left">110</td>
-<td align="left">0156</td>
-<td align="left">0x6e</td>
-</tr>
-<tr class="even">
-<td align="left">o</td>
-<td align="left">111</td>
-<td align="left">0157</td>
-<td align="left">0x6f</td>
-</tr>
-<tr class="odd">
-<td align="left">p</td>
-<td align="left">112</td>
-<td align="left">0160</td>
-<td align="left">0x70</td>
-</tr>
-<tr class="even">
-<td align="left">q</td>
-<td align="left">113</td>
-<td align="left">0161</td>
-<td align="left">0x71</td>
-</tr>
-<tr class="odd">
-<td align="left">r</td>
-<td align="left">114</td>
-<td align="left">0162</td>
-<td align="left">0x72</td>
-</tr>
-<tr class="even">
-<td align="left">s</td>
-<td align="left">115</td>
-<td align="left">0163</td>
-<td align="left">0x73</td>
-</tr>
-<tr class="odd">
-<td align="left">t</td>
-<td align="left">116</td>
-<td align="left">0164</td>
-<td align="left">0x74</td>
-</tr>
-<tr class="even">
-<td align="left">u</td>
-<td align="left">117</td>
-<td align="left">0165</td>
-<td align="left">0x75</td>
-</tr>
-<tr class="odd">
-<td align="left">v</td>
-<td align="left">118</td>
-<td align="left">0166</td>
-<td align="left">0x76</td>
-</tr>
-<tr class="even">
-<td align="left">w</td>
-<td align="left">119</td>
-<td align="left">0167</td>
-<td align="left">0x77</td>
-</tr>
-<tr class="odd">
-<td align="left">x</td>
-<td align="left">120</td>
-<td align="left">0170</td>
-<td align="left">0x78</td>
-</tr>
-<tr class="even">
-<td align="left">y</td>
-<td align="left">121</td>
-<td align="left">0171</td>
-<td align="left">0x79</td>
-</tr>
-<tr class="odd">
-<td align="left">z</td>
-<td align="left">122</td>
-<td align="left">0172</td>
-<td align="left">0x7a</td>
-</tr>
-<tr class="even">
-<td align="left">{</td>
-<td align="left">123</td>
-<td align="left">0173</td>
-<td align="left">0x7b</td>
-</tr>
-<tr class="odd">
-<td align="left">|</td>
-<td align="left">124</td>
-<td align="left">0174</td>
-<td align="left">0x7c</td>
-</tr>
-<tr class="even">
-<td align="left">}</td>
-<td align="left">125</td>
-<td align="left">0175</td>
-<td align="left">0x7d</td>
-</tr>
-<tr class="odd">
-<td align="left">~</td>
-<td align="left">126</td>
-<td align="left">0176</td>
-<td align="left">0x7e</td>
-</tr>
-<tr class="even">
-<td align="left">(del)</td>
-<td align="left">127</td>
-<td align="left">0177</td>
-<td align="left">0x7f</td>
-</tr>
-</tbody>
-</table>
+<h2 id="最低限の設定ファイル"><a href="#最低限の設定ファイル"><span class="header-section-number">14.4</span> 最低限の設定ファイル</a></h2>
+<h3 id="vim用"><a href="#vim用"><span class="header-section-number">14.4.1</span> vim用</a></h3>
+<p>最低限のもの。ホームにおく。</p>
+<pre><code>set fileencoding=utf-8
+set nocompatible
+set t_Co=256
+set ambiwidth=double
+
+syntax on
+filetype plugin indent on
+
+set nobackup
+set noswapfile
+
+set completeopt=menuone
+set wildmode=list:longest
+
+set smartindent
+set autoindent
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+
+set smarttab
+set expandtab
+
+set incsearch ignorecase hlsearch
+set showmatch
+set wildmenu
+
+set listchars=tab:&gt;-,trail:-
+set list
+
+set backspace=indent,eol,start</code></pre>
+<!-- 
+## アスキーコード
+
+
+Char   Dec    Oct    Hex
+------ ------ ------ ------
+(nul)    0     0000   0x00
+(soh)    1     0001   0x01
+(stx)    2     0002   0x02
+(etx)    3     0003   0x03
+(eot)    4     0004   0x04
+(enq)    5     0005   0x05
+(ack)    6     0006   0x06
+(bel)    7     0007   0x07
+(bs)     8     0010   0x08
+(ht)     9     0011   0x09
+(nl)    10     0012   0x0a
+(vt)    11     0013   0x0b
+(np)    12     0014   0x0c
+(cr)    13     0015   0x0d
+(so)    14     0016   0x0e
+(si)    15     0017   0x0f
+(dle)   16     0020   0x10
+(dc1)   17     0021   0x11
+(dc2)   18     0022   0x12
+(dc3)   19     0023   0x13
+(dc4)   20     0024   0x14
+(nak)   21     0025   0x15
+(syn)   22     0026   0x16
+(etb)   23     0027   0x17
+(can)   24     0030   0x18
+(em)    25     0031   0x19
+(sub)   26     0032   0x1a
+(esc)   27     0033   0x1b
+(fs)    28     0034   0x1c
+(gs)    29     0035   0x1d
+(rs)    30     0036   0x1e
+(us)    31     0037   0x1f
+(sp)    32     0040   0x20
+!       33     0041   0x21
+"       34     0042   0x22
+#       35     0043   0x23
+$       36     0044   0x24
+%       37     0045   0x25
+&       38     0046   0x26
+'       39     0047   0x27
+(       40     0050   0x28
+)       41     0051   0x29
+*       42     0052   0x2a
++       43     0053   0x2b
+,       44     0054   0x2c
+-       45     0055   0x2d
+.       46     0056   0x2e
+/       47     0057   0x2f
+0       48     0060   0x30
+1       49     0061   0x31
+2       50     0062   0x32
+3       51     0063   0x33
+4       52     0064   0x34
+5       53     0065   0x35
+6       54     0066   0x36
+7       55     0067   0x37
+8       56     0070   0x38
+9       57     0071   0x39
+:       58     0072   0x3a
+;       59     0073   0x3b
+<       60     0074   0x3c
+=       61     0075   0x3d
+>       62     0076   0x3e
+?       63     0077   0x3f
+@       64     0100   0x40
+A       65     0101   0x41
+B       66     0102   0x42
+C       67     0103   0x43
+D       68     0104   0x44
+E       69     0105   0x45
+F       70     0106   0x46
+G       71     0107   0x47
+H       72     0110   0x48
+I       73     0111   0x49
+J       74     0112   0x4a
+K       75     0113   0x4b
+L       76     0114   0x4c
+M       77     0115   0x4d
+N       78     0116   0x4e
+O       79     0117   0x4f
+P       80     0120   0x50
+Q       81     0121   0x51
+R       82     0122   0x52
+S       83     0123   0x53
+T       84     0124   0x54
+U       85     0125   0x55
+V       86     0126   0x56
+W       87     0127   0x57
+X       88     0130   0x58
+Y       89     0131   0x59
+Z       90     0132   0x5a
+[       91     0133   0x5b
+\       92     0134   0x5c
+]       93     0135   0x5d
+^       94     0136   0x5e
+_       95     0137   0x5f
+`       96     0140   0x60
+a       97     0141   0x61
+b       98     0142   0x62
+c       99     0143   0x63
+d      100     0144   0x64
+e      101     0145   0x65
+f      102     0146   0x66
+g      103     0147   0x67
+h      104     0150   0x68
+i      105     0151   0x69
+j      106     0152   0x6a
+k      107     0153   0x6b
+l      108     0154   0x6c
+m      109     0155   0x6d
+n      110     0156   0x6e
+o      111     0157   0x6f
+p      112     0160   0x70
+q      113     0161   0x71
+r      114     0162   0x72
+s      115     0163   0x73
+t      116     0164   0x74
+u      117     0165   0x75
+v      118     0166   0x76
+w      119     0167   0x77
+x      120     0170   0x78
+y      121     0171   0x79
+z      122     0172   0x7a
+{      123     0173   0x7b
+|      124     0174   0x7c
+}      125     0175   0x7d
+~      126     0176   0x7e
+(del)  127     0177   0x7f
+-->
+
 </body>
 </html>

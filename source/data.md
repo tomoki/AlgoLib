@@ -52,7 +52,48 @@ N      $2^N$                            備考
 63     9,223,372,036,854,775,808        long longの最大値+1
 64     18,446,744,073,709,551,616       unsigned long longの最大値+1(about 10^19)
 
+## 最低限の設定ファイル
+
+### vim用
+最低限のもの。ホームにおく。
+
+~~~~~~
+set fileencoding=utf-8
+set nocompatible
+set t_Co=256
+set ambiwidth=double
+
+syntax on
+filetype plugin indent on
+
+set nobackup
+set noswapfile
+
+set completeopt=menuone
+set wildmode=list:longest
+
+set smartindent
+set autoindent
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+
+set smarttab
+set expandtab
+
+set incsearch ignorecase hlsearch
+set showmatch
+set wildmenu
+
+set listchars=tab:>-,trail:-
+set list
+
+set backspace=indent,eol,start
+~~~~~~
+
+<!-- 
 ## アスキーコード
+
 
 Char   Dec    Oct    Hex
 ------ ------ ------ ------
@@ -184,3 +225,4 @@ z      122     0172   0x7a
 }      125     0175   0x7d
 ~      126     0176   0x7e
 (del)  127     0177   0x7f
+-->
