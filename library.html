@@ -99,8 +99,9 @@ code > span.er { font-weight: bold; }
 <li><a href="#コンビネーションの数"><span class="toc-section-number">7.4.1</span> コンビネーションの数</a></li>
 <li><a href="#列挙"><span class="toc-section-number">7.4.2</span> 列挙</a></li>
 </ul></li>
-<li><a href="#ヨセフス数"><span class="toc-section-number">7.5</span> ヨセフス数</a></li>
-<li><a href="#乱数"><span class="toc-section-number">7.6</span> 乱数</a></li>
+<li><a href="#確率的なアレ"><span class="toc-section-number">7.5</span> 確率的なアレ</a></li>
+<li><a href="#ヨセフス数"><span class="toc-section-number">7.6</span> ヨセフス数</a></li>
+<li><a href="#乱数"><span class="toc-section-number">7.7</span> 乱数</a></li>
 </ul></li>
 <li><a href="#行列"><span class="toc-section-number">8</span> 行列</a><ul>
 <li><a href="#基本要素"><span class="toc-section-number">8.1</span> 基本要素</a></li>
@@ -121,6 +122,7 @@ code > span.er { font-weight: bold; }
 <li><a href="#union-find"><span class="toc-section-number">10.1</span> Union-Find</a></li>
 <li><a href="#ヒープ"><span class="toc-section-number">10.2</span> ヒープ</a></li>
 <li><a href="#bitset"><span class="toc-section-number">10.3</span> bitset</a></li>
+<li><a href="#分数"><span class="toc-section-number">10.4</span> 分数</a></li>
 </ul></li>
 <li><a href="#グラフ"><span class="toc-section-number">11</span> グラフ</a><ul>
 <li><a href="#構成要素"><span class="toc-section-number">11.1</span> 構成要素</a></li>
@@ -812,8 +814,138 @@ ll combi3(<span class="dt">int</span> n,<span class="dt">int</span> r){
     }
     <span class="kw">return</span> <span class="dv">0</span>;
 }</code></pre>
-<h2 id="ヨセフス数"><a href="#ヨセフス数"><span class="header-section-number">7.5</span> ヨセフス数</a></h2>
-<h2 id="乱数"><a href="#乱数"><span class="header-section-number">7.6</span> 乱数</a></h2>
+<h2 id="確率的なアレ"><a href="#確率的なアレ"><span class="header-section-number">7.5</span> 確率的なアレ</a></h2>
+<p>テスト中。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// n&lt; 341550071728321 , ok.</span>
+<span class="ot">#include &lt;vector&gt;</span>
+<span class="ot">#include &lt;cmath&gt;</span>
+<span class="kw">using</span> <span class="kw">namespace</span> std;
+
+<span class="kw">typedef</span> <span class="dt">long</span> <span class="dt">long</span> ll;
+
+<span class="co">// will not overflow even if mod mod is too big..</span>
+ll mod_mul(ll a,ll b,ll mod){
+    <span class="kw">if</span>(b == <span class="dv">0</span>) <span class="kw">return</span> <span class="dv">0</span>;
+    ll res = mod_mul((a+a)%mod,b/<span class="dv">2</span>,mod);
+    <span class="kw">if</span>(b % <span class="dv">2</span> == <span class="dv">1</span>) res = (res + a)%mod;
+    <span class="kw">return</span> res;
+}
+
+<span class="co">// use mod_mul if mod is too big.</span>
+ll mod_pow(ll x,ll n,ll mod){
+    <span class="kw">if</span>(n==<span class="dv">0</span>) <span class="kw">return</span> <span class="dv">1</span>;
+    ll ret = mod_pow(x * x % mod,n/<span class="dv">2</span>,mod);
+    <span class="kw">if</span>(n%<span class="dv">2</span>== <span class="dv">1</span>)  ret = ret * x % mod;
+p    <span class="kw">return</span> ret;
+}
+
+<span class="co">// return probably prime.</span>
+<span class="co">//  if n &lt; 341550071728321 return correct answer.</span>
+<span class="dt">bool</span> miller_rabin(ll n){
+    <span class="kw">if</span>(n == <span class="dv">2</span>) <span class="kw">return</span> <span class="kw">true</span>;
+    <span class="kw">if</span>(n % <span class="dv">2</span> == <span class="dv">0</span> <span class="kw">or</span> n &lt;= <span class="dv">1</span>) <span class="kw">return</span> <span class="kw">false</span>;
+    ll s=<span class="dv">0</span>,d=n<span class="dv">-1</span>;
+    <span class="dt">static</span> <span class="dt">const</span> ll a[] = {<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">5</span>,<span class="dv">7</span>,<span class="dv">11</span>,<span class="dv">13</span>,<span class="dv">17</span>,n<span class="dv">+1</span>};
+
+    <span class="kw">while</span>(d % <span class="dv">2</span> == <span class="dv">0</span>){
+        s++;d/=<span class="dv">2</span>;
+    }
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;a[i]&lt;n;i++){
+        ll x = mod_pow(a[i],d,n);
+        <span class="kw">if</span>(x != <span class="dv">1</span>){
+            ll r;
+            <span class="kw">for</span>(r=<span class="dv">0</span>;r&lt;s;r++){
+                <span class="kw">if</span>(x == n<span class="dv">-1</span>) <span class="kw">break</span>;
+                x = mod_mul(x,x,n);
+            }
+            <span class="kw">if</span>(r == s) <span class="kw">return</span> <span class="kw">false</span>;
+        }
+    }
+    <span class="kw">return</span> <span class="kw">true</span>;
+}
+
+ll gcd(ll a,ll b){
+    <span class="kw">return</span> b==<span class="dv">0</span> ? a : gcd(b,a%b);
+}
+
+<span class="kw">inline</span> ll random(ll x,ll c,ll m){
+    <span class="kw">return</span> (mod_mul(x,x,m)+c)%m;
+}
+
+vector&lt;<span class="dt">bool</span>&gt; sieve(<span class="dt">const</span> <span class="dt">int</span> M){
+    vector&lt;<span class="dt">bool</span>&gt; isPrime(M);
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">2</span>;i&lt;M;i++) isPrime[i] = <span class="kw">true</span>;
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">2</span>;i*i &lt; M;i++){
+        <span class="kw">if</span>(<span class="kw">not</span> isPrime[i]) <span class="kw">continue</span>;
+        <span class="kw">for</span>(<span class="dt">int</span> j=i*i;j&lt;M;j+=i){
+            isPrime[j] = <span class="kw">false</span>;
+        }
+    }
+    <span class="kw">return</span> isPrime;
+}
+
+<span class="co">// primes must contatin 2.</span>
+vector&lt;ll&gt; pollard_rho(ll n,<span class="dt">const</span> vector&lt;ll&gt;&amp; primes,<span class="dt">bool</span> precheck=<span class="kw">true</span>){
+    <span class="kw">if</span>(n == <span class="dv">0</span> <span class="kw">or</span> n == <span class="dv">1</span>) <span class="kw">return</span> vector&lt;ll&gt;(<span class="dv">1</span>,n);
+    vector&lt;ll&gt; ret;
+    <span class="dt">static</span> <span class="dt">const</span> <span class="dt">int</span> constants[] = {<span class="dv">1</span>,<span class="dv">51</span>,<span class="dv">73</span>,<span class="dv">0</span>};
+    <span class="kw">if</span>(precheck){
+        <span class="kw">for</span>(size_t i=<span class="dv">0</span>;i&lt;primes.size();i++){
+            <span class="kw">while</span>(n % primes[i] == <span class="dv">0</span>){
+                n /= primes[i];
+                ret.push_back(primes[i]);
+            }
+            <span class="kw">if</span>(n == <span class="dv">1</span>) <span class="kw">return</span> ret;
+        }
+    }
+    <span class="kw">if</span>(miller_rabin(n)){
+        ret.push_back(n);
+        <span class="kw">return</span> ret;
+    }
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;constants[i];i++){
+        ll x = <span class="dv">2</span>,y = <span class="dv">2</span>,d = <span class="dv">1</span>;
+        <span class="kw">while</span>(d == <span class="dv">1</span>){
+            x = random(x,constants[i],n);
+            y = random(random(y,constants[i],n),constants[i],n);
+            d = gcd(abs(x-y),n);
+        }
+        <span class="kw">if</span>(d == n) <span class="kw">continue</span>;
+
+        vector&lt;ll&gt; dp = pollard_rho(d,primes,<span class="kw">false</span>);
+        vector&lt;ll&gt; ndp = pollard_rho(n/d,primes,<span class="kw">false</span>);
+        <span class="kw">for</span>(size_t j=<span class="dv">0</span>;j&lt;dp.size();j++){
+            ret.push_back(dp[j]);
+        }
+        <span class="kw">for</span>(size_t j=<span class="dv">0</span>;j&lt;ndp.size();j++){
+            ret.push_back(ndp[j]);
+        }
+        <span class="kw">return</span> ret;
+    }
+    <span class="kw">return</span> ret;
+}
+
+
+<span class="dt">int</span> main(){
+    <span class="dt">int</span> N = <span class="dv">100</span>;
+    vector&lt;<span class="dt">bool</span>&gt; isprime = sieve(<span class="dv">5</span>);
+    vector&lt;ll&gt; primes;
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;isprime.size();i++){
+        <span class="kw">if</span>(isprime[i]){
+            primes.push_back(i);
+        }
+    }
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;N;i++){
+        <span class="co">//cout &lt;&lt; i &lt;&lt; &quot; &quot; &lt;&lt; miller_rabin(i) &lt;&lt; &quot; &quot; &lt;&lt; endl;</span>
+        vector&lt;ll&gt; ps = pollard_rho(i,primes,<span class="kw">true</span>);
+        <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;ps.size();j++){
+            cout &lt;&lt; ps[j] &lt;&lt; <span class="st">&quot; &quot;</span>;
+        }
+        cout &lt;&lt; endl;
+    }
+    <span class="kw">return</span> <span class="dv">0</span>;
+}</code></pre>
+<h2 id="ヨセフス数"><a href="#ヨセフス数"><span class="header-section-number">7.6</span> ヨセフス数</a></h2>
+<h2 id="乱数"><a href="#乱数"><span class="header-section-number">7.7</span> 乱数</a></h2>
 <p>XORShiftをつかったらうれしいかもしれない。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> <span class="dt">long</span> xor128(){
     <span class="dt">static</span> <span class="dt">unsigned</span> <span class="dt">long</span> x=<span class="dv">123456789</span>,y=<span class="dv">362436069</span>,z=<span class="dv">521288629</span>,w=<span class="dv">88675123</span>;
@@ -1036,6 +1168,79 @@ dp[<span class="dv">0</span>][<span class="dv">0</span>] = <span class="dv">1</s
 
     <span class="co">// 関数オブジェクトを作る必要アリ</span>
     map&lt;bitset&lt;N&gt;,<span class="dt">int</span>,bit_cmp&gt; M;
+}</code></pre>
+<h2 id="分数"><a href="#分数"><span class="header-section-number">10.4</span> 分数</a></h2>
+<p>テストちゅう.</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">typedef</span> <span class="dt">long</span> <span class="dt">long</span> ll;
+ll gcd(ll a,ll b){
+    <span class="kw">return</span> b==<span class="dv">0</span> ? a : gcd(b,a%b);
+}
+
+ll lcm(ll a,ll b){
+    <span class="kw">if</span>(a &lt; <span class="dv">0</span>) a *= -<span class="dv">1</span>;
+    <span class="kw">if</span>(b &lt; <span class="dv">0</span>) b *= -<span class="dv">1</span>;
+    <span class="kw">return</span> a*b / gcd(a,b);
+}
+
+<span class="kw">struct</span> Fraction{
+    ll n,d;
+    Fraction(ll _n,ll _d){
+        ll c = lcm(_n,_d);
+        n = c / _d;
+        d = c / _n;
+        <span class="kw">if</span>(d &lt; <span class="dv">0</span>){
+            n *= -<span class="dv">1</span>;
+            d *= -<span class="dv">1</span>;
+        }
+    }
+
+    Fraction(ll _n){
+        Fraction(_n,<span class="dv">1</span>);
+    }
+
+    <span class="dt">bool</span> <span class="kw">operator</span>&lt;(<span class="dt">const</span> Fraction&amp; r) <span class="dt">const</span>{
+        ll c_d = lcm(d,r.d);
+        <span class="kw">return</span> n*(c_d/d)&lt; r.n*(c_d/r.d);
+    }
+    <span class="dt">bool</span> <span class="kw">operator</span>&gt;(<span class="dt">const</span> Fraction&amp; r) <span class="dt">const</span>{
+        <span class="kw">return</span> <span class="kw">not</span> ((*<span class="kw">this</span>) &lt; r <span class="kw">or</span> (*<span class="kw">this</span>) == r);
+    }
+    <span class="dt">bool</span> <span class="kw">operator</span>&lt;=(<span class="dt">const</span> Fraction&amp; r) <span class="dt">const</span>{
+        <span class="kw">return</span> (*<span class="kw">this</span>) &lt; r <span class="kw">or</span> (*<span class="kw">this</span>) == r;
+    }
+    <span class="dt">bool</span> <span class="kw">operator</span>&gt;=(<span class="dt">const</span> Fraction&amp; r) <span class="dt">const</span>{
+        <span class="kw">return</span> (*<span class="kw">this</span>) &gt; r <span class="kw">or</span> (*<span class="kw">this</span>) == r;
+    }
+    <span class="dt">bool</span> <span class="kw">operator</span>==(<span class="dt">const</span> Fraction&amp; r) <span class="dt">const</span>{
+        <span class="kw">return</span> n == r.n <span class="kw">and</span> d == r.d;
+    }
+    Fraction <span class="kw">operator</span>+(<span class="dt">const</span> Fraction&amp; r) <span class="dt">const</span>{
+        ll c_d = lcm(d,r.d);
+        <span class="kw">return</span> Fraction(n*(c_d/d)+r.n*(c_d/r.d),c_d);
+    }
+    Fraction <span class="kw">operator</span>-(<span class="dt">const</span> Fraction&amp; r) <span class="dt">const</span>{
+        <span class="kw">return</span> (*<span class="kw">this</span>) + (-r);
+    }
+    Fraction <span class="kw">operator</span>*(<span class="dt">const</span> Fraction&amp; r) <span class="dt">const</span>{
+        <span class="kw">return</span> Fraction(n*r.n,d*r.d);
+    }
+    Fraction <span class="kw">operator</span>/(<span class="dt">const</span> Fraction&amp; r) <span class="dt">const</span>{
+        <span class="kw">return</span> (*<span class="kw">this</span>) * Fraction(r.d,r.n);
+    }
+    Fraction <span class="kw">operator</span>+() <span class="dt">const</span>{
+        <span class="kw">return</span> Fraction(n,d);
+    }
+    Fraction <span class="kw">operator</span>-() <span class="dt">const</span>{
+        <span class="kw">return</span> (*<span class="kw">this</span>) * -<span class="dv">1</span>;
+    }
+    Fraction <span class="kw">operator</span>*(<span class="dt">const</span> ll&amp; a) <span class="dt">const</span>{
+        <span class="kw">return</span> Fraction(a*n,d) ;
+    }
+};
+
+ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream &amp;os,<span class="dt">const</span> Fraction&amp; f){
+    os &lt;&lt; f.n &lt;&lt; <span class="st">&quot;/&quot;</span> &lt;&lt; f.d;
+    <span class="kw">return</span> os;
 }</code></pre>
 <h1 id="グラフ"><a href="#グラフ"><span class="header-section-number">11</span> グラフ</a></h1>
 <h2 id="構成要素"><a href="#構成要素"><span class="header-section-number">11.1</span> 構成要素</a></h2>
