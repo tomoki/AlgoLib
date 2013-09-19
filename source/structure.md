@@ -143,3 +143,80 @@ int main(){
     map<bitset<N>,int,bit_cmp> M;
 }
 ~~~~~~
+
+## 分数
+テストちゅう.
+
+~~~~~~{.cpp}
+typedef long long ll;
+ll gcd(ll a,ll b){
+    return b==0 ? a : gcd(b,a%b);
+}
+
+ll lcm(ll a,ll b){
+    if(a < 0) a *= -1;
+    if(b < 0) b *= -1;
+    return a*b / gcd(a,b);
+}
+
+struct Fraction{
+    ll n,d;
+    Fraction(ll _n,ll _d){
+        ll c = lcm(_n,_d);
+        n = c / _d;
+        d = c / _n;
+        if(d < 0){
+            n *= -1;
+            d *= -1;
+        }
+    }
+
+    Fraction(ll _n){
+        Fraction(_n,1);
+    }
+
+    bool operator<(const Fraction& r) const{
+        ll c_d = lcm(d,r.d);
+        return n*(c_d/d)< r.n*(c_d/r.d);
+    }
+    bool operator>(const Fraction& r) const{
+        return not ((*this) < r or (*this) == r);
+    }
+    bool operator<=(const Fraction& r) const{
+        return (*this) < r or (*this) == r;
+    }
+    bool operator>=(const Fraction& r) const{
+        return (*this) > r or (*this) == r;
+    }
+    bool operator==(const Fraction& r) const{
+        return n == r.n and d == r.d;
+    }
+    Fraction operator+(const Fraction& r) const{
+        ll c_d = lcm(d,r.d);
+        return Fraction(n*(c_d/d)+r.n*(c_d/r.d),c_d);
+    }
+    Fraction operator-(const Fraction& r) const{
+        return (*this) + (-r);
+    }
+    Fraction operator*(const Fraction& r) const{
+        return Fraction(n*r.n,d*r.d);
+    }
+    Fraction operator/(const Fraction& r) const{
+        return (*this) * Fraction(r.d,r.n);
+    }
+    Fraction operator+() const{
+        return Fraction(n,d);
+    }
+    Fraction operator-() const{
+        return (*this) * -1;
+    }
+    Fraction operator*(const ll& a) const{
+        return Fraction(a*n,d) ;
+    }
+};
+
+ostream& operator<<(ostream &os,const Fraction& f){
+    os << f.n << "/" << f.d;
+    return os;
+}
+~~~~~~
