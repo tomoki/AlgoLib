@@ -1,9 +1,10 @@
 # テンプレート
 各種バッドノウハウを含む。
 
-~~~~~~{.cpp .numberLines}
+## C++
+
+~~~~~~{.cpp}
 #include <iostream>
-#include <cstdio>
 #include <iomanip>
 #include <vector>
 #include <map>
@@ -15,34 +16,63 @@
 #include <numeric>
 #include <algorithm>
 #include <functional>
-#include <cctype>
 #include <complex>
 #include <string>
 #include <sstream>
 
+#include <cstdio>
+#include <cstdlib>
+#include <cctype>
+#include <cstring>
+
 using namespace std;
 
 #define all(c) c.begin(),c.end()
-#define rall(c) c.rbegin(),c.rend()
-#define rep(i,n) for(int i=0;i<(n);i++)
-#define tr(it,container) for(typeof(container.begin()) it = container.begin(); \
-                                                  it != container.end(); ++it)
-#define mp(a,b) make_pair((a),(b))
-#define eq ==
+#define rep(i,n) for(int i=0;i<(int)n;i++)
+#define debug(x) cerr << #x << " = " << (x) << " (L" << __LINE__ << ")" << endl
 
 typedef long long ll;
 typedef complex<double> point;
-typedef pair<int,int> pii;
+typedef vector<int> vi;
 
-// →↑←↓
-const int dx[] = {1,0,-1,0};
-const int dy[] = {0,-1,0,1};
+template<class T>
+inline int len(const T& t){
+    return t.size();
+}
 
-
-const double EPS = 1e-9;
+template<typename T>
+ostream& operator<<(ostream& os,const vector<T>& val){
+    os << "[ ";
+    for(typename vector<T>::const_iterator it=val.begin();
+        it != val.end();++it){
+        os << *it << " ";
+    }
+    os << "]";
+    return os;
+}
 
 int main(){
-
     return 0;
 }
+~~~~~~
+
+## Python
+~~~~~~{.python}
+#!/usr/bin/env python
+#coding:utf-8
+
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from math import *
+from string import *
+from fractions import *
+from itertools import *
+
+def main():
+    pass
+
+if __name__ == "__main__":
+    main()
 ~~~~~~

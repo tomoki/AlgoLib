@@ -90,3 +90,70 @@ vector<ll> mat_multi(vector<vector<ll> > lhs,vector<ll> rhs,int mod){
 
 ## テスト
 AOJ 1327
+
+## Gauss-Jordan
+GF上で連立方程式を解く
+
+~~~~~~{.cpp}
+// Gauss-Jordan. Solve equation on GF.
+int invert(int x){
+    int ret[2] = {0,1};
+    return ret[x];
+}
+
+int modulo(int x){
+    x %= 2;
+    while(x < 0){
+        x += 2;
+    }
+    return x;
+}
+
+const int none = 0; // if no answer
+const int one = 1;  // if there is exactly one answer
+const int many = 2; // many answer.
+// answer will be inserted in b.
+int gauss(matrix A,vector<int>& b){
+    int n = A.size();
+    int m = A[0].size();
+    int pi = 0,pj = 0;
+    while(pi < n and pj < m){
+        for(int i=pi+1;i<n;i++){ // pivot
+            if(abs(A[i][pj]) > abs(A[pi][pj])){
+                swap(A[i],A[pi]);
+                swap(b[i],b[pi]);
+            }
+        }
+        if(abs(A[pi][pj]) > 0){
+            int d = invert(A[pi][pj]);
+            for(int j=0;j<m;j++){
+                A[pi][j] = modulo(A[pi][j] * d);
+            }
+            b[pi] = modulo(b[pi]*d);
+            for(int i=pi+1;i<n;i++){
+                int k = A[i][pj];
+                for(int j=0;j<m;j++){
+                    A[i][j] = modulo(A[i][j] - k * A[pi][j]);
+                }
+                b[i] = modulo(b[i] - k*b[pi]);
+            }
+            pi++;
+        }
+        pj++;
+    }
+    for(int i=pi;i<n;i++){
+        if(abs(b[i]) > 0){
+            return none;
+        }
+    }
+    if(pi < m or pj < m){
+        return many;
+    }
+    for(int j=m-1;j>=0;j--){
+        for(int i=0;i<j;i++){
+            b[i] = modulo(b[i] - b[j] * A[i][j]);
+        }
+    }
+    return one;
+}
+~~~~~~

@@ -28,7 +28,7 @@ code > span.fu { color: #000000; }
 code > span.er { font-weight: bold; }
   </style>
   <link rel="stylesheet" href="library.css" type="text/css" />
-  <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+  <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">MathJax.Hub.Queue(["Typeset",MathJax.Hub]);</script>
 </head>
 <body>
 <div id="header">
@@ -38,7 +38,10 @@ code > span.er { font-weight: bold; }
 </div>
 <div id="TOC">
 <ul>
-<li><a href="#テンプレート"><span class="toc-section-number">1</span> テンプレート</a></li>
+<li><a href="#テンプレート"><span class="toc-section-number">1</span> テンプレート</a><ul>
+<li><a href="#c"><span class="toc-section-number">1.1</span> C++</a></li>
+<li><a href="#python"><span class="toc-section-number">1.2</span> Python</a></li>
+</ul></li>
 <li><a href="#算術型"><span class="toc-section-number">2</span> 算術型</a><ul>
 <li><a href="#int"><span class="toc-section-number">2.1</span> int</a></li>
 <li><a href="#long-long"><span class="toc-section-number">2.2</span> long long</a><ul>
@@ -102,6 +105,7 @@ code > span.er { font-weight: bold; }
 <li><a href="#確率的なアレ"><span class="toc-section-number">7.5</span> 確率的なアレ</a></li>
 <li><a href="#ヨセフス数"><span class="toc-section-number">7.6</span> ヨセフス数</a></li>
 <li><a href="#乱数"><span class="toc-section-number">7.7</span> 乱数</a></li>
+<li><a href="#基数変換"><span class="toc-section-number">7.8</span> 基数変換</a></li>
 </ul></li>
 <li><a href="#行列"><span class="toc-section-number">8</span> 行列</a><ul>
 <li><a href="#基本要素"><span class="toc-section-number">8.1</span> 基本要素</a></li>
@@ -112,11 +116,13 @@ code > span.er { font-weight: bold; }
 <li><a href="#ベクトルとのかけ算"><span class="toc-section-number">8.3.3</span> ベクトルとのかけ算</a></li>
 </ul></li>
 <li><a href="#テスト"><span class="toc-section-number">8.4</span> テスト</a></li>
+<li><a href="#gauss-jordan"><span class="toc-section-number">8.5</span> Gauss-Jordan</a></li>
 </ul></li>
 <li><a href="#動的計画法およびそれに似たやつらtodo"><span class="toc-section-number">9</span> 動的計画法およびそれに似たやつら。(TODO)</a><ul>
 <li><a href="#lcs"><span class="toc-section-number">9.1</span> LCS</a></li>
 <li><a href="#lis"><span class="toc-section-number">9.2</span> LIS</a></li>
 <li><a href="#巡回セールスマン問題"><span class="toc-section-number">9.3</span> 巡回セールスマン問題</a></li>
+<li><a href="#ナップサック問題"><span class="toc-section-number">9.4</span> ナップサック問題</a></li>
 </ul></li>
 <li><a href="#データ構造"><span class="toc-section-number">10</span> データ構造</a><ul>
 <li><a href="#union-find"><span class="toc-section-number">10.1</span> Union-Find</a></li>
@@ -149,51 +155,8 @@ code > span.er { font-weight: bold; }
 </div>
 <h1 id="テンプレート"><a href="#テンプレート"><span class="header-section-number">1</span> テンプレート</a></h1>
 <p>各種バッドノウハウを含む。</p>
-<table class="sourceCode cpp numberLines"><tr class="sourceCode"><td class="lineNumbers"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-</pre></td><td class="sourceCode"><pre><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
-<span class="ot">#include &lt;cstdio&gt;</span>
+<h2 id="c"><a href="#c"><span class="header-section-number">1.1</span> C++</a></h2>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
 <span class="ot">#include &lt;iomanip&gt;</span>
 <span class="ot">#include &lt;vector&gt;</span>
 <span class="ot">#include &lt;map&gt;</span>
@@ -205,36 +168,62 @@ code > span.er { font-weight: bold; }
 <span class="ot">#include &lt;numeric&gt;</span>
 <span class="ot">#include &lt;algorithm&gt;</span>
 <span class="ot">#include &lt;functional&gt;</span>
-<span class="ot">#include &lt;cctype&gt;</span>
 <span class="ot">#include &lt;complex&gt;</span>
 <span class="ot">#include &lt;string&gt;</span>
 <span class="ot">#include &lt;sstream&gt;</span>
 
+<span class="ot">#include &lt;cstdio&gt;</span>
+<span class="ot">#include &lt;cstdlib&gt;</span>
+<span class="ot">#include &lt;cctype&gt;</span>
+<span class="ot">#include &lt;cstring&gt;</span>
+
 <span class="kw">using</span> <span class="kw">namespace</span> std;
 
 <span class="ot">#define all(c) c.begin(),c.end()</span>
-<span class="ot">#define rall(c) c.rbegin(),c.rend()</span>
-<span class="ot">#define rep(i,n) for(int i=0;i&lt;(n);i++)</span>
-<span class="ot">#define tr(it,container) for(typeof(container.begin()) it = container.begin(); \</span>
-                                                  it != container.end(); ++it)
-<span class="ot">#define mp(a,b) make_pair((a),(b))</span>
-<span class="ot">#define eq ==</span>
+<span class="ot">#define rep(i,n) for(int i=0;i&lt;(int)n;i++)</span>
+<span class="ot">#define debug(x) cerr &lt;&lt; #x &lt;&lt; &quot; = &quot; &lt;&lt; (x) &lt;&lt; &quot; (L&quot; &lt;&lt; __LINE__ &lt;&lt; &quot;)&quot; &lt;&lt; endl</span>
 
 <span class="kw">typedef</span> <span class="dt">long</span> <span class="dt">long</span> ll;
 <span class="kw">typedef</span> complex&lt;<span class="dt">double</span>&gt; point;
-<span class="kw">typedef</span> pair&lt;<span class="dt">int</span>,<span class="dt">int</span>&gt; pii;
+<span class="kw">typedef</span> vector&lt;<span class="dt">int</span>&gt; vi;
 
-<span class="co">// →↑←↓</span>
-<span class="dt">const</span> <span class="dt">int</span> dx[] = {<span class="dv">1</span>,<span class="dv">0</span>,-<span class="dv">1</span>,<span class="dv">0</span>};
-<span class="dt">const</span> <span class="dt">int</span> dy[] = {<span class="dv">0</span>,-<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>};
+<span class="kw">template</span>&lt;<span class="kw">class</span> T&gt;
+<span class="kw">inline</span> <span class="dt">int</span> len(<span class="dt">const</span> T&amp; t){
+    <span class="kw">return</span> t.size();
+}
 
-
-<span class="dt">const</span> <span class="dt">double</span> EPS = <span class="fl">1e-9</span>;
+<span class="kw">template</span>&lt;<span class="kw">typename</span> T&gt;
+ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream&amp; os,<span class="dt">const</span> vector&lt;T&gt;&amp; val){
+    os &lt;&lt; <span class="st">&quot;[ &quot;</span>;
+    <span class="kw">for</span>(<span class="kw">typename</span> vector&lt;T&gt;::const_iterator it=val.begin();
+        it != val.end();++it){
+        os &lt;&lt; *it &lt;&lt; <span class="st">&quot; &quot;</span>;
+    }
+    os &lt;&lt; <span class="st">&quot;]&quot;</span>;
+    <span class="kw">return</span> os;
+}
 
 <span class="dt">int</span> main(){
-
     <span class="kw">return</span> <span class="dv">0</span>;
-}</code></pre></td></tr></table>
+}</code></pre>
+<h2 id="python"><a href="#python"><span class="header-section-number">1.2</span> Python</a></h2>
+<pre class="sourceCode python"><code class="sourceCode python"><span class="co">#!/usr/bin/env python</span>
+<span class="co">#coding:utf-8</span>
+
+<span class="ch">from</span> <span class="dt">__future__</span> <span class="ch">import</span> division
+<span class="ch">from</span> <span class="dt">__future__</span> <span class="ch">import</span> print_function
+<span class="ch">from</span> <span class="dt">__future__</span> <span class="ch">import</span> unicode_literals
+
+<span class="ch">from</span> math <span class="ch">import</span> *
+<span class="ch">from</span> string <span class="ch">import</span> *
+<span class="ch">from</span> fractions <span class="ch">import</span> *
+<span class="ch">from</span> itertools <span class="ch">import</span> *
+
+<span class="kw">def</span> main():
+    <span class="kw">pass</span>
+
+<span class="kw">if</span> <span class="dt">__name__</span> == <span class="st">&quot;__main__&quot;</span>:
+    main()</code></pre>
 <h1 id="算術型"><a href="#算術型"><span class="header-section-number">2</span> 算術型</a></h1>
 <h2 id="int"><a href="#int"><span class="header-section-number">2.1</span> int</a></h2>
 <p>基本中の基本。<span class="math">\(10^{9}\)</span>くらい。こわいときにはlong longを使うことを推奨。</p>
@@ -738,8 +727,9 @@ def sieve(N):
 <span class="kw">typedef</span> <span class="dt">long</span> <span class="dt">long</span> ll;
 
 <span class="co">//いい感じのやつ (n=61まで大丈夫)</span>
-ll combi2(<span class="dt">int</span> n,<span class="dt">int</span> r){
+ll combi(<span class="dt">int</span> n,<span class="dt">int</span> r){
     <span class="kw">if</span>(n &lt; r) <span class="kw">return</span> <span class="dv">0</span>;
+    r = min(r,n-r);
     ll ret = <span class="dv">1</span>;
     <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;r;i++){
         ret *= n-i;
@@ -748,23 +738,9 @@ ll combi2(<span class="dt">int</span> n,<span class="dt">int</span> r){
     <span class="kw">return</span> ret;
 }
 
-<span class="co">// これはまちがっています。要修正</span>
-<span class="co">// http://stackoverflow.com/questions/3537360/calculating-binomial-coefficient-nck-for-large-n-k</span>
-ll mod_combi(ll n,ll r,ll mod){
-    <span class="kw">if</span>(n &lt; r) <span class="kw">return</span> <span class="dv">0</span>;
-    ll ret = <span class="dv">1</span>;
-    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;r;i++){
-        ret = (ret * mod_pow(i<span class="dv">+1</span>,mod<span class="dv">-2</span>,mod)) % mod;
-    }
-    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;r;i++){
-        ret = (ret * (n-i)) % mod;
-    }
-    <span class="kw">return</span> ret;
-}
-
 <span class="co">//パスカルの三角形 (n=66まで大丈夫)</span>
 <span class="co">//たくさん必要になるときはこっちのほうがいい。</span>
-ll combi3(<span class="dt">int</span> n,<span class="dt">int</span> r){
+ll combi_tri(<span class="dt">int</span> n,<span class="dt">int</span> r){
     <span class="dt">int</span> N = n<span class="dv">+1</span>;
     vector&lt;vector&lt;ll&gt; &gt; memo(N,vector&lt;ll&gt;(N,<span class="dv">0</span>));
     memo[<span class="dv">0</span>][<span class="dv">0</span>] = <span class="dv">1</span>;
@@ -775,6 +751,12 @@ ll combi3(<span class="dt">int</span> n,<span class="dt">int</span> r){
         }
     }
     <span class="kw">return</span> memo[n][r];
+}
+
+<span class="co">// 重複を許してn個からk個を選ぶ。</span>
+<span class="co">// 未検証</span>
+ll multicombi(ll n,ll k){
+    <span class="kw">return</span> combi(n+k<span class="dv">-1</span>,n<span class="dv">-1</span>);
 }</code></pre>
 <h3 id="列挙"><a href="#列挙"><span class="header-section-number">7.4.2</span> 列挙</a></h3>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main(){
@@ -836,7 +818,7 @@ ll mod_pow(ll x,ll n,ll mod){
     <span class="kw">if</span>(n==<span class="dv">0</span>) <span class="kw">return</span> <span class="dv">1</span>;
     ll ret = mod_pow(x * x % mod,n/<span class="dv">2</span>,mod);
     <span class="kw">if</span>(n%<span class="dv">2</span>== <span class="dv">1</span>)  ret = ret * x % mod;
-p    <span class="kw">return</span> ret;
+    <span class="kw">return</span> ret;
 }
 
 <span class="co">// return probably prime.</span>
@@ -952,6 +934,25 @@ vector&lt;ll&gt; pollard_rho(ll n,<span class="dt">const</span> vector&lt;ll&gt;
     <span class="dt">unsigned</span> <span class="dt">long</span> t;
     t=(x^(x&lt;&lt;<span class="dv">11</span>));x=y;y=z;z=w; <span class="kw">return</span>( w=(w^(w&gt;&gt;<span class="dv">19</span>))^(t^(t&gt;&gt;<span class="dv">8</span>)) );
 }</code></pre>
+<h2 id="基数変換"><a href="#基数変換"><span class="header-section-number">7.8</span> 基数変換</a></h2>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">vector&lt;<span class="dt">int</span>&gt; int_to_digits(<span class="dt">int</span> base,<span class="dt">int</span> N){
+    vector&lt;<span class="dt">int</span>&gt; rev_ret;
+    <span class="kw">while</span>(N != <span class="dv">0</span>){
+        rev_ret.push_back(N % base);
+        N /= base;
+    }
+    reverse(all(rev_ret));
+    <span class="kw">return</span> rev_ret;
+}
+
+<span class="dt">int</span> digits_to_int(<span class="dt">int</span> base,<span class="dt">const</span> vector&lt;<span class="dt">int</span>&gt;&amp; digits){
+    <span class="dt">int</span> ret = <span class="dv">0</span>;
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;(<span class="dt">int</span>)digits.size();i++){
+        ret *= base;
+        ret += digits[i];
+    }
+    <span class="kw">return</span> ret;
+}</code></pre>
 <h1 id="行列"><a href="#行列"><span class="header-section-number">8</span> 行列</a></h1>
 <h2 id="基本要素"><a href="#基本要素"><span class="header-section-number">8.1</span> 基本要素</a></h2>
 <p>正方行列用 //いつかなおす。</p>
@@ -1021,6 +1022,69 @@ vector&lt;ll&gt; pollard_rho(ll n,<span class="dt">const</span> vector&lt;ll&gt;
 }</code></pre>
 <h2 id="テスト"><a href="#テスト"><span class="header-section-number">8.4</span> テスト</a></h2>
 <p>AOJ 1327</p>
+<h2 id="gauss-jordan"><a href="#gauss-jordan"><span class="header-section-number">8.5</span> Gauss-Jordan</a></h2>
+<p>GF上で連立方程式を解く</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// Gauss-Jordan. Solve equation on GF.</span>
+<span class="dt">int</span> invert(<span class="dt">int</span> x){
+    <span class="dt">int</span> ret[<span class="dv">2</span>] = {<span class="dv">0</span>,<span class="dv">1</span>};
+    <span class="kw">return</span> ret[x];
+}
+
+<span class="dt">int</span> modulo(<span class="dt">int</span> x){
+    x %= <span class="dv">2</span>;
+    <span class="kw">while</span>(x &lt; <span class="dv">0</span>){
+        x += <span class="dv">2</span>;
+    }
+    <span class="kw">return</span> x;
+}
+
+<span class="dt">const</span> <span class="dt">int</span> none = <span class="dv">0</span>; <span class="co">// if no answer</span>
+<span class="dt">const</span> <span class="dt">int</span> one = <span class="dv">1</span>;  <span class="co">// if there is exactly one answer</span>
+<span class="dt">const</span> <span class="dt">int</span> many = <span class="dv">2</span>; <span class="co">// many answer.</span>
+<span class="co">// answer will be inserted in b.</span>
+<span class="dt">int</span> gauss(matrix A,vector&lt;<span class="dt">int</span>&gt;&amp; b){
+    <span class="dt">int</span> n = A.size();
+    <span class="dt">int</span> m = A[<span class="dv">0</span>].size();
+    <span class="dt">int</span> pi = <span class="dv">0</span>,pj = <span class="dv">0</span>;
+    <span class="kw">while</span>(pi &lt; n <span class="kw">and</span> pj &lt; m){
+        <span class="kw">for</span>(<span class="dt">int</span> i=pi<span class="dv">+1</span>;i&lt;n;i++){ <span class="co">// pivot</span>
+            <span class="kw">if</span>(abs(A[i][pj]) &gt; abs(A[pi][pj])){
+                swap(A[i],A[pi]);
+                swap(b[i],b[pi]);
+            }
+        }
+        <span class="kw">if</span>(abs(A[pi][pj]) &gt; <span class="dv">0</span>){
+            <span class="dt">int</span> d = invert(A[pi][pj]);
+            <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;m;j++){
+                A[pi][j] = modulo(A[pi][j] * d);
+            }
+            b[pi] = modulo(b[pi]*d);
+            <span class="kw">for</span>(<span class="dt">int</span> i=pi<span class="dv">+1</span>;i&lt;n;i++){
+                <span class="dt">int</span> k = A[i][pj];
+                <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;m;j++){
+                    A[i][j] = modulo(A[i][j] - k * A[pi][j]);
+                }
+                b[i] = modulo(b[i] - k*b[pi]);
+            }
+            pi++;
+        }
+        pj++;
+    }
+    <span class="kw">for</span>(<span class="dt">int</span> i=pi;i&lt;n;i++){
+        <span class="kw">if</span>(abs(b[i]) &gt; <span class="dv">0</span>){
+            <span class="kw">return</span> none;
+        }
+    }
+    <span class="kw">if</span>(pi &lt; m <span class="kw">or</span> pj &lt; m){
+        <span class="kw">return</span> many;
+    }
+    <span class="kw">for</span>(<span class="dt">int</span> j=m<span class="dv">-1</span>;j&gt;=<span class="dv">0</span>;j--){
+        <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;j;i++){
+            b[i] = modulo(b[i] - b[j] * A[i][j]);
+        }
+    }
+    <span class="kw">return</span> one;
+}</code></pre>
 <h1 id="動的計画法およびそれに似たやつらtodo"><a href="#動的計画法およびそれに似たやつらtodo"><span class="header-section-number">9</span> 動的計画法およびそれに似たやつら。(TODO)</a></h1>
 <h2 id="lcs"><a href="#lcs"><span class="header-section-number">9.1</span> LCS</a></h2>
 <p>Longest common sequence.</p>
@@ -1035,6 +1099,63 @@ dp[<span class="dv">0</span>][<span class="dv">0</span>] = <span class="dv">1</s
     <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;N;j++){
         <span class="co">//something.</span>
     }
+}</code></pre>
+<h2 id="ナップサック問題"><a href="#ナップサック問題"><span class="header-section-number">9.4</span> ナップサック問題</a></h2>
+<p>個数制限なしのとき</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
+<span class="ot">#include &lt;vector&gt;</span>
+
+<span class="kw">using</span> <span class="kw">namespace</span> std;
+
+<span class="ot">#define rep(i,n) for(int i=0;i&lt;(int)n;i++)</span>
+
+<span class="kw">typedef</span> vector&lt;<span class="dt">int</span>&gt; vi;
+
+<span class="kw">template</span>&lt;<span class="kw">class</span> T&gt;
+<span class="kw">inline</span> <span class="dt">int</span> len(<span class="dt">const</span> T&amp; t){
+    <span class="kw">return</span> t.size();
+}
+
+<span class="kw">struct</span> Treasure{
+    <span class="dt">int</span> value,weight;
+    Treasure():
+        value(<span class="dv">0</span>),weight(<span class="dv">0</span>) {};
+    Treasure(<span class="dt">int</span> _value,<span class="dt">int</span> _weight)
+        : value(_value),weight(_weight) {}
+};
+
+<span class="dt">int</span> main(){
+    <span class="dt">int</span> W,N;
+    cin &gt;&gt; W;
+    cin &gt;&gt; N;
+    vector&lt;Treasure&gt; v(N);
+    rep(i,N){
+        cin &gt;&gt; v[i].value &gt;&gt; v[i].weight;
+    }
+    <span class="co">// もしも複数入れて良いなら、直接valueを更新する。</span>
+    vi value(W<span class="dv">+1</span>);
+    rep(n,N){
+        vi tmp(W<span class="dv">+1</span>);
+        rep(i,W<span class="dv">+1</span>){
+            tmp[i] = max(tmp[i],value[i]);
+            <span class="dt">int</span> in = i+v[n].weight;
+            <span class="kw">if</span>(in &lt;= W){
+                tmp[in] = max(tmp[in],value[i]+v[n].value);
+            }
+        }
+        value.swap(tmp);
+    }
+
+    <span class="dt">int</span> retw=<span class="dv">0</span>;
+    <span class="dt">int</span> retv=<span class="dv">0</span>;
+    rep(i,len(value)){
+        <span class="kw">if</span>(value[i] &gt; retv){
+            retv = value[i];
+            retw = i;
+        }
+    }
+    cout &lt;&lt; retv &lt;&lt; endl &lt;&lt; retw &lt;&lt; endl;
+    <span class="kw">return</span> <span class="dv">0</span>;
 }</code></pre>
 <h1 id="データ構造"><a href="#データ構造"><span class="header-section-number">10</span> データ構造</a></h1>
 <h2 id="union-find"><a href="#union-find"><span class="header-section-number">10.1</span> Union-Find</a></h2>
@@ -2195,6 +2316,5 @@ z      122     0172   0x7a
 ~      126     0176   0x7e
 (del)  127     0177   0x7f
 -->
-
 </body>
 </html>

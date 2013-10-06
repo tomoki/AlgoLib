@@ -119,8 +119,9 @@ using namespace std;
 typedef long long ll;
 
 //いい感じのやつ (n=61まで大丈夫)
-ll combi2(int n,int r){
+ll combi(int n,int r){
     if(n < r) return 0;
+    r = min(r,n-r);
     ll ret = 1;
     for(int i=0;i<r;i++){
         ret *= n-i;
@@ -129,23 +130,9 @@ ll combi2(int n,int r){
     return ret;
 }
 
-// これはまちがっています。要修正
-// http://stackoverflow.com/questions/3537360/calculating-binomial-coefficient-nck-for-large-n-k
-ll mod_combi(ll n,ll r,ll mod){
-    if(n < r) return 0;
-    ll ret = 1;
-    for(int i=0;i<r;i++){
-        ret = (ret * mod_pow(i+1,mod-2,mod)) % mod;
-    }
-    for(int i=0;i<r;i++){
-        ret = (ret * (n-i)) % mod;
-    }
-    return ret;
-}
-
 //パスカルの三角形 (n=66まで大丈夫)
 //たくさん必要になるときはこっちのほうがいい。
-ll combi3(int n,int r){
+ll combi_tri(int n,int r){
     int N = n+1;
     vector<vector<ll> > memo(N,vector<ll>(N,0));
     memo[0][0] = 1;
@@ -157,6 +144,13 @@ ll combi3(int n,int r){
     }
     return memo[n][r];
 }
+
+// 重複を許してn個からk個を選ぶ。
+// 未検証
+ll multicombi(ll n,ll k){
+    return combi(n+k-1,n-1);
+}
+
 ~~~~~~
 
 ### 列挙
@@ -225,7 +219,7 @@ ll mod_pow(ll x,ll n,ll mod){
     if(n==0) return 1;
     ll ret = mod_pow(x * x % mod,n/2,mod);
     if(n%2== 1)  ret = ret * x % mod;
-p    return ret;
+    return ret;
 }
 
 // return probably prime.
@@ -346,5 +340,28 @@ unsigned long xor128(){
     static unsigned long x=123456789,y=362436069,z=521288629,w=88675123;
     unsigned long t;
     t=(x^(x<<11));x=y;y=z;z=w; return( w=(w^(w>>19))^(t^(t>>8)) );
+}
+~~~~~~
+
+## 基数変換
+
+~~~~~~{.cpp}
+vector<int> int_to_digits(int base,int N){
+    vector<int> rev_ret;
+    while(N != 0){
+        rev_ret.push_back(N % base);
+        N /= base;
+    }
+    reverse(all(rev_ret));
+    return rev_ret;
+}
+
+int digits_to_int(int base,const vector<int>& digits){
+    int ret = 0;
+    for(int i=0;i<(int)digits.size();i++){
+        ret *= base;
+        ret += digits[i];
+    }
+    return ret;
 }
 ~~~~~~
