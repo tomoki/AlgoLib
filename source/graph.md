@@ -130,7 +130,7 @@ for(int k=0;k<m;k++){
 
 ## 最小全域木
 
-プラム法による。$O(N^3$)だと思う。最小コストを求めるコードが以下。
+プリム法による。$O(N^2log(N))$だと思う。最小コストを求めるコードが以下。
 ただし、vector<Edge>を使えばもっとよい。
 
 ~~~~~~{.cpp}
@@ -171,7 +171,7 @@ Dinic法による。
 ~~~~~~{.cpp}
 struct Edge{
     int to,cap,rev;
-    Edge(int to,int cap,int rev) : to(to),cap(cap),rev(rev) {};
+    Edge(int _to,int _cap,int _rev) : to(_to),cap(_cap),rev(_rev) {};
 };
 
 void add_edge(vector<vector<Edge> >& E,int from,int to,int cap){
@@ -187,7 +187,7 @@ vector<int> levels(vector<vector<Edge> > &E,int s){
     while(!Q.empty()){
         int v = Q.front();
         Q.pop();
-        for(int i=0;i<E[v].size();i++){
+        for(size_t i=0;i<E[v].size();i++){
             Edge &e = E[v][i];
             if(e.cap > 0 and level[e.to] == -1){
                 level[e.to] = level[v]+1;
@@ -203,7 +203,7 @@ int good_path(vector<vector<Edge> > &E,
         vector<int> &level,
         int v,int t,int f){
     if(v == t) return f;
-    for(int &i=iter[v];i<E[v].size();i++){
+    for(int &i=iter[v];i<(int)E[v].size();i++){
         Edge &e = E[v][i];
         if(e.cap > 0 and level[v] < level[e.to]){
             int d = good_path(E,iter,level,e.to,t,min(f,e.cap));

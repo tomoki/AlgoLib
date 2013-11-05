@@ -3,7 +3,28 @@
 Longest common sequence.
 
 ## LIS
-Longest increasing subsequence.
+
+### O(NlogN)
+
+~~~~~~{.cpp}
+// O(Nlog(N))
+//  Sphagetthi source より.
+vector<int> longest_increasing_subsequence(const vector<int>& a){
+    const int n = len(a);
+    vector<int> A(n,1<<30);
+    vector<int> id(n);
+    rep(i,n){
+        id[i] = distance(A.begin(),lower_bound(A.begin(),A.end(),a[i]));
+        A[id[i]] = a[i];
+    }
+    int m = *max_element(id.begin(),id.end());
+    vector<int> b(m+1);
+    for(int i=n-1;i>=0;i--){
+        if(id[i] == m) b[m--] = a[i];
+    }
+    return b;
+}
+~~~~~~
 
 ## 巡回セールスマン問題
 bit演算をする。bitのループを先に回すこと。$O(N^2\times2^{N})$

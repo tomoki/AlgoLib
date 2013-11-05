@@ -28,7 +28,7 @@ code > span.fu { color: #000000; }
 code > span.er { font-weight: bold; }
   </style>
   <link rel="stylesheet" href="library.css" type="text/css" />
-  <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">MathJax.Hub.Queue(["Typeset",MathJax.Hub]);</script>
+  <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 </head>
 <body>
 <div id="header">
@@ -106,6 +106,7 @@ code > span.er { font-weight: bold; }
 <li><a href="#ヨセフス数"><span class="toc-section-number">7.6</span> ヨセフス数</a></li>
 <li><a href="#乱数"><span class="toc-section-number">7.7</span> 乱数</a></li>
 <li><a href="#基数変換"><span class="toc-section-number">7.8</span> 基数変換</a></li>
+<li><a href="#二次方程式"><span class="toc-section-number">7.9</span> 二次方程式</a></li>
 </ul></li>
 <li><a href="#行列"><span class="toc-section-number">8</span> 行列</a><ul>
 <li><a href="#基本要素"><span class="toc-section-number">8.1</span> 基本要素</a></li>
@@ -120,7 +121,9 @@ code > span.er { font-weight: bold; }
 </ul></li>
 <li><a href="#動的計画法およびそれに似たやつらtodo"><span class="toc-section-number">9</span> 動的計画法およびそれに似たやつら。(TODO)</a><ul>
 <li><a href="#lcs"><span class="toc-section-number">9.1</span> LCS</a></li>
-<li><a href="#lis"><span class="toc-section-number">9.2</span> LIS</a></li>
+<li><a href="#lis"><span class="toc-section-number">9.2</span> LIS</a><ul>
+<li><a href="#onlogn"><span class="toc-section-number">9.2.1</span> O(NlogN)</a></li>
+</ul></li>
 <li><a href="#巡回セールスマン問題"><span class="toc-section-number">9.3</span> 巡回セールスマン問題</a></li>
 <li><a href="#ナップサック問題"><span class="toc-section-number">9.4</span> ナップサック問題</a></li>
 </ul></li>
@@ -367,7 +370,7 @@ cout &lt;&lt; d &lt;&lt; endl;
 cout &lt;&lt; <span class="dv">10</span>*d &lt;&lt; endl;
 
 <span class="co">//小数点の表示を元に戻す</span>
-std.unsetf(ios::fixed);
+cout.unsetf(ios::fixed);
 <span class="co">// -&gt; 1.23</span>
 cout &lt;&lt; d &lt;&lt; endl;</code></pre>
 <p>基本的には、引数のあるマニピュレータの効果は保存される。</p>
@@ -953,6 +956,29 @@ vector&lt;ll&gt; pollard_rho(ll n,<span class="dt">const</span> vector&lt;ll&gt;
     }
     <span class="kw">return</span> ret;
 }</code></pre>
+<h2 id="二次方程式"><a href="#二次方程式"><span class="header-section-number">7.9</span> 二次方程式</a></h2>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// solve ax^2 + bx + c = 0.</span>
+vector&lt;<span class="dt">double</span>&gt; solve_quadratic_equation(<span class="dt">double</span> a,<span class="dt">double</span> b,<span class="dt">double</span> c){
+    vector&lt;<span class="dt">double</span>&gt; ret;
+    <span class="kw">if</span>(abs(a-EPS) &lt; <span class="dv">0</span>){
+        ret.push_back(-c/b);
+    }<span class="kw">else</span>{
+        <span class="dt">double</span> d = b*b<span class="dv">-4</span>*a*c;
+        <span class="kw">if</span>(d &gt;= <span class="dv">0</span>){
+            <span class="kw">if</span>(b &gt;= <span class="dv">0</span>){
+                ret.push_back(-<span class="dv">2</span>*c/(b+sqrt(d)));
+                ret.push_back((-b-sqrt(d))/(<span class="dv">2</span>*a));
+            }<span class="kw">else</span>{
+                ret.push_back(-<span class="dv">2</span>*c/(b-sqrt(d)));
+                ret.push_back((-b+sqrt(d))/(<span class="dv">2</span>*a));
+            }
+            <span class="kw">if</span>(abs(ret[<span class="dv">0</span>]-ret[<span class="dv">1</span>]) &lt; EPS){
+                ret.pop_back();
+            }
+        }
+    }
+    <span class="kw">return</span> ret;
+}</code></pre>
 <h1 id="行列"><a href="#行列"><span class="header-section-number">8</span> 行列</a></h1>
 <h2 id="基本要素"><a href="#基本要素"><span class="header-section-number">8.1</span> 基本要素</a></h2>
 <p>正方行列用 //いつかなおす。</p>
@@ -1089,7 +1115,24 @@ vector&lt;ll&gt; pollard_rho(ll n,<span class="dt">const</span> vector&lt;ll&gt;
 <h2 id="lcs"><a href="#lcs"><span class="header-section-number">9.1</span> LCS</a></h2>
 <p>Longest common sequence.</p>
 <h2 id="lis"><a href="#lis"><span class="header-section-number">9.2</span> LIS</a></h2>
-<p>Longest increasing subsequence.</p>
+<h3 id="onlogn"><a href="#onlogn"><span class="header-section-number">9.2.1</span> O(NlogN)</a></h3>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// O(Nlog(N))</span>
+<span class="co">//  Sphagetthi source より.</span>
+vector&lt;<span class="dt">int</span>&gt; longest_increasing_subsequence(<span class="dt">const</span> vector&lt;<span class="dt">int</span>&gt;&amp; a){
+    <span class="dt">const</span> <span class="dt">int</span> n = len(a);
+    vector&lt;<span class="dt">int</span>&gt; A(n,<span class="dv">1</span>&lt;&lt;<span class="dv">30</span>);
+    vector&lt;<span class="dt">int</span>&gt; id(n);
+    rep(i,n){
+        id[i] = distance(A.begin(),lower_bound(A.begin(),A.end(),a[i]));
+        A[id[i]] = a[i];
+    }
+    <span class="dt">int</span> m = *max_element(id.begin(),id.end());
+    vector&lt;<span class="dt">int</span>&gt; b(m<span class="dv">+1</span>);
+    <span class="kw">for</span>(<span class="dt">int</span> i=n<span class="dv">-1</span>;i&gt;=<span class="dv">0</span>;i--){
+        <span class="kw">if</span>(id[i] == m) b[m--] = a[i];
+    }
+    <span class="kw">return</span> b;
+}</code></pre>
 <h2 id="巡回セールスマン問題"><a href="#巡回セールスマン問題"><span class="header-section-number">9.3</span> 巡回セールスマン問題</a></h2>
 <p>bit演算をする。bitのループを先に回すこと。<span class="math">\(O(N^2\times2^{N})\)</span></p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp">ll dp[<span class="dv">1</span> &lt;&lt; N][N];
@@ -1472,7 +1515,7 @@ rep(i,m){
     }
 }</code></pre>
 <h2 id="最小全域木"><a href="#最小全域木"><span class="header-section-number">11.5</span> 最小全域木</a></h2>
-<p>プラム法による。<span class="math">\(O(N^3\)</span>)だと思う。最小コストを求めるコードが以下。 ただし、vector<Edge>を使えばもっとよい。</p>
+<p>プリム法による。<span class="math">\(O(N^2log(N))\)</span>だと思う。最小コストを求めるコードが以下。 ただし、vector<Edge>を使えばもっとよい。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">typedef</span> pair&lt;<span class="dt">int</span>,<span class="dt">int</span>&gt; pii;
 
 <span class="dt">int</span> main(){
@@ -1505,7 +1548,7 @@ rep(i,m){
 <p>Dinic法による。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> Edge{
     <span class="dt">int</span> to,cap,rev;
-    Edge(<span class="dt">int</span> to,<span class="dt">int</span> cap,<span class="dt">int</span> rev) : to(to),cap(cap),rev(rev) {};
+    Edge(<span class="dt">int</span> _to,<span class="dt">int</span> _cap,<span class="dt">int</span> _rev) : to(_to),cap(_cap),rev(_rev) {};
 };
 
 <span class="dt">void</span> add_edge(vector&lt;vector&lt;Edge&gt; &gt;&amp; E,<span class="dt">int</span> from,<span class="dt">int</span> to,<span class="dt">int</span> cap){
@@ -1521,7 +1564,7 @@ vector&lt;<span class="dt">int</span>&gt; levels(vector&lt;vector&lt;Edge&gt; &g
     <span class="kw">while</span>(!Q.empty()){
         <span class="dt">int</span> v = Q.front();
         Q.pop();
-        <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;E[v].size();i++){
+        <span class="kw">for</span>(size_t i=<span class="dv">0</span>;i&lt;E[v].size();i++){
             Edge &amp;e = E[v][i];
             <span class="kw">if</span>(e.cap &gt; <span class="dv">0</span> <span class="kw">and</span> level[e.to] == -<span class="dv">1</span>){
                 level[e.to] = level[v]+<span class="dv">1</span>;
@@ -1537,7 +1580,7 @@ vector&lt;<span class="dt">int</span>&gt; levels(vector&lt;vector&lt;Edge&gt; &g
         vector&lt;<span class="dt">int</span>&gt; &amp;level,
         <span class="dt">int</span> v,<span class="dt">int</span> t,<span class="dt">int</span> f){
     <span class="kw">if</span>(v == t) <span class="kw">return</span> f;
-    <span class="kw">for</span>(<span class="dt">int</span> &amp;i=iter[v];i&lt;E[v].size();i++){
+    <span class="kw">for</span>(<span class="dt">int</span> &amp;i=iter[v];i&lt;(<span class="dt">int</span>)E[v].size();i++){
         Edge &amp;e = E[v][i];
         <span class="kw">if</span>(e.cap &gt; <span class="dv">0</span> <span class="kw">and</span> level[v] &lt; level[e.to]){
             <span class="dt">int</span> d = good_path(E,iter,level,e.to,t,min(f,e.cap));

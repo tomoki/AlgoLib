@@ -112,7 +112,7 @@ cout << d << endl;
 cout << 10*d << endl;
 
 //小数点の表示を元に戻す
-std.unsetf(ios::fixed);
+cout.unsetf(ios::fixed);
 // -> 1.23
 cout << d << endl;
 ~~~~~~
