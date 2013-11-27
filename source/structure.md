@@ -220,3 +220,155 @@ ostream& operator<<(ostream &os,const Fraction& f){
     return os;
 }
 ~~~~~~
+
+## セグメント木
+
+### 普通の
+RMQ (POJ 3264)
+
+~~~~~~{.cpp}
+typedef pair<int,int> pii;
+
+// update i v -> element[i] = v;
+// get [l,r) -> return minimum element in [l,r)
+struct SegmentTree{
+    static const int INIT_VALUE = 1 << 30;
+    vector<int> data;
+    int n;
+    SegmentTree(int _n){
+        n = 1;
+        while(n < _n) n *= 2;
+        data = vector<int>(2*n-1,INIT_VALUE);
+    }
+
+    void update(int i,int v){
+        int k = i + n-1;
+        data[k] = v;
+        while(k > 0){
+            k = parent(k);
+            data[k] = min(data[get_left(k)],data[get_right(k)]);
+        }
+    }
+
+    // return data of [a,b).
+    inline int get(int a,int b){
+        return get(a,b,0,0,n);
+    }
+private:
+    // l,r is segment of node k.
+    int get(int a,int b,int k,int l,int r){
+        if(r <= a or b <= l) return INIT_VALUE;
+        if(a <= l and r <= b) return data[k];
+        int vl = get(a,b,get_left(k),l,(l+r)/2);
+        int vr = get(a,b,get_right(k),(l+r)/2,r);
+        return min(vl,vr);
+    }
+
+    inline int get_left(int x){
+        return 2*x+1;
+    }
+    inline int get_right(int x){
+        return 2*x+2;
+    }
+    inline int parent(int x){
+        return (x-1)/2;
+    }
+};
+
+ostream& operator<<(ostream& os,const SegmentTree& seg){
+    os << seg.data;
+    return os;
+}
+~~~~~~
+
+### Lazy
+テスト中 参考: http://d.hatena.ne.jp/kyuridenamida/20121114/1352835261
+
+~~~~~~{.cpp}
+typedef pair<int,int> pii;
+// update [l,r) v -> +v to all element in [l,r).
+// get [l,r) -> return sum of elements in [l,r).
+struct LazySegmentTree{
+    // also used for out of range value.
+    static const int DATA_INIT_VALUE = 0;
+    static const int LAZY_INIT_VALUE = 0;
+    vector<int> data;
+    vector<int> lazy;
+    int n;
+    LazySegmentTree(int _n){
+        n = 1;
+        while(n < _n) n *= 2;
+        data = vector<int>(2*n-1,DATA_INIT_VALUE);
+        lazy = vector<int>(2*n-1,LAZY_INIT_VALUE);
+    }
+
+    int get(int a,int b){
+        return get(a,b,0,0,n);
+    }
+    void update(int a,int b,int v){
+        return update(a,b,v,0,0,n);
+    }
+
+
+private:
+    // edit update_lazy and update_data.
+    inline void update_lazy(int k,int l,int r){
+        data[k] += lazy[k]*(r-l);
+        if(k < n-1){ // node k has children
+            lazy[get_left(k)] += lazy[k];
+            lazy[get_right(k)] += lazy[k];
+        }
+        lazy[k] = 0;
+        return;
+    }
+    inline void update_data(int k){
+        data[k] = data[get_left(k)] + data[get_right(k)];
+    }
+
+    // l,r is segment of node k.
+    int get(int a,int b,int k,int l,int r){
+        update_lazy(k,l,r);
+        // [a,b) and [l,r) are not crossed
+        if(r <= a or b <= l) return DATA_INIT_VALUE;
+        // [a,b) contains [l,r)
+        if(a <= l and r <= b) return data[k];
+        int vl = get(a,b,get_left(k),l,(l+r)/2);
+        int vr = get(a,b,get_right(k),(l+r)/2,r);
+        update_data(k);
+        return vl+vr;
+    }
+    void update(int a,int b,int v,int k,int l,int r){
+        update_lazy(k,l,r);
+        // [a,b) and [l,r) are not crossed
+        if(r <= a or b <= l) return;
+        // [a,b) contains [l,r)
+        if(a <= l and r <= b) {
+            lazy[k] += v;
+            update_lazy(k,l,r);
+            return;
+        }
+        update(a,b,v,get_left(k),l,(l+r)/2);
+        update(a,b,v,get_right(k),(l+r)/2,r);
+        update_data(k);
+        return;
+    }
+
+    inline int get_left(int x){
+        return 2*x+1;
+    }
+    inline int get_right(int x){
+        return 2*x+2;
+    }
+    // parent node is (n-1)/2.
+    inline int parent(int x){
+        return (x-1)/2;
+    }
+};
+
+ostream& operator<<(ostream& os,const LazySegmentTree& seg){
+    os << seg.data << endl << seg.lazy;
+    return os;
+}
+
+
+~~~~~~

@@ -27,11 +27,11 @@ bool bellman(const vector<vector<Edge> >& graph,int s,vector<int> &dist,vector<i
     bool neg_cycle = false;
     for(int i=0;i<n;i++){
         for(int j=0;j<n;j++){
-            for(int k=0;k<graph[j].size();k++){
+            for(size_t k=0;k<graph[j].size();k++){
                 const Edge &e = graph[j][k];
-                if(dist[e.to] > dist[e.from] + e.cost){
-                    dist[e.to] = dist[e.from] + e.cost;
-                    prev[e.to] = e.from;
+                if(dist[e.to] > dist[j] + e.cost){
+                    dist[e.to] = dist[j] + e.cost;
+                    prev[e.to] = j;
                     if(i == n-1){
                         dist[e.to] = -INF;
                         neg_cycle = true;
@@ -166,7 +166,7 @@ int main(){
 
 ## 最大流
 
-Dinic法による。
+Dinic法による。また、最大流最小カット定理より、最大流と最小カットは一致する。
 
 ~~~~~~{.cpp}
 struct Edge{
@@ -369,5 +369,77 @@ int main(){
     }
     return 0;
 }
+
+~~~~~~
+
+## 無向グラフにおける最小カット
+
+Nagamochi-Ibaraki/Storer-Wagnerの方法によってO(V^3)で計算できる。
+
+~~~~~~{.cpp}
+struct Edge{
+    int to,cap,rev;
+    Edge(int _to,int _cap,int _rev) : to(_to),cap(_cap),rev(_rev) {};
+};
+
+void add_edge(vector<vector<Edge> >& E,int from,int to,int cap){
+    E[from].push_back(Edge(to,cap,E[to].size()));
+    E[to].push_back(Edge(from,0,E[from].size()-1));
+}
+
+// Nagamochi-Ibaraki/Stoer-Wagner
+//  http://www.prefield.com/algorithm/graph/minimum_cut.html
+int minimum_cut_of_undirected_graph(const vector<vector<Edge> > &graph){
+    const int INF = 1 << 30;
+    int n = graph.size();
+    vector<vector<int> > adj(n,vector<int>(n));
+    for(int i=0;i<n;i++){
+        for(size_t j=0;j<graph[i].size();j++){
+            Edge e = graph[i][j];
+            adj[i][e.to] += e.cap;
+        }
+    }
+    vector<int> h(n);
+    for(int i=0;i<n;i++){
+        h[i] = i;
+    }
+    int cut = INF;
+    for(int m = n;m > 1;m--){
+        vector<int> ws(m,0);
+        int u,v,w;
+        for(int k=0;k<m;k++){
+            u = v;
+            v = max_element(ws.begin(),ws.end()) - ws.begin();
+            w = ws[v];
+            ws[v] = -1;
+            for(int i=0;i<m;i++){
+                if(ws[i] >= 0) {
+                    ws[i] += adj[h[v]][h[i]];
+                }
+            }
+        }
+        for(int i=0;i<m;i++){
+            adj[h[i]][h[u]] += adj[h[i]][h[v]];
+            adj[h[u]][h[i]] += adj[h[v]][h[i]];
+        }
+        h.erase(h.begin()+v);
+        cut = min(cut,w);
+    }
+    return cut;
+}
+
+int main(){
+    int N,M;
+    while(scanf("%d %d\n",&N,&M) != EOF){
+        vector<vector<Edge> > graph(N);
+        for(int i=0;i<M;i++){
+            int a,b,c;
+            scanf("%d %d %d\n",&a,&b,&c);
+            add_edge(graph,a,b,c);
+            add_edge(graph,b,a,c);
+        }
+        printf("%d\n",minimum_cut_of_undirected_graph(graph));
+    }
+    return 0;
 
 ~~~~~~

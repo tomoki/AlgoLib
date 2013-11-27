@@ -132,6 +132,10 @@ code > span.er { font-weight: bold; }
 <li><a href="#ヒープ"><span class="toc-section-number">10.2</span> ヒープ</a></li>
 <li><a href="#bitset"><span class="toc-section-number">10.3</span> bitset</a></li>
 <li><a href="#分数"><span class="toc-section-number">10.4</span> 分数</a></li>
+<li><a href="#セグメント木"><span class="toc-section-number">10.5</span> セグメント木</a><ul>
+<li><a href="#普通の"><span class="toc-section-number">10.5.1</span> 普通の</a></li>
+<li><a href="#lazy"><span class="toc-section-number">10.5.2</span> Lazy</a></li>
+</ul></li>
 </ul></li>
 <li><a href="#グラフ"><span class="toc-section-number">11</span> グラフ</a><ul>
 <li><a href="#構成要素"><span class="toc-section-number">11.1</span> 構成要素</a></li>
@@ -141,6 +145,7 @@ code > span.er { font-weight: bold; }
 <li><a href="#最小全域木"><span class="toc-section-number">11.5</span> 最小全域木</a></li>
 <li><a href="#最大流"><span class="toc-section-number">11.6</span> 最大流</a></li>
 <li><a href="#最小費用流"><span class="toc-section-number">11.7</span> 最小費用流</a></li>
+<li><a href="#無向グラフにおける最小カット"><span class="toc-section-number">11.8</span> 無向グラフにおける最小カット</a></li>
 </ul></li>
 <li><a href="#幾何"><span class="toc-section-number">12</span> 幾何</a></li>
 <li><a href="#ゲーム"><span class="toc-section-number">13</span> ゲーム</a><ul>
@@ -187,13 +192,7 @@ code > span.er { font-weight: bold; }
 <span class="ot">#define debug(x) cerr &lt;&lt; #x &lt;&lt; &quot; = &quot; &lt;&lt; (x) &lt;&lt; &quot; (L&quot; &lt;&lt; __LINE__ &lt;&lt; &quot;)&quot; &lt;&lt; endl</span>
 
 <span class="kw">typedef</span> <span class="dt">long</span> <span class="dt">long</span> ll;
-<span class="kw">typedef</span> complex&lt;<span class="dt">double</span>&gt; point;
 <span class="kw">typedef</span> vector&lt;<span class="dt">int</span>&gt; vi;
-
-<span class="kw">template</span>&lt;<span class="kw">class</span> T&gt;
-<span class="kw">inline</span> <span class="dt">int</span> len(<span class="dt">const</span> T&amp; t){
-    <span class="kw">return</span> t.size();
-}
 
 <span class="kw">template</span>&lt;<span class="kw">typename</span> T&gt;
 ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream&amp; os,<span class="dt">const</span> vector&lt;T&gt;&amp; val){
@@ -1113,7 +1112,40 @@ vector&lt;<span class="dt">double</span>&gt; solve_quadratic_equation(<span clas
 }</code></pre>
 <h1 id="動的計画法およびそれに似たやつらtodo"><a href="#動的計画法およびそれに似たやつらtodo"><span class="header-section-number">9</span> 動的計画法およびそれに似たやつら。(TODO)</a></h1>
 <h2 id="lcs"><a href="#lcs"><span class="header-section-number">9.1</span> LCS</a></h2>
-<p>Longest common sequence.</p>
+<p>Longest common sequence.O(NM)</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">string lcs(<span class="dt">const</span> string&amp; a,<span class="dt">const</span> string&amp; b){
+    <span class="dt">const</span> <span class="dt">int</span> n = a.size(),m = b.size();
+    vector&lt;vector&lt;<span class="dt">int</span>&gt; &gt; x(n<span class="dv">+1</span>,vector&lt;<span class="dt">int</span>&gt;(m<span class="dv">+1</span>));
+    vector&lt;vector&lt;<span class="dt">int</span>&gt; &gt; y(n<span class="dv">+1</span>,vector&lt;<span class="dt">int</span>&gt;(m<span class="dv">+1</span>));
+
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;n;i++){
+        <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;m;j++){
+            <span class="kw">if</span>(a[i] == b[j]){
+                x[i<span class="dv">+1</span>][j<span class="dv">+1</span>] = x[i][j]+<span class="dv">1</span>;
+                y[i<span class="dv">+1</span>][j<span class="dv">+1</span>] = <span class="dv">0</span>;
+            }<span class="kw">else</span> <span class="kw">if</span>(x[i<span class="dv">+1</span>][j] &lt; x[i][j<span class="dv">+1</span>]){
+                x[i<span class="dv">+1</span>][j<span class="dv">+1</span>] = x[i][j<span class="dv">+1</span>];
+                y[i<span class="dv">+1</span>][j<span class="dv">+1</span>] = <span class="dv">1</span>;
+            }<span class="kw">else</span>{
+                x[i<span class="dv">+1</span>][j<span class="dv">+1</span>] = x[i<span class="dv">+1</span>][j];
+                y[i<span class="dv">+1</span>][j<span class="dv">+1</span>] = -<span class="dv">1</span>;
+            }
+        }
+    }
+    string ret;
+    <span class="kw">for</span>(<span class="dt">int</span> i=n,j=m;i&gt;<span class="dv">0</span> <span class="kw">and</span> j&gt;<span class="dv">0</span>;){
+        <span class="kw">if</span>(y[i][j] &gt; <span class="dv">0</span>){
+            i--;
+        }<span class="kw">else</span> <span class="kw">if</span>(y[i][j] &lt; <span class="dv">0</span>){
+            j--;
+        }<span class="kw">else</span>{
+            ret.push_back(a[i<span class="dv">-1</span>]);
+            i--;j--;
+        }
+    }
+    reverse(all(ret));
+    <span class="kw">return</span> ret;
+}</code></pre>
 <h2 id="lis"><a href="#lis"><span class="header-section-number">9.2</span> LIS</a></h2>
 <h3 id="onlogn"><a href="#onlogn"><span class="header-section-number">9.2.1</span> O(NlogN)</a></h3>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// O(Nlog(N))</span>
@@ -1406,6 +1438,148 @@ ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream &amp;os,<span clas
     os &lt;&lt; f.n &lt;&lt; <span class="st">&quot;/&quot;</span> &lt;&lt; f.d;
     <span class="kw">return</span> os;
 }</code></pre>
+<h2 id="セグメント木"><a href="#セグメント木"><span class="header-section-number">10.5</span> セグメント木</a></h2>
+<h3 id="普通の"><a href="#普通の"><span class="header-section-number">10.5.1</span> 普通の</a></h3>
+<p>RMQ (POJ 3264)</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">typedef</span> pair&lt;<span class="dt">int</span>,<span class="dt">int</span>&gt; pii;
+
+<span class="co">// update i v -&gt; element[i] = v;</span>
+<span class="co">// get [l,r) -&gt; return minimum element in [l,r)</span>
+<span class="kw">struct</span> SegmentTree{
+    <span class="dt">static</span> <span class="dt">const</span> <span class="dt">int</span> INIT_VALUE = <span class="dv">1</span> &lt;&lt; <span class="dv">30</span>;
+    vector&lt;<span class="dt">int</span>&gt; data;
+    <span class="dt">int</span> n;
+    SegmentTree(<span class="dt">int</span> _n){
+        n = <span class="dv">1</span>;
+        <span class="kw">while</span>(n &lt; _n) n *= <span class="dv">2</span>;
+        data = vector&lt;<span class="dt">int</span>&gt;(<span class="dv">2</span>*n<span class="dv">-1</span>,INIT_VALUE);
+    }
+
+    <span class="dt">void</span> update(<span class="dt">int</span> i,<span class="dt">int</span> v){
+        <span class="dt">int</span> k = i + n<span class="dv">-1</span>;
+        data[k] = v;
+        <span class="kw">while</span>(k &gt; <span class="dv">0</span>){
+            k = parent(k);
+            data[k] = min(data[get_left(k)],data[get_right(k)]);
+        }
+    }
+
+    <span class="co">// return data of [a,b).</span>
+    <span class="kw">inline</span> <span class="dt">int</span> get(<span class="dt">int</span> a,<span class="dt">int</span> b){
+        <span class="kw">return</span> get(a,b,<span class="dv">0</span>,<span class="dv">0</span>,n);
+    }
+<span class="kw">private</span>:
+    <span class="co">// l,r is segment of node k.</span>
+    <span class="dt">int</span> get(<span class="dt">int</span> a,<span class="dt">int</span> b,<span class="dt">int</span> k,<span class="dt">int</span> l,<span class="dt">int</span> r){
+        <span class="kw">if</span>(r &lt;= a <span class="kw">or</span> b &lt;= l) <span class="kw">return</span> INIT_VALUE;
+        <span class="kw">if</span>(a &lt;= l <span class="kw">and</span> r &lt;= b) <span class="kw">return</span> data[k];
+        <span class="dt">int</span> vl = get(a,b,get_left(k),l,(l+r)/<span class="dv">2</span>);
+        <span class="dt">int</span> vr = get(a,b,get_right(k),(l+r)/<span class="dv">2</span>,r);
+        <span class="kw">return</span> min(vl,vr);
+    }
+
+    <span class="kw">inline</span> <span class="dt">int</span> get_left(<span class="dt">int</span> x){
+        <span class="kw">return</span> <span class="dv">2</span>*x<span class="dv">+1</span>;
+    }
+    <span class="kw">inline</span> <span class="dt">int</span> get_right(<span class="dt">int</span> x){
+        <span class="kw">return</span> <span class="dv">2</span>*x<span class="dv">+2</span>;
+    }
+    <span class="kw">inline</span> <span class="dt">int</span> parent(<span class="dt">int</span> x){
+        <span class="kw">return</span> (x<span class="dv">-1</span>)/<span class="dv">2</span>;
+    }
+};
+
+ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream&amp; os,<span class="dt">const</span> SegmentTree&amp; seg){
+    os &lt;&lt; seg.data;
+    <span class="kw">return</span> os;
+}</code></pre>
+<h3 id="lazy"><a href="#lazy"><span class="header-section-number">10.5.2</span> Lazy</a></h3>
+<p>テスト中 参考: http://d.hatena.ne.jp/kyuridenamida/20121114/1352835261</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">typedef</span> pair&lt;<span class="dt">int</span>,<span class="dt">int</span>&gt; pii;
+<span class="co">// update [l,r) v -&gt; +v to all element in [l,r).</span>
+<span class="co">// get [l,r) -&gt; return sum of elements in [l,r).</span>
+<span class="kw">struct</span> LazySegmentTree{
+    <span class="co">// also used for out of range value.</span>
+    <span class="dt">static</span> <span class="dt">const</span> <span class="dt">int</span> DATA_INIT_VALUE = <span class="dv">0</span>;
+    <span class="dt">static</span> <span class="dt">const</span> <span class="dt">int</span> LAZY_INIT_VALUE = <span class="dv">0</span>;
+    vector&lt;<span class="dt">int</span>&gt; data;
+    vector&lt;<span class="dt">int</span>&gt; lazy;
+    <span class="dt">int</span> n;
+    LazySegmentTree(<span class="dt">int</span> _n){
+        n = <span class="dv">1</span>;
+        <span class="kw">while</span>(n &lt; _n) n *= <span class="dv">2</span>;
+        data = vector&lt;<span class="dt">int</span>&gt;(<span class="dv">2</span>*n<span class="dv">-1</span>,DATA_INIT_VALUE);
+        lazy = vector&lt;<span class="dt">int</span>&gt;(<span class="dv">2</span>*n<span class="dv">-1</span>,LAZY_INIT_VALUE);
+    }
+
+    <span class="dt">int</span> get(<span class="dt">int</span> a,<span class="dt">int</span> b){
+        <span class="kw">return</span> get(a,b,<span class="dv">0</span>,<span class="dv">0</span>,n);
+    }
+    <span class="dt">void</span> update(<span class="dt">int</span> a,<span class="dt">int</span> b,<span class="dt">int</span> v){
+        <span class="kw">return</span> update(a,b,v,<span class="dv">0</span>,<span class="dv">0</span>,n);
+    }
+
+
+<span class="kw">private</span>:
+    <span class="co">// edit update_lazy and update_data.</span>
+    <span class="kw">inline</span> <span class="dt">void</span> update_lazy(<span class="dt">int</span> k,<span class="dt">int</span> l,<span class="dt">int</span> r){
+        data[k] += lazy[k]*(r-l);
+        <span class="kw">if</span>(k &lt; n<span class="dv">-1</span>){ <span class="co">// node k has children</span>
+            lazy[get_left(k)] += lazy[k];
+            lazy[get_right(k)] += lazy[k];
+        }
+        lazy[k] = <span class="dv">0</span>;
+        <span class="kw">return</span>;
+    }
+    <span class="kw">inline</span> <span class="dt">void</span> update_data(<span class="dt">int</span> k){
+        data[k] = data[get_left(k)] + data[get_right(k)];
+    }
+
+    <span class="co">// l,r is segment of node k.</span>
+    <span class="dt">int</span> get(<span class="dt">int</span> a,<span class="dt">int</span> b,<span class="dt">int</span> k,<span class="dt">int</span> l,<span class="dt">int</span> r){
+        update_lazy(k,l,r);
+        <span class="co">// [a,b) and [l,r) are not crossed</span>
+        <span class="kw">if</span>(r &lt;= a <span class="kw">or</span> b &lt;= l) <span class="kw">return</span> DATA_INIT_VALUE;
+        <span class="co">// [a,b) contains [l,r)</span>
+        <span class="kw">if</span>(a &lt;= l <span class="kw">and</span> r &lt;= b) <span class="kw">return</span> data[k];
+        <span class="dt">int</span> vl = get(a,b,get_left(k),l,(l+r)/<span class="dv">2</span>);
+        <span class="dt">int</span> vr = get(a,b,get_right(k),(l+r)/<span class="dv">2</span>,r);
+        update_data(k);
+        <span class="kw">return</span> vl+vr;
+    }
+    <span class="dt">void</span> update(<span class="dt">int</span> a,<span class="dt">int</span> b,<span class="dt">int</span> v,<span class="dt">int</span> k,<span class="dt">int</span> l,<span class="dt">int</span> r){
+        update_lazy(k,l,r);
+        <span class="co">// [a,b) and [l,r) are not crossed</span>
+        <span class="kw">if</span>(r &lt;= a <span class="kw">or</span> b &lt;= l) <span class="kw">return</span>;
+        <span class="co">// [a,b) contains [l,r)</span>
+        <span class="kw">if</span>(a &lt;= l <span class="kw">and</span> r &lt;= b) {
+            lazy[k] += v;
+            update_lazy(k,l,r);
+            <span class="kw">return</span>;
+        }
+        update(a,b,v,get_left(k),l,(l+r)/<span class="dv">2</span>);
+        update(a,b,v,get_right(k),(l+r)/<span class="dv">2</span>,r);
+        update_data(k);
+        <span class="kw">return</span>;
+    }
+
+    <span class="kw">inline</span> <span class="dt">int</span> get_left(<span class="dt">int</span> x){
+        <span class="kw">return</span> <span class="dv">2</span>*x<span class="dv">+1</span>;
+    }
+    <span class="kw">inline</span> <span class="dt">int</span> get_right(<span class="dt">int</span> x){
+        <span class="kw">return</span> <span class="dv">2</span>*x<span class="dv">+2</span>;
+    }
+    <span class="co">// parent node is (n-1)/2.</span>
+    <span class="kw">inline</span> <span class="dt">int</span> parent(<span class="dt">int</span> x){
+        <span class="kw">return</span> (x<span class="dv">-1</span>)/<span class="dv">2</span>;
+    }
+};
+
+ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream&amp; os,<span class="dt">const</span> LazySegmentTree&amp; seg){
+    os &lt;&lt; seg.data &lt;&lt; endl &lt;&lt; seg.lazy;
+    <span class="kw">return</span> os;
+}
+</code></pre>
 <h1 id="グラフ"><a href="#グラフ"><span class="header-section-number">11</span> グラフ</a></h1>
 <h2 id="構成要素"><a href="#構成要素"><span class="header-section-number">11.1</span> 構成要素</a></h2>
 <p>隣接行列を使うか、vector&lt;Edge&gt;みたいのを使うかの二択。場合によってはNode みたいなのも使うかも。隣接行列を使うとメモリとか探すのとか重い。</p>
@@ -1426,11 +1600,11 @@ ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream &amp;os,<span clas
     <span class="dt">bool</span> neg_cycle = <span class="kw">false</span>;
     <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;n;i++){
         <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;n;j++){
-            <span class="kw">for</span>(<span class="dt">int</span> k=<span class="dv">0</span>;k&lt;graph[j].size();k++){
+            <span class="kw">for</span>(size_t k=<span class="dv">0</span>;k&lt;graph[j].size();k++){
                 <span class="dt">const</span> Edge &amp;e = graph[j][k];
-                <span class="kw">if</span>(dist[e.to] &gt; dist[e.from] + e.cost){
-                    dist[e.to] = dist[e.from] + e.cost;
-                    prev[e.to] = e.from;
+                <span class="kw">if</span>(dist[e.to] &gt; dist[j] + e.cost){
+                    dist[e.to] = dist[j] + e.cost;
+                    prev[e.to] = j;
                     <span class="kw">if</span>(i == n<span class="dv">-1</span>){
                         dist[e.to] = -INF;
                         neg_cycle = <span class="kw">true</span>;
@@ -1545,7 +1719,7 @@ rep(i,m){
     <span class="kw">return</span> <span class="dv">0</span>;
 }</code></pre>
 <h2 id="最大流"><a href="#最大流"><span class="header-section-number">11.6</span> 最大流</a></h2>
-<p>Dinic法による。</p>
+<p>Dinic法による。また、最大流最小カット定理より、最大流と最小カットは一致する。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> Edge{
     <span class="dt">int</span> to,cap,rev;
     Edge(<span class="dt">int</span> _to,<span class="dt">int</span> _cap,<span class="dt">int</span> _rev) : to(_to),cap(_cap),rev(_rev) {};
@@ -1740,6 +1914,72 @@ vector&lt;<span class="dt">int</span>&gt; levels(vector&lt;vector&lt;Edge&gt; &g
     }
     <span class="kw">return</span> <span class="dv">0</span>;
 }</code></pre>
+<h2 id="無向グラフにおける最小カット"><a href="#無向グラフにおける最小カット"><span class="header-section-number">11.8</span> 無向グラフにおける最小カット</a></h2>
+<p>Nagamochi-Ibaraki/Storer-Wagnerの方法によってO(V^3)で計算できる。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> Edge{
+    <span class="dt">int</span> to,cap,rev;
+    Edge(<span class="dt">int</span> _to,<span class="dt">int</span> _cap,<span class="dt">int</span> _rev) : to(_to),cap(_cap),rev(_rev) {};
+};
+
+<span class="dt">void</span> add_edge(vector&lt;vector&lt;Edge&gt; &gt;&amp; E,<span class="dt">int</span> from,<span class="dt">int</span> to,<span class="dt">int</span> cap){
+    E[from].push_back(Edge(to,cap,E[to].size()));
+    E[to].push_back(Edge(from,<span class="dv">0</span>,E[from].size()-<span class="dv">1</span>));
+}
+
+<span class="co">// Nagamochi-Ibaraki/Stoer-Wagner</span>
+<span class="co">//  http://www.prefield.com/algorithm/graph/minimum_cut.html</span>
+<span class="dt">int</span> minimum_cut_of_undirected_graph(<span class="dt">const</span> vector&lt;vector&lt;Edge&gt; &gt; &amp;graph){
+    <span class="dt">const</span> <span class="dt">int</span> INF = <span class="dv">1</span> &lt;&lt; <span class="dv">30</span>;
+    <span class="dt">int</span> n = graph.size();
+    vector&lt;vector&lt;<span class="dt">int</span>&gt; &gt; adj(n,vector&lt;<span class="dt">int</span>&gt;(n));
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;n;i++){
+        <span class="kw">for</span>(size_t j=<span class="dv">0</span>;j&lt;graph[i].size();j++){
+            Edge e = graph[i][j];
+            adj[i][e.to] += e.cap;
+        }
+    }
+    vector&lt;<span class="dt">int</span>&gt; h(n);
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;n;i++){
+        h[i] = i;
+    }
+    <span class="dt">int</span> cut = INF;
+    <span class="kw">for</span>(<span class="dt">int</span> m = n;m &gt; <span class="dv">1</span>;m--){
+        vector&lt;<span class="dt">int</span>&gt; ws(m,<span class="dv">0</span>);
+        <span class="dt">int</span> u,v,w;
+        <span class="kw">for</span>(<span class="dt">int</span> k=<span class="dv">0</span>;k&lt;m;k++){
+            u = v;
+            v = max_element(ws.begin(),ws.end()) - ws.begin();
+            w = ws[v];
+            ws[v] = -<span class="dv">1</span>;
+            <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;m;i++){
+                <span class="kw">if</span>(ws[i] &gt;= <span class="dv">0</span>) {
+                    ws[i] += adj[h[v]][h[i]];
+                }
+            }
+        }
+        <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;m;i++){
+            adj[h[i]][h[u]] += adj[h[i]][h[v]];
+            adj[h[u]][h[i]] += adj[h[v]][h[i]];
+        }
+        h.erase(h.begin()+v);
+        cut = min(cut,w);
+    }
+    <span class="kw">return</span> cut;
+}
+
+<span class="dt">int</span> main(){
+    <span class="dt">int</span> N,M;
+    <span class="kw">while</span>(scanf(<span class="st">&quot;%d %d</span><span class="ch">\n</span><span class="st">&quot;</span>,&amp;N,&amp;M) != EOF){
+        vector&lt;vector&lt;Edge&gt; &gt; graph(N);
+        <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;M;i++){
+            <span class="dt">int</span> a,b,c;
+            scanf(<span class="st">&quot;%d %d %d</span><span class="ch">\n</span><span class="st">&quot;</span>,&amp;a,&amp;b,&amp;c);
+            add_edge(graph,a,b,c);
+            add_edge(graph,b,a,c);
+        }
+        printf(<span class="st">&quot;%d</span><span class="ch">\n</span><span class="st">&quot;</span>,minimum_cut_of_undirected_graph(graph));
+    }
+    <span class="kw">return</span> <span class="dv">0</span>;</code></pre>
 <h1 id="幾何"><a href="#幾何"><span class="header-section-number">12</span> 幾何</a></h1>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;complex&gt;</span>
 <span class="kw">using</span> <span class="kw">namespace</span> std;

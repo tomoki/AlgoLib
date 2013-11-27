@@ -1,6 +1,42 @@
 # 動的計画法およびそれに似たやつら。(TODO)
 ## LCS
-Longest common sequence.
+Longest common sequence.O(NM)
+
+~~~~~~{.cpp}
+string lcs(const string& a,const string& b){
+    const int n = a.size(),m = b.size();
+    vector<vector<int> > x(n+1,vector<int>(m+1));
+    vector<vector<int> > y(n+1,vector<int>(m+1));
+
+    for(int i=0;i<n;i++){
+        for(int j=0;j<m;j++){
+            if(a[i] == b[j]){
+                x[i+1][j+1] = x[i][j]+1;
+                y[i+1][j+1] = 0;
+            }else if(x[i+1][j] < x[i][j+1]){
+                x[i+1][j+1] = x[i][j+1];
+                y[i+1][j+1] = 1;
+            }else{
+                x[i+1][j+1] = x[i+1][j];
+                y[i+1][j+1] = -1;
+            }
+        }
+    }
+    string ret;
+    for(int i=n,j=m;i>0 and j>0;){
+        if(y[i][j] > 0){
+            i--;
+        }else if(y[i][j] < 0){
+            j--;
+        }else{
+            ret.push_back(a[i-1]);
+            i--;j--;
+        }
+    }
+    reverse(all(ret));
+    return ret;
+}
+~~~~~~
 
 ## LIS
 

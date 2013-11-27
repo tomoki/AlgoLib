@@ -32,13 +32,7 @@ using namespace std;
 #define debug(x) cerr << #x << " = " << (x) << " (L" << __LINE__ << ")" << endl
 
 typedef long long ll;
-typedef complex<double> point;
 typedef vector<int> vi;
-
-template<class T>
-inline int len(const T& t){
-    return t.size();
-}
 
 template<typename T>
 ostream& operator<<(ostream& os,const vector<T>& val){
