@@ -443,3 +443,68 @@ int main(){
     return 0;
 
 ~~~~~~
+
+## 強連結成分分解
+
+~~~~~~{.cpp}
+struct Edge{
+    int to,cost;
+    Edge(int t,int c)
+        :to(t),cost(c) {
+    }
+};
+
+void check_back_number(const vector<vector<Edge>>& graph,
+                       int v,vector<char>& used,vector<int>& back_number){
+    used[v] = true;
+    for(const auto& e : graph[v]){
+        if(not used[e.to]){
+            check_back_number(graph,e.to,used,back_number);
+        }
+    }
+    back_number.push_back(v);
+}
+
+void collect_nodes(const vector<vector<Edge>> &graph,
+                   int v,vector<char>& used,vector<int>& s){
+    used[v] = true;
+    s.push_back(v);
+    for(const auto& e : graph[v]){
+        if(not used[e.to]) {
+            collect_nodes(graph,e.to,used,s);
+        }
+    }
+}
+
+vector<vector<int>> strongly_connected_components(const vector<vector<Edge>>& graph){
+    const int N = graph.size();
+    vector<vector<int>> scc;
+    vector<int> back_number;
+    {
+        vector<char> used(N);
+        for(int i=0;i<N;i++){
+            if(not used[i]){
+                check_back_number(graph,i,used,back_number);
+            }
+        }
+    }
+
+    {
+        vector<char> used(N);
+        vector<vector<Edge>> reversed_graph(N);
+        for(int from=0;from<N;from++){
+            for(const auto& e : graph[from]){
+                reversed_graph[e.to].push_back(Edge(from,e.cost));
+            }
+        }
+        reverse(all(back_number));
+        for(int k : back_number){
+            if(not used[k]){
+                scc.push_back(vector<int>());
+                collect_nodes(reversed_graph,k,used,scc.back());
+            }
+        }
+    }
+    return scc;
+}
+~~~~~~

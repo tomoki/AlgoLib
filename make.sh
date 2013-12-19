@@ -9,6 +9,4 @@ cd source
 
 echo "making with ${files[*]}"
 # this make truly standalone html.MathML is not working in chrome 26 now.
-# pandoc ${files[*]} -t html5  --mathml --highlight-style tango --self-contained -s -o library.html
-
-pandoc ${files[*]} -c library.css -t html --toc --mathjax --highlight-style tango -s -N -o ../library.html
+pandoc ${files[*]} -c library.css -t html5 -s --toc --mathjax --highlight-style tango -N -o ../library.html

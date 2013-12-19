@@ -1,12 +1,16 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <meta http-equiv="Content-Style-Type" content="text/css" />
-  <meta name="generator" content="pandoc" />
-  <meta name="author" content="Tomoki Imai" />
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="author" content="Tomoki Imai">
+  <meta name="dcterms.date" content="2013-01-01">
   <title>Algorithm And Tips For Competitive Programming</title>
   <style type="text/css">code{white-space: pre;}</style>
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
   <style type="text/css">
 table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
   margin: 0; padding: 0; vertical-align: baseline; border: none; }
@@ -27,16 +31,16 @@ code > span.al { color: #ef2929; }
 code > span.fu { color: #000000; }
 code > span.er { font-weight: bold; }
   </style>
-  <link rel="stylesheet" href="library.css" type="text/css" />
+  <link rel="stylesheet" href="library.css">
   <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 </head>
 <body>
-<div id="header">
+<header>
 <h1 class="title">Algorithm And Tips For Competitive Programming</h1>
 <h2 class="author">Tomoki Imai</h2>
 <h3 class="date">2013</h3>
-</div>
-<div id="TOC">
+</header>
+<nav id="TOC">
 <ul>
 <li><a href="#テンプレート"><span class="toc-section-number">1</span> テンプレート</a><ul>
 <li><a href="#c"><span class="toc-section-number">1.1</span> C++</a></li>
@@ -146,6 +150,7 @@ code > span.er { font-weight: bold; }
 <li><a href="#最大流"><span class="toc-section-number">11.6</span> 最大流</a></li>
 <li><a href="#最小費用流"><span class="toc-section-number">11.7</span> 最小費用流</a></li>
 <li><a href="#無向グラフにおける最小カット"><span class="toc-section-number">11.8</span> 無向グラフにおける最小カット</a></li>
+<li><a href="#強連結成分分解"><span class="toc-section-number">11.9</span> 強連結成分分解</a></li>
 </ul></li>
 <li><a href="#幾何"><span class="toc-section-number">12</span> 幾何</a></li>
 <li><a href="#ゲーム"><span class="toc-section-number">13</span> ゲーム</a><ul>
@@ -160,7 +165,7 @@ code > span.er { font-weight: bold; }
 </ul></li>
 </ul></li>
 </ul>
-</div>
+</nav>
 <h1 id="テンプレート"><a href="#テンプレート"><span class="header-section-number">1</span> テンプレート</a></h1>
 <p>各種バッドノウハウを含む。</p>
 <h2 id="c"><a href="#c"><span class="header-section-number">1.1</span> C++</a></h2>
@@ -189,7 +194,7 @@ code > span.er { font-weight: bold; }
 
 <span class="ot">#define all(c) c.begin(),c.end()</span>
 <span class="ot">#define rep(i,n) for(int i=0;i&lt;(int)n;i++)</span>
-<span class="ot">#define debug(x) cerr &lt;&lt; #x &lt;&lt; &quot; = &quot; &lt;&lt; (x) &lt;&lt; &quot; (L&quot; &lt;&lt; __LINE__ &lt;&lt; &quot;)&quot; &lt;&lt; endl</span>
+<span class="ot">#define debug(x) #x &lt;&lt; &quot;=&quot; &lt;&lt; (x) &lt;&lt; &quot;(L&quot; &lt;&lt; __LINE__ &lt;&lt; &quot;)&quot;</span>
 
 <span class="kw">typedef</span> <span class="dt">long</span> <span class="dt">long</span> ll;
 <span class="kw">typedef</span> vector&lt;<span class="dt">int</span>&gt; vi;
@@ -212,9 +217,9 @@ ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream&amp; os,<span clas
 <pre class="sourceCode python"><code class="sourceCode python"><span class="co">#!/usr/bin/env python</span>
 <span class="co">#coding:utf-8</span>
 
-<span class="ch">from</span> <span class="dt">__future__</span> <span class="ch">import</span> division
-<span class="ch">from</span> <span class="dt">__future__</span> <span class="ch">import</span> print_function
-<span class="ch">from</span> <span class="dt">__future__</span> <span class="ch">import</span> unicode_literals
+<span class="ch">from</span> __future__ <span class="ch">import</span> division
+<span class="ch">from</span> __future__ <span class="ch">import</span> print_function
+<span class="ch">from</span> __future__ <span class="ch">import</span> unicode_literals
 
 <span class="ch">from</span> math <span class="ch">import</span> *
 <span class="ch">from</span> string <span class="ch">import</span> *
@@ -224,7 +229,7 @@ ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream&amp; os,<span clas
 <span class="kw">def</span> main():
     <span class="kw">pass</span>
 
-<span class="kw">if</span> <span class="dt">__name__</span> == <span class="st">&quot;__main__&quot;</span>:
+<span class="kw">if</span> <span class="ot">__name__</span> == <span class="st">&quot;__main__&quot;</span>:
     main()</code></pre>
 <h1 id="算術型"><a href="#算術型"><span class="header-section-number">2</span> 算術型</a></h1>
 <h2 id="int"><a href="#int"><span class="header-section-number">2.1</span> int</a></h2>
@@ -390,42 +395,42 @@ printf(<span class="st">&quot;n is %d</span><span class="ch">\n</span><span clas
 <caption>書式指定子</caption>
 <thead>
 <tr class="header">
-<th align="left">指定子</th>
-<th align="left">出力書式</th>
+<th style="text-align: left;">指定子</th>
+<th style="text-align: left;">出力書式</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">%c</td>
-<td align="left">文字</td>
+<td style="text-align: left;">%c</td>
+<td style="text-align: left;">文字</td>
 </tr>
 <tr class="even">
-<td align="left">%s</td>
-<td align="left">文字列</td>
+<td style="text-align: left;">%s</td>
+<td style="text-align: left;">文字列</td>
 </tr>
 <tr class="odd">
-<td align="left">%d</td>
-<td align="left">符号付き１０進整数</td>
+<td style="text-align: left;">%d</td>
+<td style="text-align: left;">符号付き１０進整数</td>
 </tr>
 <tr class="even">
-<td align="left">%u</td>
-<td align="left">符号なし10進</td>
+<td style="text-align: left;">%u</td>
+<td style="text-align: left;">符号なし10進</td>
 </tr>
 <tr class="odd">
-<td align="left">%f</td>
-<td align="left">10進浮動小数点数</td>
+<td style="text-align: left;">%f</td>
+<td style="text-align: left;">10進浮動小数点数</td>
 </tr>
 <tr class="even">
-<td align="left">%o</td>
-<td align="left">符号なし8進</td>
+<td style="text-align: left;">%o</td>
+<td style="text-align: left;">符号なし8進</td>
 </tr>
 <tr class="odd">
-<td align="left">%x</td>
-<td align="left">符号なし16進(Xなら大文字)</td>
+<td style="text-align: left;">%x</td>
+<td style="text-align: left;">符号なし16進(Xなら大文字)</td>
 </tr>
 <tr class="even">
-<td align="left">%%</td>
-<td align="left">%記号</td>
+<td style="text-align: left;">%%</td>
+<td style="text-align: left;">%記号</td>
 </tr>
 </tbody>
 </table>
@@ -1235,36 +1240,39 @@ dp[<span class="dv">0</span>][<span class="dv">0</span>] = <span class="dv">1</s
 <h1 id="データ構造"><a href="#データ構造"><span class="header-section-number">10</span> データ構造</a></h1>
 <h2 id="union-find"><a href="#union-find"><span class="header-section-number">10.1</span> Union-Find</a></h2>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> UnionFind{
-    vector&lt;<span class="dt">int</span>&gt; par; <span class="co">// 親</span>
-    vector&lt;<span class="dt">int</span>&gt; rank; <span class="co">// 木の深さ</span>
+    <span class="dt">const</span> <span class="dt">int</span> is_root = -<span class="dv">1</span>;
+    vector&lt;<span class="dt">int</span>&gt; data;
     UnionFind(<span class="dt">int</span> n){
-        rep(i,n) par.push_back(i);
-        rank = vector&lt;<span class="dt">int</span>&gt;(n);
+        data = vector&lt;<span class="dt">int</span>&gt;(n,-<span class="dv">1</span>);
     }
     <span class="co">// 親を探す</span>
     <span class="dt">int</span> root(<span class="dt">int</span> x){
-        <span class="kw">if</span>(par[x] == x){
+        <span class="kw">if</span>(data[x] &lt; <span class="dv">0</span>){
             <span class="kw">return</span> x;
         }<span class="kw">else</span>{
-            <span class="co">// 縮約</span>
-            <span class="kw">return</span> par[x] = root(par[x]);
+            <span class="kw">return</span> data[x] = root(data[x]);
         }
     }
     <span class="co">// x,yの含まれる集合を併合</span>
-    <span class="dt">void</span> unite(<span class="dt">int</span> x,<span class="dt">int</span> y){
+    <span class="dt">bool</span> unite(<span class="dt">int</span> x,<span class="dt">int</span> y){
         x = root(x);
         y = root(y);
-        <span class="kw">if</span>(x==y) <span class="kw">return</span>;
-        <span class="kw">if</span>(rank[x] &lt; rank[y]){
-            par[x] = y;
+        <span class="kw">if</span>(x != y){
+            <span class="co">// 大きいほうに追加する。</span>
+            <span class="kw">if</span>(data[y] &lt; data[x]) swap(x,y);
+            data[x] += data[y];
+            data[y] = x;
+            <span class="kw">return</span> <span class="kw">true</span>;
         }<span class="kw">else</span>{
-            par[y] = x;
-            <span class="kw">if</span>(rank[x] == rank[y]) rank[x]++;
+            <span class="kw">return</span> <span class="kw">false</span>;
         }
     }
     <span class="co">// 同じ集合にいるかどうか</span>
     <span class="dt">bool</span> same(<span class="dt">int</span> x,<span class="dt">int</span> y){
         <span class="kw">return</span> root(x) == root(y);
+    }
+    <span class="dt">int</span> size(<span class="dt">int</span> x){
+        <span class="kw">return</span> -data[root(x)];
     }
 };</code></pre>
 <h2 id="ヒープ"><a href="#ヒープ"><span class="header-section-number">10.2</span> ヒープ</a></h2>
@@ -1980,6 +1988,67 @@ vector&lt;<span class="dt">int</span>&gt; levels(vector&lt;vector&lt;Edge&gt; &g
         printf(<span class="st">&quot;%d</span><span class="ch">\n</span><span class="st">&quot;</span>,minimum_cut_of_undirected_graph(graph));
     }
     <span class="kw">return</span> <span class="dv">0</span>;</code></pre>
+<h2 id="強連結成分分解"><a href="#強連結成分分解"><span class="header-section-number">11.9</span> 強連結成分分解</a></h2>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> Edge{
+    <span class="dt">int</span> to,cost;
+    Edge(<span class="dt">int</span> t,<span class="dt">int</span> c)
+        :to(t),cost(c) {
+    }
+};
+
+<span class="dt">void</span> check_back_number(<span class="dt">const</span> vector&lt;vector&lt;Edge&gt;&gt;&amp; graph,
+                       <span class="dt">int</span> v,vector&lt;<span class="dt">char</span>&gt;&amp; used,vector&lt;<span class="dt">int</span>&gt;&amp; back_number){
+    used[v] = <span class="kw">true</span>;
+    <span class="kw">for</span>(<span class="dt">const</span> <span class="dt">auto</span>&amp; e : graph[v]){
+        <span class="kw">if</span>(<span class="kw">not</span> used[e.to]){
+            check_back_number(graph,e.to,used,back_number);
+        }
+    }
+    back_number.push_back(v);
+}
+
+<span class="dt">void</span> collect_nodes(<span class="dt">const</span> vector&lt;vector&lt;Edge&gt;&gt; &amp;graph,
+                   <span class="dt">int</span> v,vector&lt;<span class="dt">char</span>&gt;&amp; used,vector&lt;<span class="dt">int</span>&gt;&amp; s){
+    used[v] = <span class="kw">true</span>;
+    s.push_back(v);
+    <span class="kw">for</span>(<span class="dt">const</span> <span class="dt">auto</span>&amp; e : graph[v]){
+        <span class="kw">if</span>(<span class="kw">not</span> used[e.to]) {
+            collect_nodes(graph,e.to,used,s);
+        }
+    }
+}
+
+vector&lt;vector&lt;<span class="dt">int</span>&gt;&gt; strongly_connected_components(<span class="dt">const</span> vector&lt;vector&lt;Edge&gt;&gt;&amp; graph){
+    <span class="dt">const</span> <span class="dt">int</span> N = graph.size();
+    vector&lt;vector&lt;<span class="dt">int</span>&gt;&gt; scc;
+    vector&lt;<span class="dt">int</span>&gt; back_number;
+    {
+        vector&lt;<span class="dt">char</span>&gt; used(N);
+        <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;N;i++){
+            <span class="kw">if</span>(<span class="kw">not</span> used[i]){
+                check_back_number(graph,i,used,back_number);
+            }
+        }
+    }
+
+    {
+        vector&lt;<span class="dt">char</span>&gt; used(N);
+        vector&lt;vector&lt;Edge&gt;&gt; reversed_graph(N);
+        <span class="kw">for</span>(<span class="dt">int</span> from=<span class="dv">0</span>;from&lt;N;from++){
+            <span class="kw">for</span>(<span class="dt">const</span> <span class="dt">auto</span>&amp; e : graph[from]){
+                reversed_graph[e.to].push_back(Edge(from,e.cost));
+            }
+        }
+        reverse(all(back_number));
+        <span class="kw">for</span>(<span class="dt">int</span> k : back_number){
+            <span class="kw">if</span>(<span class="kw">not</span> used[k]){
+                scc.push_back(vector&lt;<span class="dt">int</span>&gt;());
+                collect_nodes(reversed_graph,k,used,scc.back());
+            }
+        }
+    }
+    <span class="kw">return</span> scc;
+}</code></pre>
 <h1 id="幾何"><a href="#幾何"><span class="header-section-number">12</span> 幾何</a></h1>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;complex&gt;</span>
 <span class="kw">using</span> <span class="kw">namespace</span> std;
@@ -2225,54 +2294,54 @@ vector&lt;point&gt; circles_point(point c1,<span class="dt">double</span> r1,poi
 <table>
 <thead>
 <tr class="header">
-<th align="left"><span class="math">\(N\)</span></th>
-<th align="left"><span class="math">\(N!\)</span></th>
+<th style="text-align: left;"><span class="math">\(N\)</span></th>
+<th style="text-align: left;"><span class="math">\(N!\)</span></th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">0</td>
-<td align="left">1</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
 </tr>
 <tr class="even">
-<td align="left">1</td>
-<td align="left">1</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1</td>
 </tr>
 <tr class="odd">
-<td align="left">2</td>
-<td align="left">2</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">2</td>
 </tr>
 <tr class="even">
-<td align="left">3</td>
-<td align="left">6</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">6</td>
 </tr>
 <tr class="odd">
-<td align="left">4</td>
-<td align="left">24</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">24</td>
 </tr>
 <tr class="even">
-<td align="left">5</td>
-<td align="left">120</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">120</td>
 </tr>
 <tr class="odd">
-<td align="left">6</td>
-<td align="left">720</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">720</td>
 </tr>
 <tr class="even">
-<td align="left">7</td>
-<td align="left">5040</td>
+<td style="text-align: left;">7</td>
+<td style="text-align: left;">5040</td>
 </tr>
 <tr class="odd">
-<td align="left">8</td>
-<td align="left">40320</td>
+<td style="text-align: left;">8</td>
+<td style="text-align: left;">40320</td>
 </tr>
 <tr class="even">
-<td align="left">9</td>
-<td align="left">362880</td>
+<td style="text-align: left;">9</td>
+<td style="text-align: left;">362880</td>
 </tr>
 <tr class="odd">
-<td align="left">10</td>
-<td align="left">3628800</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">3628800</td>
 </tr>
 </tbody>
 </table>
@@ -2280,71 +2349,71 @@ vector&lt;point&gt; circles_point(point c1,<span class="dt">double</span> r1,poi
 <table>
 <thead>
 <tr class="header">
-<th align="left">N</th>
-<th align="left">日本語</th>
-<th align="center">英語</th>
+<th style="text-align: left;">N</th>
+<th style="text-align: left;">日本語</th>
+<th style="text-align: center;">英語</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left"><span class="math">\(10^{0}\)</span></td>
-<td align="left">一</td>
-<td align="center">one</td>
+<td style="text-align: left;"><span class="math">\(10^{0}\)</span></td>
+<td style="text-align: left;">一</td>
+<td style="text-align: center;">one</td>
 </tr>
 <tr class="even">
-<td align="left"><span class="math">\(10^{1}\)</span></td>
-<td align="left">十</td>
-<td align="center">ten</td>
+<td style="text-align: left;"><span class="math">\(10^{1}\)</span></td>
+<td style="text-align: left;">十</td>
+<td style="text-align: center;">ten</td>
 </tr>
 <tr class="odd">
-<td align="left"><span class="math">\(10^{2}\)</span></td>
-<td align="left">百</td>
-<td align="center">hundred</td>
+<td style="text-align: left;"><span class="math">\(10^{2}\)</span></td>
+<td style="text-align: left;">百</td>
+<td style="text-align: center;">hundred</td>
 </tr>
 <tr class="even">
-<td align="left"><span class="math">\(10^{3}\)</span></td>
-<td align="left">千</td>
-<td align="center">thousand</td>
+<td style="text-align: left;"><span class="math">\(10^{3}\)</span></td>
+<td style="text-align: left;">千</td>
+<td style="text-align: center;">thousand</td>
 </tr>
 <tr class="odd">
-<td align="left"><span class="math">\(10^{4}\)</span></td>
-<td align="left">万</td>
-<td align="center">ten thousand</td>
+<td style="text-align: left;"><span class="math">\(10^{4}\)</span></td>
+<td style="text-align: left;">万</td>
+<td style="text-align: center;">ten thousand</td>
 </tr>
 <tr class="even">
-<td align="left"><span class="math">\(10^{5}\)</span></td>
-<td align="left">十万</td>
-<td align="center">hundred thousand</td>
+<td style="text-align: left;"><span class="math">\(10^{5}\)</span></td>
+<td style="text-align: left;">十万</td>
+<td style="text-align: center;">hundred thousand</td>
 </tr>
 <tr class="odd">
-<td align="left"><span class="math">\(10^{6}\)</span></td>
-<td align="left">百万</td>
-<td align="center">million</td>
+<td style="text-align: left;"><span class="math">\(10^{6}\)</span></td>
+<td style="text-align: left;">百万</td>
+<td style="text-align: center;">million</td>
 </tr>
 <tr class="even">
-<td align="left"><span class="math">\(10^{7}\)</span></td>
-<td align="left">千万</td>
-<td align="center">ten million</td>
+<td style="text-align: left;"><span class="math">\(10^{7}\)</span></td>
+<td style="text-align: left;">千万</td>
+<td style="text-align: center;">ten million</td>
 </tr>
 <tr class="odd">
-<td align="left"><span class="math">\(10^{8}\)</span></td>
-<td align="left">億</td>
-<td align="center">hundred million</td>
+<td style="text-align: left;"><span class="math">\(10^{8}\)</span></td>
+<td style="text-align: left;">億</td>
+<td style="text-align: center;">hundred million</td>
 </tr>
 <tr class="even">
-<td align="left"><span class="math">\(10^{9}\)</span></td>
-<td align="left">十億</td>
-<td align="center">billion</td>
+<td style="text-align: left;"><span class="math">\(10^{9}\)</span></td>
+<td style="text-align: left;">十億</td>
+<td style="text-align: center;">billion</td>
 </tr>
 <tr class="odd">
-<td align="left"><span class="math">\(10^{10}\)</span></td>
-<td align="left">百億</td>
-<td align="center">ten billion</td>
+<td style="text-align: left;"><span class="math">\(10^{10}\)</span></td>
+<td style="text-align: left;">百億</td>
+<td style="text-align: center;">ten billion</td>
 </tr>
 <tr class="even">
-<td align="left"><span class="math">\(10^{11}\)</span></td>
-<td align="left">千億</td>
-<td align="center">hundred billion</td>
+<td style="text-align: left;"><span class="math">\(10^{11}\)</span></td>
+<td style="text-align: left;">千億</td>
+<td style="text-align: center;">hundred billion</td>
 </tr>
 </tbody>
 </table>
@@ -2352,81 +2421,81 @@ vector&lt;point&gt; circles_point(point c1,<span class="dt">double</span> r1,poi
 <table>
 <thead>
 <tr class="header">
-<th align="left">N</th>
-<th align="left"><span class="math">\(2^N\)</span></th>
-<th align="left">備考</th>
+<th style="text-align: left;">N</th>
+<th style="text-align: left;"><span class="math">\(2^N\)</span></th>
+<th style="text-align: left;">備考</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">0</td>
-<td align="left">1</td>
-<td align="left"></td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;"></td>
 </tr>
 <tr class="even">
-<td align="left">1</td>
-<td align="left">2</td>
-<td align="left">boolの大きさ</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">boolの大きさ</td>
 </tr>
 <tr class="odd">
-<td align="left">2</td>
-<td align="left">4</td>
-<td align="left"></td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;"></td>
 </tr>
 <tr class="even">
-<td align="left">3</td>
-<td align="left">8</td>
-<td align="left"></td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">8</td>
+<td style="text-align: left;"></td>
 </tr>
 <tr class="odd">
-<td align="left">4</td>
-<td align="left">16</td>
-<td align="left"></td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">16</td>
+<td style="text-align: left;"></td>
 </tr>
 <tr class="even">
-<td align="left">7</td>
-<td align="left">128</td>
-<td align="left">charの最大値+1</td>
+<td style="text-align: left;">7</td>
+<td style="text-align: left;">128</td>
+<td style="text-align: left;">charの最大値+1</td>
 </tr>
 <tr class="odd">
-<td align="left">8</td>
-<td align="left">256</td>
-<td align="left">unsigned charの最大値+1</td>
+<td style="text-align: left;">8</td>
+<td style="text-align: left;">256</td>
+<td style="text-align: left;">unsigned charの最大値+1</td>
 </tr>
 <tr class="even">
-<td align="left">16</td>
-<td align="left">65,534</td>
-<td align="left"></td>
+<td style="text-align: left;">16</td>
+<td style="text-align: left;">65,534</td>
+<td style="text-align: left;"></td>
 </tr>
 <tr class="odd">
-<td align="left">24</td>
-<td align="left">16,777,216</td>
-<td align="left"></td>
+<td style="text-align: left;">24</td>
+<td style="text-align: left;">16,777,216</td>
+<td style="text-align: left;"></td>
 </tr>
 <tr class="even">
-<td align="left">31</td>
-<td align="left">2,147,483,648</td>
-<td align="left">intの最大値+1(about 2*10^9)</td>
+<td style="text-align: left;">31</td>
+<td style="text-align: left;">2,147,483,648</td>
+<td style="text-align: left;">intの最大値+1(about 2*10^9)</td>
 </tr>
 <tr class="odd">
-<td align="left">32</td>
-<td align="left">4,294,967,296</td>
-<td align="left">unsigned intの最大値+1</td>
+<td style="text-align: left;">32</td>
+<td style="text-align: left;">4,294,967,296</td>
+<td style="text-align: left;">unsigned intの最大値+1</td>
 </tr>
 <tr class="even">
-<td align="left">52</td>
-<td align="left">4,503,599,627,370,496</td>
-<td align="left">doubleのprecision</td>
+<td style="text-align: left;">52</td>
+<td style="text-align: left;">4,503,599,627,370,496</td>
+<td style="text-align: left;">doubleのprecision</td>
 </tr>
 <tr class="odd">
-<td align="left">63</td>
-<td align="left">9,223,372,036,854,775,808</td>
-<td align="left">long longの最大値+1</td>
+<td style="text-align: left;">63</td>
+<td style="text-align: left;">9,223,372,036,854,775,808</td>
+<td style="text-align: left;">long longの最大値+1</td>
 </tr>
 <tr class="even">
-<td align="left">64</td>
-<td align="left">18,446,744,073,709,551,616</td>
-<td align="left">unsigned long longの最大値+1(about 10^19)</td>
+<td style="text-align: left;">64</td>
+<td style="text-align: left;">18,446,744,073,709,551,616</td>
+<td style="text-align: left;">unsigned long longの最大値+1(about 10^19)</td>
 </tr>
 </tbody>
 </table>

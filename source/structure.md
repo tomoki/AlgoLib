@@ -4,36 +4,39 @@
 
 ~~~~~~{.cpp}
 struct UnionFind{
-    vector<int> par; // 親
-    vector<int> rank; // 木の深さ
+    const int is_root = -1;
+    vector<int> data;
     UnionFind(int n){
-        rep(i,n) par.push_back(i);
-        rank = vector<int>(n);
+        data = vector<int>(n,-1);
     }
     // 親を探す
     int root(int x){
-        if(par[x] == x){
+        if(data[x] < 0){
             return x;
         }else{
-            // 縮約
-            return par[x] = root(par[x]);
+            return data[x] = root(data[x]);
         }
     }
     // x,yの含まれる集合を併合
-    void unite(int x,int y){
+    bool unite(int x,int y){
         x = root(x);
         y = root(y);
-        if(x==y) return;
-        if(rank[x] < rank[y]){
-            par[x] = y;
+        if(x != y){
+            // 大きいほうに追加する。
+            if(data[y] < data[x]) swap(x,y);
+            data[x] += data[y];
+            data[y] = x;
+            return true;
         }else{
-            par[y] = x;
-            if(rank[x] == rank[y]) rank[x]++;
+            return false;
         }
     }
     // 同じ集合にいるかどうか
     bool same(int x,int y){
         return root(x) == root(y);
+    }
+    int size(int x){
+        return -data[root(x)];
     }
 };
 ~~~~~~

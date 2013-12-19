@@ -29,7 +29,7 @@ using namespace std;
 
 #define all(c) c.begin(),c.end()
 #define rep(i,n) for(int i=0;i<(int)n;i++)
-#define debug(x) cerr << #x << " = " << (x) << " (L" << __LINE__ << ")" << endl
+#define debug(x) #x << "=" << (x) << "(L" << __LINE__ << ")"
 
 typedef long long ll;
 typedef vector<int> vi;
