@@ -107,14 +107,14 @@ int main(){
     cin >> W;
     cin >> N;
     vector<Treasure> v(N);
-    rep(i,N){
+    repeat(i,N){
         cin >> v[i].value >> v[i].weight;
     }
     // もしも複数入れて良いなら、直接valueを更新する。
     vi value(W+1);
-    rep(n,N){
+    repeat(n,N){
         vi tmp(W+1);
-        rep(i,W+1){
+        repeat(i,W+1){
             tmp[i] = max(tmp[i],value[i]);
             int in = i+v[n].weight;
             if(in <= W){
@@ -126,7 +126,7 @@ int main(){
 
     int retw=0;
     int retv=0;
-    rep(i,len(value)){
+    repeat(i,len(value)){
         if(value[i] > retv){
             retv = value[i];
             retw = i;

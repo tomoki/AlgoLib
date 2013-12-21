@@ -102,15 +102,11 @@ code > span.er { font-weight: bold; }
 <li><a href="#エラトステネスの篩"><span class="toc-section-number">7.3.1</span> エラトステネスの篩</a></li>
 <li><a href="#素因数分解"><span class="toc-section-number">7.3.2</span> 素因数分解</a></li>
 </ul></li>
-<li><a href="#コンビネーション"><span class="toc-section-number">7.4</span> コンビネーション</a><ul>
-<li><a href="#コンビネーションの数"><span class="toc-section-number">7.4.1</span> コンビネーションの数</a></li>
-<li><a href="#列挙"><span class="toc-section-number">7.4.2</span> 列挙</a></li>
-</ul></li>
+<li><a href="#コンビネーション"><span class="toc-section-number">7.4</span> コンビネーション</a></li>
 <li><a href="#確率的なアレ"><span class="toc-section-number">7.5</span> 確率的なアレ</a></li>
-<li><a href="#ヨセフス数"><span class="toc-section-number">7.6</span> ヨセフス数</a></li>
-<li><a href="#乱数"><span class="toc-section-number">7.7</span> 乱数</a></li>
-<li><a href="#基数変換"><span class="toc-section-number">7.8</span> 基数変換</a></li>
-<li><a href="#二次方程式"><span class="toc-section-number">7.9</span> 二次方程式</a></li>
+<li><a href="#乱数"><span class="toc-section-number">7.6</span> 乱数</a></li>
+<li><a href="#基数変換"><span class="toc-section-number">7.7</span> 基数変換</a></li>
+<li><a href="#二次方程式"><span class="toc-section-number">7.8</span> 二次方程式</a></li>
 </ul></li>
 <li><a href="#行列"><span class="toc-section-number">8</span> 行列</a><ul>
 <li><a href="#基本要素"><span class="toc-section-number">8.1</span> 基本要素</a></li>
@@ -120,8 +116,7 @@ code > span.er { font-weight: bold; }
 <li><a href="#表示"><span class="toc-section-number">8.3.2</span> 表示</a></li>
 <li><a href="#ベクトルとのかけ算"><span class="toc-section-number">8.3.3</span> ベクトルとのかけ算</a></li>
 </ul></li>
-<li><a href="#テスト"><span class="toc-section-number">8.4</span> テスト</a></li>
-<li><a href="#gauss-jordan"><span class="toc-section-number">8.5</span> Gauss-Jordan</a></li>
+<li><a href="#gauss-jordan"><span class="toc-section-number">8.4</span> Gauss-Jordan</a></li>
 </ul></li>
 <li><a href="#動的計画法およびそれに似たやつらtodo"><span class="toc-section-number">9</span> 動的計画法およびそれに似たやつら。(TODO)</a><ul>
 <li><a href="#lcs"><span class="toc-section-number">9.1</span> LCS</a></li>
@@ -169,14 +164,17 @@ code > span.er { font-weight: bold; }
 <h1 id="テンプレート"><a href="#テンプレート"><span class="header-section-number">1</span> テンプレート</a></h1>
 <p>各種バッドノウハウを含む。</p>
 <h2 id="c"><a href="#c"><span class="header-section-number">1.1</span> C++</a></h2>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
+<pre class="sourceCode cpp" include="cpp/template.cpp"><code class="sourceCode cpp"><span class="co">// compile in C++11. use -std=c++11.</span>
+<span class="ot">#include &lt;iostream&gt;</span>
 <span class="ot">#include &lt;iomanip&gt;</span>
 <span class="ot">#include &lt;vector&gt;</span>
+<span class="ot">#include &lt;valarray&gt;</span>
 <span class="ot">#include &lt;map&gt;</span>
 <span class="ot">#include &lt;set&gt;</span>
+<span class="ot">#include &lt;list&gt;</span>
 <span class="ot">#include &lt;queue&gt;</span>
-<span class="ot">#include &lt;bitset&gt;</span>
 <span class="ot">#include &lt;stack&gt;</span>
+<span class="ot">#include &lt;bitset&gt;</span>
 <span class="ot">#include &lt;utility&gt;</span>
 <span class="ot">#include &lt;numeric&gt;</span>
 <span class="ot">#include &lt;algorithm&gt;</span>
@@ -190,31 +188,51 @@ code > span.er { font-weight: bold; }
 <span class="ot">#include &lt;cctype&gt;</span>
 <span class="ot">#include &lt;cstring&gt;</span>
 
+<span class="co">// this require C++11</span>
+<span class="ot">#include &lt;unordered_set&gt;</span>
+<span class="ot">#include &lt;unordered_map&gt;</span>
+<span class="ot">#include &lt;random&gt;</span>
+
 <span class="kw">using</span> <span class="kw">namespace</span> std;
 
 <span class="ot">#define all(c) c.begin(),c.end()</span>
-<span class="ot">#define rep(i,n) for(int i=0;i&lt;(int)n;i++)</span>
-<span class="ot">#define debug(x) #x &lt;&lt; &quot;=&quot; &lt;&lt; (x) &lt;&lt; &quot;(L&quot; &lt;&lt; __LINE__ &lt;&lt; &quot;)&quot;</span>
+<span class="ot">#define repeat(i,n) for(int i=0;i&lt;static_cast&lt;int&gt;(n);i++)</span>
+<span class="ot">#define debug(x) #x &lt;&lt; &quot;=&quot; &lt;&lt; (x)</span>
+<span class="ot">#define dump(x) cerr &lt;&lt; debug(x) &lt;&lt; &quot; (L:&quot; &lt;&lt; __LINE__ &lt;&lt; &quot;)&quot;&lt;&lt; endl</span>
 
 <span class="kw">typedef</span> <span class="dt">long</span> <span class="dt">long</span> ll;
 <span class="kw">typedef</span> vector&lt;<span class="dt">int</span>&gt; vi;
 
 <span class="kw">template</span>&lt;<span class="kw">typename</span> T&gt;
-ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream&amp; os,<span class="dt">const</span> vector&lt;T&gt;&amp; val){
-    os &lt;&lt; <span class="st">&quot;[ &quot;</span>;
-    <span class="kw">for</span>(<span class="kw">typename</span> vector&lt;T&gt;::const_iterator it=val.begin();
-        it != val.end();++it){
-        os &lt;&lt; *it &lt;&lt; <span class="st">&quot; &quot;</span>;
+ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream&amp; os,<span class="dt">const</span> vector&lt;T&gt;&amp; vec){
+    os &lt;&lt; <span class="st">&quot;[&quot;</span>;
+    <span class="kw">for</span>(<span class="dt">const</span> <span class="dt">auto</span>&amp; v : vec){
+        os &lt;&lt; v &lt;&lt; <span class="st">&quot;,&quot;</span>;
     }
     os &lt;&lt; <span class="st">&quot;]&quot;</span>;
     <span class="kw">return</span> os;
 }
 
+<span class="kw">template</span>&lt;<span class="kw">typename</span> T&gt;
+T input(){
+    T t;cin &gt;&gt; t;
+    <span class="kw">return</span> t;
+}
+
+<span class="kw">template</span>&lt;<span class="kw">typename</span> T&gt;
+vector&lt;T&gt; input(<span class="dt">const</span> <span class="dt">int</span> N){
+    vector&lt;T&gt; v(N);
+    repeat(i,N) cin &gt;&gt; v[i];
+    <span class="kw">return</span> v;
+}
+
+
+
 <span class="dt">int</span> main(){
     <span class="kw">return</span> <span class="dv">0</span>;
 }</code></pre>
 <h2 id="python"><a href="#python"><span class="header-section-number">1.2</span> Python</a></h2>
-<pre class="sourceCode python"><code class="sourceCode python"><span class="co">#!/usr/bin/env python</span>
+<pre class="sourceCode python" include="python/template.py"><code class="sourceCode python"><span class="co">#!/usr/bin/env python</span>
 <span class="co">#coding:utf-8</span>
 
 <span class="ch">from</span> __future__ <span class="ch">import</span> division
@@ -410,7 +428,7 @@ printf(<span class="st">&quot;n is %d</span><span class="ch">\n</span><span clas
 </tr>
 <tr class="odd">
 <td style="text-align: left;">%d</td>
-<td style="text-align: left;">符号付き１０進整数</td>
+<td style="text-align: left;">符号付き10進整数</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">%u</td>
@@ -463,6 +481,7 @@ sort(all(vec),greater&lt;<span class="dt">int</span>&gt;());</code></pre>
     vector&lt;<span class="dt">int</span>&gt; vec(<span class="dv">10</span>);
     <span class="co">//絶対値が小さい順にソート</span>
     sort(all(vec),comp);
+    sort(all(vec),[](<span class="dt">int</span> l,<span class="dt">int</span> r) {<span class="kw">return</span> abs(l)&lt;abs(r)});
 }</code></pre>
 <h3 id="stable_sort"><a href="#stable_sort"><span class="header-section-number">4.2.2</span> stable_sort</a></h3>
 <p>sortとちがって、同じ優先順位の要素の順番は保存される。最悪計算量は<span class="math">\(O(n \log ^ 2 n)\)</span>である。</p>
@@ -473,7 +492,7 @@ sort(all(vec),greater&lt;<span class="dt">int</span>&gt;());</code></pre>
 vector&lt;<span class="dt">int</span>&gt; vec(ints,ints<span class="dv">+5</span>);
 vec.erase(unique(all(vec)),vec.end());
 <span class="co">// 1 2 1</span>
-rep(i,vec.size()) cout &lt;&lt; vec[i] &lt;&lt; endl;</code></pre>
+repeat(i,vec.size()) cout &lt;&lt; vec[i] &lt;&lt; endl;</code></pre>
 <h2 id="rotate"><a href="#rotate"><span class="header-section-number">4.4</span> rotate</a></h2>
 <p>rotateは第二引数の場所を先頭にするように回転する。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span>[] ints = {<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>};
@@ -496,7 +515,7 @@ sort(all(V));
 <h2 id="全探索"><a href="#全探索"><span class="header-section-number">5.1</span> 全探索</a></h2>
 <p>全部しらべる。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> linear_search(vector&lt;<span class="dt">int</span>&gt; V,<span class="dt">int</span> val){
-    rep(i,V.size()){
+    repeat(i,V.size()){
         <span class="kw">if</span>(V[i] == val) <span class="kw">return</span> i;
     }
     <span class="kw">return</span> -<span class="dv">1</span>;
@@ -511,6 +530,7 @@ sort(all(V));
     }<span class="kw">else</span>{
         lower = m;
     }
+    cout &lt;&lt; upper &lt;&lt; endl;
 }</code></pre>
 <p>とすると、upperに求めたい値がはいる。もしみつからなかった場合には、値は 変わらない。なので、lower,upperには極端な値を設定すること。200という回数 は、すこし多め。100で十分。対象がvectorの場合は以下のように書ける。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
@@ -567,7 +587,7 @@ string s;
 ss &gt;&gt; s;</code></pre>
 <h2 id="再帰下降構文解析"><a href="#再帰下降構文解析"><span class="header-section-number">6.3</span> 再帰下降構文解析</a></h2>
 <p>BNFを書いて、それにしたがっていく。左再帰除去を忘れずに。</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
+<pre class="sourceCode cpp" include="cpp/parse.cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
 <span class="ot">#include &lt;string&gt;</span>
 <span class="ot">#include &lt;cctype&gt;</span>
 <span class="ot">#include &lt;sstream&gt;</span>
@@ -683,7 +703,7 @@ a ^ {m-2} \equiv \frac{1}{a} \pmod m\end{aligned}\]</span></p>
 <p>つまり、<span class="math">\(a\)</span>で割ることと、<span class="math">\(a^{m-2}\)</span>を掛けることは同じである。<br />これは、<span class="math">\(C(10000,5000) \pmod p\)</span>といった式を計算する際、次の冪乗の演算と組みあわせて用いる。</p>
 <h3 id="冪乗のmod"><a href="#冪乗のmod"><span class="header-section-number">7.2.2</span> 冪乗のmod</a></h3>
 <p>いわゆるmod_pow。計算量は<span class="math">\(O(\log n)\)</span>。</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp">ll mod_pow(ll x,ll n,ll mod){
+<pre class="sourceCode cpp" include="cpp/mod_pow.cpp"><code class="sourceCode cpp">ll mod_pow(ll x,ll n,ll mod){
     <span class="kw">if</span>(n==<span class="dv">0</span>) <span class="kw">return</span> <span class="dv">1</span>;
     ll ret = mod_pow(x * x % mod,n/<span class="dv">2</span>,mod);
     <span class="kw">if</span>(n%<span class="dv">2</span>== <span class="dv">1</span>)  ret = ret * x % mod;
@@ -692,7 +712,7 @@ a ^ {m-2} \equiv \frac{1}{a} \pmod m\end{aligned}\]</span></p>
 <p>ちなみにC++のpowを使うときに、引数が整数で、返り値も整数であることを期待 するときには、上記のpowを使うべき。なぜならC++のpowは double,double-&gt;doubleな関数であるから。</p>
 <h2 id="素数"><a href="#素数"><span class="header-section-number">7.3</span> 素数</a></h2>
 <h3 id="エラトステネスの篩"><a href="#エラトステネスの篩"><span class="header-section-number">7.3.1</span> エラトステネスの篩</a></h3>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
+<pre class="sourceCode cpp" include="cpp/sieve.cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
 <span class="ot">#include &lt;vector&gt;</span>
 <span class="kw">using</span> <span class="kw">namespace</span> std;
 
@@ -701,7 +721,7 @@ a ^ {m-2} \equiv \frac{1}{a} \pmod m\end{aligned}\]</span></p>
 vector&lt;<span class="dt">bool</span>&gt; sieve(<span class="dt">const</span> <span class="dt">int</span> M){
     vector&lt;<span class="dt">bool</span>&gt; isPrime(M);
     <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">2</span>;i&lt;M;i++) isPrime[i] = <span class="kw">true</span>;
-    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">2</span>;i*i &lt; M;i++){
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">2</span>;i*i&lt;M;i++){
         <span class="kw">if</span>(<span class="kw">not</span> isPrime[i]) <span class="kw">continue</span>;
         <span class="kw">for</span>(<span class="dt">int</span> j=i*i;j&lt;M;j+=i){
             isPrime[j] = <span class="kw">false</span>;
@@ -709,7 +729,7 @@ vector&lt;<span class="dt">bool</span>&gt; sieve(<span class="dt">const</span> <
     }
     <span class="kw">return</span> isPrime;
 }</code></pre>
-<pre class="py"><code>from math import *
+<pre class="py" include="python/sieve.py"><code>from math import *
 
 def sieve(N):
     primes = set()
@@ -721,19 +741,21 @@ def sieve(N):
             for j in range(i*i,N,i):
                 primes.discard(j)
 
-    return primes</code></pre>
+    return primes
+</code></pre>
 <p>素数のリストが欲しかったら、適当に突っ込むこと。 実際には<span class="math">\(O(n \log \log n)\)</span>だけれど、大体<span class="math">\(O(n)\)</span>だと思っていい。</p>
 <h3 id="素因数分解"><a href="#素因数分解"><span class="header-section-number">7.3.2</span> 素因数分解</a></h3>
 <h2 id="コンビネーション"><a href="#コンビネーション"><span class="header-section-number">7.4</span> コンビネーション</a></h2>
 <p>くみあわせ。</p>
-<h3 id="コンビネーションの数"><a href="#コンビネーションの数"><span class="header-section-number">7.4.1</span> コンビネーションの数</a></h3>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
+<pre class="sourceCode cpp" include="cpp/combi.cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
 <span class="ot">#include &lt;vector&gt;</span>
+<span class="ot">#include &lt;algorithm&gt;</span>
 
 <span class="kw">using</span> <span class="kw">namespace</span> std;
 <span class="kw">typedef</span> <span class="dt">long</span> <span class="dt">long</span> ll;
 
 <span class="co">//いい感じのやつ (n=61まで大丈夫)</span>
+<span class="co">//  modにしても良い。O(N)</span>
 ll combi(<span class="dt">int</span> n,<span class="dt">int</span> r){
     <span class="kw">if</span>(n &lt; r) <span class="kw">return</span> <span class="dv">0</span>;
     r = min(r,n-r);
@@ -764,48 +786,107 @@ ll combi_tri(<span class="dt">int</span> n,<span class="dt">int</span> r){
 <span class="co">// 未検証</span>
 ll multicombi(ll n,ll k){
     <span class="kw">return</span> combi(n+k<span class="dv">-1</span>,n<span class="dv">-1</span>);
-}</code></pre>
-<h3 id="列挙"><a href="#列挙"><span class="header-section-number">7.4.2</span> 列挙</a></h3>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main(){
-    <span class="dt">int</span> N,M;
-    cin &gt;&gt; N &gt;&gt; M;
+}
 
-    vector&lt;<span class="dt">int</span>&gt; numbers(N);
-    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;N;i++) numbers[i] = i;
-
-    stack&lt;pair&lt;<span class="dt">int</span>,vector&lt;<span class="dt">int</span>&gt; &gt; &gt; stack;
-    stack.push(make_pair(<span class="dv">0</span>,vector&lt;<span class="dt">int</span>&gt;()));
-
-    vector&lt;vector&lt;<span class="dt">int</span>&gt; &gt; combis;
-    <span class="kw">while</span>(!stack.empty()){
-        <span class="dt">int</span> lower = stack.top().first;
-        vector&lt;<span class="dt">int</span>&gt; choose = stack.top().second;
-        stack.pop();
-
-        <span class="kw">if</span>(choose.size() == M){
-            combis.push_back(choose);
-            <span class="kw">continue</span>;
-        }
-
-        <span class="kw">for</span>(<span class="dt">int</span> i=lower;i&lt;N-M+choose.size()+<span class="dv">1</span>;i++){
-            vector&lt;<span class="dt">int</span>&gt; cop = choose;
-            cop.push_back(numbers[i]);
-            stack.push(make_pair(i<span class="dv">+1</span>,cop));
-        }
+<span class="co">// testing...</span>
+<span class="kw">template</span> &lt;<span class="kw">typename</span> BidirectionalIterator&gt;
+<span class="dt">bool</span> next_combination(BidirectionalIterator first1,
+                      BidirectionalIterator last1,
+                      BidirectionalIterator first2,
+                      BidirectionalIterator last2){
+    <span class="kw">if</span>((first1 == last1) <span class="kw">or</span> (first2 == last2)){
+        <span class="kw">return</span> <span class="kw">false</span>;
     }
-
-    cout &lt;&lt; <span class="st">&quot;size :&quot;</span> &lt;&lt; combis.size() &lt;&lt; endl;
-    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;combis.size();i++){
-        <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;combis[i].size();j++){
-            cout &lt;&lt; combis[i][j] &lt;&lt; <span class="st">&quot; &quot;</span>;
-        }
-        cout &lt;&lt; endl;
+    BidirectionalIterator m1 = last1;
+    BidirectionalIterator m2 = last2;
+    --m2;
+    <span class="kw">while</span>(--m1 != first1 &amp;&amp; <span class="kw">not</span> (*m1 &lt; *m2)){
     }
+    <span class="dt">bool</span> result = (m1 == first1) <span class="kw">and</span> <span class="kw">not</span> (*first1 &lt; *m2);
+    <span class="kw">if</span>(<span class="kw">not</span> result){
+        <span class="kw">while</span>(first2 != m2 <span class="kw">and</span> <span class="kw">not</span>(*m1 &lt; *first2)){
+            ++first2;
+        }
+        first1 = m1;
+        iter_swap(first1,first2);
+        ++first1;++first2;
+    }
+    <span class="kw">if</span>((first1 != last1) <span class="kw">and</span> (first2 != last2)){
+        m1 = last1; m2 = first2;
+        <span class="kw">while</span>((m1 != first1) <span class="kw">and</span> (m2 != last2)){
+            iter_swap(--m1,m2);
+            ++m2;
+        }
+        reverse(first1,m1);
+        reverse(first1,last1);
+        reverse(m2,last2);
+        reverse(first2,last2);
+    }
+    <span class="kw">return</span> <span class="kw">not</span> result;
+}
+
+<span class="kw">template</span>&lt;<span class="kw">typename</span> BidirectionalIterator&gt;
+<span class="dt">bool</span> next_combination(BidirectionalIterator first,
+                      BidirectionalIterator middle,
+                      BidirectionalIterator last){
+    <span class="kw">return</span> next_combination(first,middle,middle,last);
+}
+
+<span class="kw">template</span>&lt;<span class="kw">class</span> BidirectionalIterator&gt;
+<span class="kw">inline</span> <span class="dt">bool</span> prev_combination(BidirectionalIterator first,
+                             BidirectionalIterator middle,
+                             BidirectionalIterator last){
+  <span class="kw">return</span> next_combination(middle,last,first,middle);
+}
+
+<span class="kw">template</span>&lt;<span class="kw">typename</span> T&gt;
+ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream&amp; os,<span class="dt">const</span> vector&lt;T&gt;&amp; vec){
+    os &lt;&lt; <span class="st">&quot;[&quot;</span>;
+    <span class="kw">for</span>(<span class="dt">const</span> <span class="dt">auto</span>&amp; v : vec){
+        os &lt;&lt; v &lt;&lt; <span class="st">&quot;,&quot;</span>;
+    }
+    os &lt;&lt; <span class="st">&quot;]&quot;</span>;
+    <span class="kw">return</span> os;
+}
+
+<span class="kw">typedef</span> <span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> ull;
+
+<span class="dt">void</span> print_bit(ull S, <span class="dt">int</span> n=<span class="dv">64</span>){
+    <span class="kw">for</span>(<span class="dt">int</span> i=n<span class="dv">-1</span>; i&gt;=<span class="dv">0</span>; i--){
+        <span class="kw">if</span>(S&gt;&gt;i &amp; <span class="dv">1</span>) std::cout &lt;&lt; <span class="dv">1</span>;
+        <span class="kw">else</span> std::cout &lt;&lt; <span class="dv">0</span>;
+    }
+    std::cout &lt;&lt; std::endl;
+}
+
+<span class="dt">void</span> subset_combination(<span class="dt">int</span> n, <span class="dt">int</span> k){
+    ull S = (1ULL &lt;&lt; k) - 1ULL;
+    ull E = ~((1ULL &lt;&lt; n) - 1ULL);
+    <span class="kw">while</span>(!(S &amp; E)){
+        print_bit(S, n);
+        ull smallest = S &amp; -S;
+        ull ripple = S + smallest;
+        ull nsmallest = ripple &amp; -ripple;
+        S = ripple | (((nsmallest / smallest) &gt;&gt; <span class="dv">1</span>) - <span class="dv">1</span>);
+    }
+}
+
+
+<span class="dt">int</span> main(){
+    <span class="co">// poyoから2つえらぶ</span>
+    vector&lt;<span class="dt">int</span>&gt; poyo = {<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>};
+    <span class="dt">int</span> N = poyo.size(),R = <span class="dv">3</span>;
+    <span class="kw">do</span>{
+        vector&lt;<span class="dt">int</span>&gt; c(poyo.begin(),poyo.begin()+R);
+        cerr &lt;&lt; c  &lt;&lt; endl;
+    }<span class="kw">while</span>(next_combination(poyo.begin(),poyo.begin()+R,poyo.end()));
+
     <span class="kw">return</span> <span class="dv">0</span>;
 }</code></pre>
 <h2 id="確率的なアレ"><a href="#確率的なアレ"><span class="header-section-number">7.5</span> 確率的なアレ</a></h2>
 <p>テスト中。</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// n&lt; 341550071728321 , ok.</span>
+<pre class="sourceCode cpp" include="cpp/pollard_rho.cpp"><code class="sourceCode cpp"><span class="co">// n&lt; 341550071728321 , ok.</span>
+<span class="ot">#include &lt;iostream&gt;</span>
 <span class="ot">#include &lt;vector&gt;</span>
 <span class="ot">#include &lt;cmath&gt;</span>
 <span class="kw">using</span> <span class="kw">namespace</span> std;
@@ -933,16 +1014,15 @@ vector&lt;ll&gt; pollard_rho(ll n,<span class="dt">const</span> vector&lt;ll&gt;
     }
     <span class="kw">return</span> <span class="dv">0</span>;
 }</code></pre>
-<h2 id="ヨセフス数"><a href="#ヨセフス数"><span class="header-section-number">7.6</span> ヨセフス数</a></h2>
-<h2 id="乱数"><a href="#乱数"><span class="header-section-number">7.7</span> 乱数</a></h2>
+<h2 id="乱数"><a href="#乱数"><span class="header-section-number">7.6</span> 乱数</a></h2>
 <p>XORShiftをつかったらうれしいかもしれない。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> <span class="dt">long</span> xor128(){
     <span class="dt">static</span> <span class="dt">unsigned</span> <span class="dt">long</span> x=<span class="dv">123456789</span>,y=<span class="dv">362436069</span>,z=<span class="dv">521288629</span>,w=<span class="dv">88675123</span>;
     <span class="dt">unsigned</span> <span class="dt">long</span> t;
     t=(x^(x&lt;&lt;<span class="dv">11</span>));x=y;y=z;z=w; <span class="kw">return</span>( w=(w^(w&gt;&gt;<span class="dv">19</span>))^(t^(t&gt;&gt;<span class="dv">8</span>)) );
 }</code></pre>
-<h2 id="基数変換"><a href="#基数変換"><span class="header-section-number">7.8</span> 基数変換</a></h2>
-<pre class="sourceCode cpp"><code class="sourceCode cpp">vector&lt;<span class="dt">int</span>&gt; int_to_digits(<span class="dt">int</span> base,<span class="dt">int</span> N){
+<h2 id="基数変換"><a href="#基数変換"><span class="header-section-number">7.7</span> 基数変換</a></h2>
+<pre class="sourceCode cpp" include="cpp/digit_conv.cpp"><code class="sourceCode cpp">vector&lt;<span class="dt">int</span>&gt; int_to_digits(<span class="dt">int</span> base,<span class="dt">int</span> N){
     vector&lt;<span class="dt">int</span>&gt; rev_ret;
     <span class="kw">while</span>(N != <span class="dv">0</span>){
         rev_ret.push_back(N % base);
@@ -960,8 +1040,8 @@ vector&lt;ll&gt; pollard_rho(ll n,<span class="dt">const</span> vector&lt;ll&gt;
     }
     <span class="kw">return</span> ret;
 }</code></pre>
-<h2 id="二次方程式"><a href="#二次方程式"><span class="header-section-number">7.9</span> 二次方程式</a></h2>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// solve ax^2 + bx + c = 0.</span>
+<h2 id="二次方程式"><a href="#二次方程式"><span class="header-section-number">7.8</span> 二次方程式</a></h2>
+<pre class="sourceCode cpp" include="cpp/solve_quadratic_equation.cpp"><code class="sourceCode cpp"><span class="co">// solve ax^2 + bx + c = 0.</span>
 vector&lt;<span class="dt">double</span>&gt; solve_quadratic_equation(<span class="dt">double</span> a,<span class="dt">double</span> b,<span class="dt">double</span> c){
     vector&lt;<span class="dt">double</span>&gt; ret;
     <span class="kw">if</span>(abs(a-EPS) &lt; <span class="dv">0</span>){
@@ -1050,9 +1130,7 @@ vector&lt;<span class="dt">double</span>&gt; solve_quadratic_equation(<span clas
     }
     <span class="kw">return</span> ret;
 }</code></pre>
-<h2 id="テスト"><a href="#テスト"><span class="header-section-number">8.4</span> テスト</a></h2>
-<p>AOJ 1327</p>
-<h2 id="gauss-jordan"><a href="#gauss-jordan"><span class="header-section-number">8.5</span> Gauss-Jordan</a></h2>
+<h2 id="gauss-jordan"><a href="#gauss-jordan"><span class="header-section-number">8.4</span> Gauss-Jordan</a></h2>
 <p>GF上で連立方程式を解く</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// Gauss-Jordan. Solve equation on GF.</span>
 <span class="dt">int</span> invert(<span class="dt">int</span> x){
@@ -1209,14 +1287,14 @@ dp[<span class="dv">0</span>][<span class="dv">0</span>] = <span class="dv">1</s
     cin &gt;&gt; W;
     cin &gt;&gt; N;
     vector&lt;Treasure&gt; v(N);
-    rep(i,N){
+    repeat(i,N){
         cin &gt;&gt; v[i].value &gt;&gt; v[i].weight;
     }
     <span class="co">// もしも複数入れて良いなら、直接valueを更新する。</span>
     vi value(W<span class="dv">+1</span>);
-    rep(n,N){
+    repeat(n,N){
         vi tmp(W<span class="dv">+1</span>);
-        rep(i,W<span class="dv">+1</span>){
+        repeat(i,W<span class="dv">+1</span>){
             tmp[i] = max(tmp[i],value[i]);
             <span class="dt">int</span> in = i+v[n].weight;
             <span class="kw">if</span>(in &lt;= W){
@@ -1228,7 +1306,7 @@ dp[<span class="dv">0</span>][<span class="dv">0</span>] = <span class="dv">1</s
 
     <span class="dt">int</span> retw=<span class="dv">0</span>;
     <span class="dt">int</span> retv=<span class="dv">0</span>;
-    rep(i,len(value)){
+    repeat(i,len(value)){
         <span class="kw">if</span>(value[i] &gt; retv){
             retv = value[i];
             retw = i;

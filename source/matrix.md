@@ -88,9 +88,6 @@ vector<ll> mat_multi(vector<vector<ll> > lhs,vector<ll> rhs,int mod){
 }
 ~~~~~~
 
-## テスト
-AOJ 1327
-
 ## Gauss-Jordan
 GF上で連立方程式を解く
 

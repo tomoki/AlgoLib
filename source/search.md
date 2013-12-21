@@ -5,7 +5,7 @@
 
 ~~~~~~{.cpp}
 int linear_search(vector<int> V,int val){
-    rep(i,V.size()){
+    repeat(i,V.size()){
         if(V[i] == val) return i;
     }
     return -1;
@@ -25,6 +25,7 @@ for(int i=0;i<200;i++){
     }else{
         lower = m;
     }
+    cout << upper << endl;
 }
 ~~~~~~
 

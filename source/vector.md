@@ -39,6 +39,7 @@ int main(){
     vector<int> vec(10);
     //絶対値が小さい順にソート
     sort(all(vec),comp);
+    sort(all(vec),[](int l,int r) {return abs(l)<abs(r)});
 }
 ~~~~~~
 
@@ -60,7 +61,7 @@ int ints[] = {1,1,2,1,1};
 vector<int> vec(ints,ints+5);
 vec.erase(unique(all(vec)),vec.end());
 // 1 2 1
-rep(i,vec.size()) cout << vec[i] << endl;
+repeat(i,vec.size()) cout << vec[i] << endl;
 ~~~~~~
 
 ## rotate
