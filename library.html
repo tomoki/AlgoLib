@@ -125,6 +125,7 @@ code > span.er { font-weight: bold; }
 </ul></li>
 <li><a href="#巡回セールスマン問題"><span class="toc-section-number">9.3</span> 巡回セールスマン問題</a></li>
 <li><a href="#ナップサック問題"><span class="toc-section-number">9.4</span> ナップサック問題</a></li>
+<li><a href="#ヒストグラム内の最大長方形のサイズ"><span class="toc-section-number">9.5</span> ヒストグラム内の最大長方形のサイズ</a></li>
 </ul></li>
 <li><a href="#データ構造"><span class="toc-section-number">10</span> データ構造</a><ul>
 <li><a href="#union-find"><span class="toc-section-number">10.1</span> Union-Find</a></li>
@@ -294,7 +295,7 @@ dp[<span class="dv">0</span>][<span class="dv">0</span>] = <span class="dv">1</s
 <h2 id="double"><a href="#double"><span class="header-section-number">2.3</span> double</a></h2>
 <p>floatは使ってはだめ。</p>
 <h2 id="char"><a href="#char"><span class="header-section-number">2.4</span> char</a></h2>
-<p>-128 ~ 127くらい。ちいさい。基本的には文字を入れるのに使う。vector&lt;char&gt;を vector&lt;bool&gt;の代わりに使ってもいい。</p>
+<p>-128 ~ 127くらい。ちいさい。基本的には文字を入れるのに使う。vector&lt;char&gt;を<br />vector&lt;bool&gt;の代わりに使ってもいい。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">char</span> c = &#39;a&#39;;
 <span class="co">//cctypeが必要。大文字に変換する。すでに大文字のときは何も起こらない。</span>
 c = toupper(c);
@@ -311,7 +312,7 @@ vector&lt;<span class="dt">char</span>&gt; used(<span class="dv">10</span>,<span
 <span class="dt">int</span> f = floor(x); <span class="co">// -&gt; 0</span>
 <span class="dt">int</span> c = ceil(x); <span class="co">// -&gt; 1</span>
 <span class="dt">int</span> r = round(x) <span class="co">// -&gt; 0</span></code></pre>
-<p>任意の場所で四捨五入したいときには、<span class="math">\(10^{n}\)</span>をかけて、roundした後に、 <span class="math">\(10^{n}\)</span>で割ればいい。</p>
+<p>任意の場所で四捨五入したいときには、<span class="math">\(10^{n}\)</span>をかけて、roundした後に、<br /><span class="math">\(10^{n}\)</span>で割ればいい。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">double</span> x = <span class="fl">0.123456789</span>;
 <span class="co">//0.123</span>
 <span class="dt">double</span> r = round(x*<span class="dv">1000</span>) / <span class="fl">1000.0</span>;</code></pre>
@@ -340,7 +341,7 @@ cin &gt;&gt; x &gt;&gt; c &gt;&gt; y;</code></pre>
 <p>空白とか含めて一行読む。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp">string s;
 getline(cin,s);</code></pre>
-<p>改行文字は、sに入らず、かつ読み捨てされる。 cinでは、改行文字は読み捨てないことに注意しよう。 つまり、数値&lt;改行&gt;文字列&lt;改行&gt;を読みたいときには、</p>
+<p>改行文字は、sに入らず、かつ読み捨てされる。<br />cinでは、改行文字は読み捨てないことに注意しよう。<br />つまり、数値&lt;改行&gt;文字列&lt;改行&gt;を読みたいときには、</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> n;string s;
 <span class="co">// 数値</span>
 cin &gt;&gt; n;
@@ -348,9 +349,9 @@ cin &gt;&gt; n;
 cin.ignore();
 <span class="co">// 文字列</span>
 getline(cin,s);</code></pre>
-<p>とする。cinは改行文字を残すので、ignoreでそれを読み捨てないといけない。 また、ignoreの引数は読み捨てる文字数。引数なしの場合は1を渡したのと同等 の効果がある。</p>
+<p>とする。cinは改行文字を残すので、ignoreでそれを読み捨てないといけない。<br />また、ignoreの引数は読み捨てる文字数。引数なしの場合は1を渡したのと同等<br />の効果がある。</p>
 <h3 id="cout"><a href="#cout"><span class="header-section-number">3.1.2</span> cout</a></h3>
-<p>有効数字等が設定されている問題は、必ず多めに出力すること。多めに出す分に は大丈夫。</p>
+<p>有効数字等が設定されている問題は、必ず多めに出力すること。多めに出す分に<br />は大丈夫。</p>
 <p>基本の使い方</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> n;vector&lt;<span class="dt">int</span>&gt; V(n);
 cout &lt;&lt; n &lt;&lt; endl;
@@ -403,7 +404,7 @@ cout &lt;&lt; d &lt;&lt; endl;</code></pre>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> n;<span class="dt">char</span> tmp[<span class="dv">256</span>];
 scanf(<span class="st">&quot;%d</span><span class="ch">\n</span><span class="st">&quot;</span>,&amp;n);
 gets(tmp);</code></pre>
-<p>stringに直接いれるのはだめ。scanfはcinと同様に改行を残す。getlineするな らcin.ignore。getsするなら、直前のscanfで改行を読んでおく必要がある。 また、scanfで改行を読むのでなく、直後にgetc(stdin)してもいい。</p>
+<p>stringに直接いれるのはだめ。scanfはcinと同様に改行を残す。getlineするな<br />らcin.ignore。getsするなら、直前のscanfで改行を読んでおく必要がある。<br />また、scanfで改行を読むのでなく、直後にgetc(stdin)してもいい。</p>
 <h3 id="printf"><a href="#printf"><span class="header-section-number">3.2.2</span> printf</a></h3>
 <p>基本的な使い方</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> n = <span class="dv">100</span>;
@@ -456,9 +457,9 @@ printf(<span class="st">&quot;n is %d</span><span class="ch">\n</span><span clas
 <p>以下のコードをmain関数の最初に書くことで、cin,coutの速度が2倍程度になる。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp">ios::sync_with_stdio(<span class="kw">false</span>);
 cin.tie(<span class="dv">0</span>);</code></pre>
-<p>ただし、このコードはstdioとの同期を切るという意味なので、これを使うとき にはprintfやscanfを使用してはだめ。</p>
+<p>ただし、このコードはstdioとの同期を切るという意味なので、これを使うとき<br />にはprintfやscanfを使用してはだめ。</p>
 <h1 id="stdvector"><a href="#stdvector"><span class="header-section-number">4</span> std::vector</a></h1>
-<p>ここでは、配列のSTL版である、vectorの使いかたについて書く。 ここに書かれている関数は、string等にも用いることができるものが多い。 ちなみに、vector&lt;bool&gt;は使ってはいけない。bitsetや、vector&lt;char&gt;をつかうこと。 また、all(vector)は、vector.begin(),vector.end()とdefineしている。</p>
+<p>ここでは、配列のSTL版である、vectorの使いかたについて書く。<br />ここに書かれている関数は、string等にも用いることができるものが多い。<br />ちなみに、vector&lt;bool&gt;は使ってはいけない。bitsetや、vector&lt;char&gt;をつかうこと。<br />また、all(vector)は、vector.begin(),vector.end()とdefineしている。</p>
 <h2 id="基本"><a href="#基本"><span class="header-section-number">4.1</span> 基本</a></h2>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">//要素数10で、初期値は-1にする。</span>
 vector&lt;<span class="dt">int</span>&gt; vec(<span class="dv">10</span>,-<span class="dv">1</span>);
@@ -468,7 +469,7 @@ vector&lt;<span class="dt">int</span>&gt; newvec(vec.begin(),vec.begin()+<span c
 vec.erase(vec.begin(),vec.begin()+<span class="dv">3</span>);</code></pre>
 <h2 id="並び換え"><a href="#並び換え"><span class="header-section-number">4.2</span> 並び換え</a></h2>
 <h3 id="sort"><a href="#sort"><span class="header-section-number">4.2.1</span> sort</a></h3>
-<p>C++のsortは、<span class="math">\(O(n \log n)\)</span>で、introsort。何も指定しない場合には昇順にソートされる。 注意すべきなのは、C++11では、最悪ケースで<span class="math">\(O(n \log n)\)</span>となること。C++03では特に何も制限はないが、g++ならば<span class="math">\(O(n \log n)\)</span>である。</p>
+<p>C++のsortは、<span class="math">\(O(n \log n)\)</span>で、introsort。何も指定しない場合には昇順にソートされる。<br />注意すべきなのは、C++11では、最悪ケースで<span class="math">\(O(n \log n)\)</span>となること。C++03では特に何も制限はないが、g++ならば<span class="math">\(O(n \log n)\)</span>である。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">//昇順 (sort(vec.begin(),vec.end())) (2,1,3) -&gt; (1,2,3)</span>
 sort(all(vec));
 <span class="co">//降順 (ただ単純にreverseしてもいい) (2,1,3) -&gt; (3,2,1)</span>
@@ -521,7 +522,7 @@ sort(all(V));
     <span class="kw">return</span> -<span class="dv">1</span>;
 }</code></pre>
 <h2 id="二分探索"><a href="#二分探索"><span class="header-section-number">5.2</span> 二分探索</a></h2>
-<p>ある条件を満たす最小のものを探す。ただし単調増加な物にしかつかえない。 叙述関数をPとすると、</p>
+<p>ある条件を満たす最小のものを探す。ただし単調増加な物にしかつかえない。<br />叙述関数をPとすると、</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">double</span> lower = <span class="dv">0</span>,upper = <span class="dv">1000000</span>;
 <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;<span class="dv">200</span>;i++){
     <span class="dt">double</span> m = (lower+upper) / <span class="dv">2</span>;
@@ -532,7 +533,7 @@ sort(all(V));
     }
     cout &lt;&lt; upper &lt;&lt; endl;
 }</code></pre>
-<p>とすると、upperに求めたい値がはいる。もしみつからなかった場合には、値は 変わらない。なので、lower,upperには極端な値を設定すること。200という回数 は、すこし多め。100で十分。対象がvectorの場合は以下のように書ける。</p>
+<p>とすると、upperに求めたい値がはいる。もしみつからなかった場合には、値は<br />変わらない。なので、lower,upperには極端な値を設定すること。200という回数<br />は、すこし多め。100で十分。対象がvectorの場合は以下のように書ける。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
 <span class="ot">#include &lt;vector&gt;</span>
 <span class="ot">#include &lt;algorithm&gt;</span>
@@ -565,22 +566,22 @@ str.substr(<span class="dv">5</span>);    <span class="co">// &quot;fghij&quot;<
 str.substr(<span class="dv">5</span>,<span class="dv">3</span>); <span class="co">// &quot;fgh&quot;</span>
 <span class="co">//全部小文字にする</span>
 transform(s.begin(),s.end(),s.begin(),::tolower);</code></pre>
-<p>substrは一つの引数でそこから先全部、二つの場合は第一引数の位置から、第二 引数の数だけ持ってくる。</p>
+<p>substrは一つの引数でそこから先全部、二つの場合は第一引数の位置から、第二<br />引数の数だけ持ってくる。</p>
 <h3 id="検索"><a href="#検索"><span class="header-section-number">6.1.2</span> 検索</a></h3>
-<p>stringには、いくつかのfindが定義されている。線形検索なので、早い検索が必 要なときには後述するKMP法やBM法を用いること。</p>
+<p>stringには、いくつかのfindが定義されている。線形検索なので、早い検索が必<br />要なときには後述するKMP法やBM法を用いること。</p>
 <ul>
 <li><p>find 引数が最初に現れる位置</p></li>
 <li><p>rfind 引数が最後に表われる位置</p></li>
 <li><p>find_first_of 引数の文字のどれかが最初に表われる位置</p></li>
 <li><p>find_last_of 引数の文字のどれかが最後に表われる位置</p></li>
-<li><p>find_first_not_of 引数の文字のどれかではない文字が最初に表われる位置</p></li>
-<li><p>find_first_not_of 引数の文字のどれかではない文字が最後に表われる位置</p></li>
+<li><p>find_first_not_of<br /> 引数の文字のどれかではない文字が最初に表われる位置</p></li>
+<li><p>find_first_not_of<br /> 引数の文字のどれかではない文字が最後に表われる位置</p></li>
 </ul>
 <p>第二引数として探すための最初の位置を指定できる。</p>
 <h4 id="boyer-moore法"><a href="#boyer-moore法"><span class="header-section-number">6.1.2.1</span> Boyer Moore法</a></h4>
 <h4 id="kmp法"><a href="#kmp法"><span class="header-section-number">6.1.2.2</span> KMP法</a></h4>
 <h2 id="stringstream"><a href="#stringstream"><span class="header-section-number">6.2</span> stringstream</a></h2>
-<p>cinやcoutのようなstreamをstringを元に作成したりする。基本的には、string をフォーマットしたり、intやlongに、intやlongから変換するために使用する。</p>
+<p>cinやcoutのようなstreamをstringを元に作成したりする。基本的には、string<br />をフォーマットしたり、intやlongに、intやlongから変換するために使用する。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp">stringstream ss;
 ss &lt;&lt; <span class="dv">102</span>;
 string s;
@@ -709,7 +710,7 @@ a ^ {m-2} \equiv \frac{1}{a} \pmod m\end{aligned}\]</span></p>
     <span class="kw">if</span>(n%<span class="dv">2</span>== <span class="dv">1</span>)  ret = ret * x % mod;
     <span class="kw">return</span> ret;
 }</code></pre>
-<p>ちなみにC++のpowを使うときに、引数が整数で、返り値も整数であることを期待 するときには、上記のpowを使うべき。なぜならC++のpowは double,double-&gt;doubleな関数であるから。</p>
+<p>ちなみにC++のpowを使うときに、引数が整数で、返り値も整数であることを期待<br />するときには、上記のpowを使うべき。なぜならC++のpowは<br />double,double-&gt;doubleな関数であるから。</p>
 <h2 id="素数"><a href="#素数"><span class="header-section-number">7.3</span> 素数</a></h2>
 <h3 id="エラトステネスの篩"><a href="#エラトステネスの篩"><span class="header-section-number">7.3.1</span> エラトステネスの篩</a></h3>
 <pre class="sourceCode cpp" include="cpp/sieve.cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
@@ -743,7 +744,7 @@ def sieve(N):
 
     return primes
 </code></pre>
-<p>素数のリストが欲しかったら、適当に突っ込むこと。 実際には<span class="math">\(O(n \log \log n)\)</span>だけれど、大体<span class="math">\(O(n)\)</span>だと思っていい。</p>
+<p>素数のリストが欲しかったら、適当に突っ込むこと。<br />実際には<span class="math">\(O(n \log \log n)\)</span>だけれど、大体<span class="math">\(O(n)\)</span>だと思っていい。</p>
 <h3 id="素因数分解"><a href="#素因数分解"><span class="header-section-number">7.3.2</span> 素因数分解</a></h3>
 <h2 id="コンビネーション"><a href="#コンビネーション"><span class="header-section-number">7.4</span> コンビネーション</a></h2>
 <p>くみあわせ。</p>
@@ -1315,6 +1316,71 @@ dp[<span class="dv">0</span>][<span class="dv">0</span>] = <span class="dv">1</s
     cout &lt;&lt; retv &lt;&lt; endl &lt;&lt; retw &lt;&lt; endl;
     <span class="kw">return</span> <span class="dv">0</span>;
 }</code></pre>
+<h2 id="ヒストグラム内の最大長方形のサイズ"><a href="#ヒストグラム内の最大長方形のサイズ"><span class="header-section-number">9.5</span> ヒストグラム内の最大長方形のサイズ</a></h2>
+<pre class="sourceCode cpp" include="cpp/hist.cpp"><code class="sourceCode cpp"><span class="ot">#define repeat(i,n) for(int i=0;i&lt;static_cast&lt;int&gt;(n);i++)</span>
+<span class="kw">typedef</span> vector&lt;<span class="dt">int</span>&gt; vi;
+<span class="kw">typedef</span> vector&lt;vi&gt; vvi;
+
+<span class="co">// see http://algorithms.blog55.fc2.com/blog-entry-132.html</span>
+<span class="co">//  max rectangle area in histogram.</span>
+<span class="kw">template</span>&lt;<span class="kw">typename</span> T&gt;
+T max_rectangle_size_in_histogram(<span class="dt">const</span> vector&lt;T&gt;&amp; v){
+    <span class="co">// where,height. in this function,use index as where.</span>
+    <span class="kw">typedef</span> pair&lt;<span class="dt">int</span>,T&gt; piT;
+    stack&lt;piT&gt; sta;
+    T ret = <span class="dv">0</span>;
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;v.size();i++){
+        <span class="kw">if</span>(sta.empty() <span class="kw">or</span> sta.top().second &lt; v[i]){
+            sta.push(make_pair(i,v[i]));
+        }<span class="kw">else</span> <span class="kw">if</span>(sta.top().second == v[i]){
+            <span class="co">// pass</span>
+        }<span class="kw">else</span> <span class="kw">if</span>(sta.top().second &gt; v[i]){
+            piT t;
+            <span class="kw">while</span>(<span class="kw">not</span> sta.empty() <span class="kw">and</span> sta.top().second &gt;= v[i]){
+                t = sta.top();
+                ret = max(ret,t.second*(i-t.first));
+                sta.pop();
+            }
+            sta.push(make_pair(t.first,v[i]));
+        }
+    }
+    <span class="dt">int</span> total_width = v.size();
+    <span class="kw">while</span>(<span class="kw">not</span> sta.empty()){
+        piT t = sta.top();
+        sta.pop();
+        ret = max(ret,t.second*(total_width-t.first));
+    }
+    <span class="kw">return</span> ret;
+}
+
+<span class="co">// square area </span>
+<span class="dt">int</span> solve(<span class="dt">const</span> vvi &amp;matrix){
+    <span class="dt">int</span> h = matrix.size();
+    <span class="dt">int</span> w = matrix[<span class="dv">0</span>].size();
+    vvi up(h,vi(w));
+
+    {
+        <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;h;i++){
+            <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;w;j++){
+                <span class="kw">if</span>(i == <span class="dv">0</span>){
+                    up[i][j] = matrix[i][j] == <span class="dv">1</span>;
+                }<span class="kw">else</span> {
+                    <span class="kw">if</span>(matrix[i][j] == <span class="dv">0</span>){
+                        up[i][j] = <span class="dv">0</span>;
+                    }<span class="kw">else</span>{
+                        up[i][j] = up[i<span class="dv">-1</span>][j]+<span class="dv">1</span>;
+                    }
+                }
+            }
+        }
+    }
+
+    <span class="dt">int</span> ret = <span class="dv">0</span>;
+    <span class="kw">for</span>(<span class="dt">int</span> y=<span class="dv">0</span>;y&lt;h;y++){
+        ret = max(ret,max_rectangle_size_in_histogram(up[y]));
+    }
+    <span class="kw">return</span> ret;
+}</code></pre>
 <h1 id="データ構造"><a href="#データ構造"><span class="header-section-number">10</span> データ構造</a></h1>
 <h2 id="union-find"><a href="#union-find"><span class="header-section-number">10.1</span> Union-Find</a></h2>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> UnionFind{
@@ -1668,7 +1734,7 @@ ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream&amp; os,<span clas
 </code></pre>
 <h1 id="グラフ"><a href="#グラフ"><span class="header-section-number">11</span> グラフ</a></h1>
 <h2 id="構成要素"><a href="#構成要素"><span class="header-section-number">11.1</span> 構成要素</a></h2>
-<p>隣接行列を使うか、vector&lt;Edge&gt;みたいのを使うかの二択。場合によってはNode みたいなのも使うかも。隣接行列を使うとメモリとか探すのとか重い。</p>
+<p>隣接行列を使うか、vector&lt;Edge&gt;みたいのを使うかの二択。場合によってはNode<br />みたいなのも使うかも。隣接行列を使うとメモリとか探すのとか重い。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> Edge{
     <span class="dt">int</span> to,cost;
     Edge(<span class="dt">int</span> to,<span class="dt">int</span> cost) : to(to),cost(cost) {};
@@ -1759,7 +1825,7 @@ ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream&amp; os,<span clas
     <span class="kw">return</span> <span class="dv">0</span>;
 }</code></pre>
 <h2 id="ワーシャルフロイド"><a href="#ワーシャルフロイド"><span class="header-section-number">11.4</span> ワーシャルフロイド</a></h2>
-<p>負の経路があってもOK。すべてのノードに対してすべてのノードへの距離を求め る。もし負の閉路があったらiからiはマイナスになる。<span class="math">\(O(|V|^{3})\)</span></p>
+<p>負の経路があってもOK。すべてのノードに対してすべてのノードへの距離を求め<br />る。もし負の閉路があったらiからiはマイナスになる。<span class="math">\(O(|V|^{3})\)</span></p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// m はノードの個数。NOはでかい数</span>
 vector&lt;vector&lt;<span class="dt">int</span>&gt; &gt; V(m,vector&lt;<span class="dt">int</span>&gt;(m,NO));
 <span class="co">// i-&gt;iは0にする。</span>
@@ -1775,7 +1841,7 @@ rep(i,m){
     }
 }</code></pre>
 <h2 id="最小全域木"><a href="#最小全域木"><span class="header-section-number">11.5</span> 最小全域木</a></h2>
-<p>プリム法による。<span class="math">\(O(N^2log(N))\)</span>だと思う。最小コストを求めるコードが以下。 ただし、vector<Edge>を使えばもっとよい。</p>
+<p>プリム法による。<span class="math">\(O(N^2log(N))\)</span>だと思う。最小コストを求めるコードが以下。<br />ただし、vector<Edge>を使えばもっとよい。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">typedef</span> pair&lt;<span class="dt">int</span>,<span class="dt">int</span>&gt; pii;
 
 <span class="dt">int</span> main(){
@@ -2352,7 +2418,7 @@ vector&lt;point&gt; circles_point(point c1,<span class="dt">double</span> r1,poi
 }</code></pre>
 <h1 id="ゲーム"><a href="#ゲーム"><span class="header-section-number">13</span> ゲーム</a></h1>
 <h2 id="nim"><a href="#nim"><span class="header-section-number">13.1</span> Nim</a></h2>
-<p>いくつかのコインの山がある。この中からプレイヤーは山を一つ選び、1個以上の任意の 数のコインを取る。最後のコインを取ったプレイヤーが勝ちである。この問題に 対しては以下のことが知られている。すべての山のxorをとったとき、それが0で あるとき、後攻の勝ち、それ以外のときは先攻の勝ち。</p>
+<p>いくつかのコインの山がある。この中からプレイヤーは山を一つ選び、1個以上の任意の<br />数のコインを取る。最後のコインを取ったプレイヤーが勝ちである。この問題に<br />対しては以下のことが知られている。すべての山のxorをとったとき、それが0で<br />あるとき、後攻の勝ち、それ以外のときは先攻の勝ち。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
 <span class="ot">#include &lt;vector&gt;</span>
 

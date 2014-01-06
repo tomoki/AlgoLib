@@ -136,3 +136,8 @@ int main(){
     return 0;
 }
 ~~~~~~
+## ヒストグラム内の最大長方形のサイズ
+
+~~~~~~{include="cpp/hist.cpp" .cpp}
+~~~~~~
+
