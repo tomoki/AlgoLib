@@ -65,6 +65,30 @@ struct Edge{
         : from(from),to(to),cost(cost) {};
 };
 
+int dijkstra(const int start,const int goal,
+             const vector<vector<Edge> > &graph){
+    typedef pair<int,int> pii;
+    int N = graph.size();
+    vector<char> visited(N,false);
+    // cost where
+    priority_queue<pii,vector<pii>,greater<pii> > que;
+    que.push(make_pair(0,start));
+    while(not que.empty()){
+        int cost,where;
+        cost = que.top().first;
+        where = que.top().second;
+        que.pop();
+        if(visited[where]) continue;
+        if(where == goal) return cost;
+        visited[where] = true;
+        for(int j=0;j<(int)graph[where].size();j++){
+            que.push(make_pair(graph[where][j].cost+cost,graph[where][j].to));
+        }
+    }
+    return -1;
+}
+
+
 int main(){
     int n,m;
     cin >> n >> m;
@@ -131,36 +155,38 @@ for(int k=0;k<m;k++){
 ## 最小全域木
 
 プリム法による。$O(N^2log(N))$だと思う。最小コストを求めるコードが以下。
-ただし、vector<Edge>を使えばもっとよい。
 
 ~~~~~~{.cpp}
-typedef pair<int,int> pii;
+struct Edge{
+    int to, cost;
+    Edge(int to_,int cost_)
+        : to(to_),cost(cost_) {}
+};
 
-int main(){
-    int N;
-    while(cin >> N){
-        vector<vector<int> > M(N,vector<int>(N));
-        // 距離行列を読みこむ
-        rep(i,N) rep(j,N) cin >> M[i][j];
-        vector<char> used(N,false);
-        ll ret = 0;
-        // cost , where.
-        priority_queue<pii,vector<pii>,greater<pii> > Q;
-        Q.push(mp(0,0));
-        while(!Q.empty()){
-            int cost = Q.top().first;
-            int where = Q.top().second;
-            Q.pop();
-            if(used[where]) continue;
-            used[where] = true;
-            ret += cost;
-            for(int i=0;i<N;i++){
-                Q.push(mp(M[where][i],i));
-            }
+
+vector<vector<Edge>> minimum_spanning_tree(const vector<vector<Edge>> &graph){
+    typedef tuple<int,int,int> cft;  // cost,from,to
+    int N = graph.size();
+    vector<vector<Edge>> ret(N);
+    vector<char> used(N,false);
+    priority_queue<cft,vector<cft>,greater<cft>> que;
+    que.push(make_tuple(0,-1,0));
+    while(not que.empty()){
+        int cost = get<0>(que.top());
+        int from = get<1>(que.top());
+        int to = get<2>(que.top());
+        que.pop();
+        if(used[to]) continue;
+        used[to] = true;
+        // ignore first.
+        if(from != -1){
+            ret[from].push_back(Edge(to,cost));
         }
-        cout << ret << endl;
+        for(const Edge& e : graph[to]){
+            que.push(make_tuple(e.cost,to,e.to));
+        }
     }
-    return 0;
+    return ret;
 }
 ~~~~~~
 
@@ -507,4 +533,15 @@ vector<vector<int>> strongly_connected_components(const vector<vector<Edge>>& gr
     }
     return scc;
 }
+~~~~~~
+
+## 橋の列挙
+
+~~~~~~{include="cpp/bridge.cpp" .cpp}
+~~~~~~
+
+## Lowest Common Ancestor
+木において、根から最も遠い、u,vの共通の祖先をLCAと呼ぶ。
+
+~~~~~~{include="cpp/lca.cpp" .cpp}
 ~~~~~~

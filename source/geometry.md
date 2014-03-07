@@ -151,30 +151,24 @@ int ccw(point a,point b,point c){
     return 0;
 }
 
-// 点が真に多角形の中にはいっているか
-bool is_inner_point_vertex(vector<point> ps,point a){
+// 点が真に多角形(凸?)の中にはいっているか
+bool is_inner_point_vertex(const vector<point> &ps,point a){
     int cc = ccw(ps[0],ps[1],a);
     if(not(cc == 1 or cc == -1)) return false;
-    for(int i=0;i<ps.size();i++){
+    for(size_t i=0;i<ps.size();i++){
         if(cc != ccw(ps[i],ps[(i+1)%ps.size()],a)) return false;
     }
     return true;
 }
 
 // 点が辺上、もしくは内部にある。(未検証)
-bool is_inner_point_vertex_or_line(vector<point> ps,point a){
-    for(int i=0;i<ps.size();i++){
-        if(ccw(ps[i],ps[(i+1)%ps.size()],a) == +2 or
-           abs(ps[i]-a) < EPS ){
+bool is_inner_point_vertex_or_line(const vector<point> &ps,point a){
+    for(size_t i=0;i<ps.size();i++){
+        if(dist_linesegment_and_point(ps[i],ps[(i+1)%ps.size()],a) < EPS){
             return true;
         }
     }
-    int cc = ccw(ps[0],ps[1],a);
-    if(not(cc == 1 or cc == -1)) return false;
-    for(int i=0;i<ps.size();i++){
-        if(cc != ccw(ps[i],ps[(i+1)%ps.size()],a)) return false;
-    }
-    return true;
+    return is_inner_point_vertex(ps,a);
 }
 
 
@@ -192,6 +186,35 @@ vector<point> convex_hull(vector<point> ps){
     }
     ch.resize(k-1);
     return ch;
+}
+
+// remember,pts make convex.
+// (http://judge.u-aizu.ac.jp/onlinejudge/cdescription.jsp?cid=ACAC002&pid=C)
+double convex_diameter(const vector<point>& pts){
+    const int n = pts.size();
+    int is=0,js=0; // initial antipode.
+    for(int i=1;i<n;i++){
+        if(pts[i].imag() > pts[is].imag()) is = i;
+        if(pts[i].imag() < pts[js].imag()) js = i;
+    }
+    double maxd = abs(pts[is]-pts[js]);
+    int i,j,maxi,maxj;
+    i = maxi = is;
+    j = maxj = js;
+    do{
+        if(cross(pts[(i+1)%n]-pts[i],
+                 pts[(j+1)%n]-pts[j]) >= 0){
+            j = (j+1)%n;
+        }else{
+            i = (i+1)%n;
+        }
+        if(abs(pts[i]-pts[j]) > maxd){
+            maxd = abs(pts[i]-pts[j]);
+            maxi = i;maxj = j;
+        }
+    } while(not(i == is and j == js));
+    // pts[maxi],pts[maxj] is pair of max diff.
+    return maxd;
 }
 
 // 円と円の交点(2点ある前提)
@@ -224,4 +247,9 @@ double vertex_area(vector<point> v){
     return ret;
 }
 
+~~~~~~
+
+## 最近点対
+
+~~~~~~{include="cpp/closest_pair_of_points.cpp" .cpp}
 ~~~~~~

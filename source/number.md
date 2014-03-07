@@ -71,6 +71,9 @@ double,double->doubleな関数であるから。
 
 ### 素因数分解
 
+~~~~~~{include="cpp/prime_decomposition.cpp" .cpp}
+
+~~~~~~
 ## コンビネーション
 くみあわせ。
 
@@ -103,4 +106,16 @@ unsigned long xor128(){
 ## 二次方程式
 
 ~~~~~~{include="cpp/solve_quadratic_equation.cpp" .cpp}
+~~~~~~
+
+## 連立方程式
+テスト中
+
+~~~~~~{include="cpp/gauss_jordan.cpp" .cpp}
+~~~~~~
+
+## nと互いに素な数の個数
+EulerのTotient関数による。
+
+~~~~~~{include="cpp/euler_totient.cpp" .cpp}
 ~~~~~~

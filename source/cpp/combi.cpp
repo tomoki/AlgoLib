@@ -7,7 +7,7 @@ typedef long long ll;
 
 //いい感じのやつ (n=61まで大丈夫)
 //  modにしても良い。O(N)
-ll combi(int n,int r){
+ll nCr(int n,int r){
     if(n < r) return 0;
     r = min(r,n-r);
     ll ret = 1;
@@ -16,6 +16,36 @@ ll combi(int n,int r){
         ret /= i+1;
     }
     return ret;
+}
+
+
+ll mod_pow(ll x,ll n,ll mod){
+    if(n==0) return 1;
+    ll ret = mod_pow(x * x % mod,n/2,mod);
+    if(n%2 == 1)  ret = ret * x % mod;
+    return ret;
+}
+ll nCr_mod(ll n,ll r,ll mod){
+    if(n < r) return 0;
+    r = min(r,n-r);
+    ll ret = 1;
+    for(int i=0;i<r;i++){
+        ret = (ret * (n-i)) % mod;
+        // ret /= i+1;
+        ret = (ret * mod_pow(i+1,mod-2,mod)) % mod;
+    }
+    return ret;
+}
+
+// http://www.ravco.jp/cat/view.php?cat_id=6179
+// 区別するn 個のものから，繰り返し用いることを許して，r 個取り出して作った組
+// <-> 区別しないr 個のボールを，区別するn 個の箱に配る場合の総数
+ll nHr(ll n,ll r){
+    return nCr(r+n-1,r);
+}
+
+ll nHr_mod(ll n,ll r,ll mod){
+    return nCr_mod(r+n-1,r,mod);
 }
 
 //パスカルの三角形 (n=66まで大丈夫)
@@ -31,12 +61,6 @@ ll combi_tri(int n,int r){
         }
     }
     return memo[n][r];
-}
-
-// 重複を許してn個からk個を選ぶ。
-// 未検証
-ll multicombi(ll n,ll k){
-    return combi(n+k-1,n-1);
 }
 
 // testing...

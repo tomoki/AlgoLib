@@ -54,3 +54,8 @@ int main(){
     int number_of_2 = upper - lower;
 }
 ~~~~~~
+
+### 合計の重さXを達成するような組み合わせの数え上げ
+
+~~~~~~{.cpp include="cpp/combi_total.cpp"}
+~~~~~~

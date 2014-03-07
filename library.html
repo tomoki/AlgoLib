@@ -79,7 +79,9 @@ code > span.er { font-weight: bold; }
 </ul></li>
 <li><a href="#探索"><span class="toc-section-number">5</span> 探索</a><ul>
 <li><a href="#全探索"><span class="toc-section-number">5.1</span> 全探索</a></li>
-<li><a href="#二分探索"><span class="toc-section-number">5.2</span> 二分探索</a></li>
+<li><a href="#二分探索"><span class="toc-section-number">5.2</span> 二分探索</a><ul>
+<li><a href="#合計の重さxを達成するような組み合わせの数え上げ"><span class="toc-section-number">5.2.1</span> 合計の重さXを達成するような組み合わせの数え上げ</a></li>
+</ul></li>
 </ul></li>
 <li><a href="#文字列操作"><span class="toc-section-number">6</span> 文字列操作</a><ul>
 <li><a href="#stdstring"><span class="toc-section-number">6.1</span> std::string</a><ul>
@@ -88,6 +90,7 @@ code > span.er { font-weight: bold; }
 </ul></li>
 <li><a href="#stringstream"><span class="toc-section-number">6.2</span> stringstream</a></li>
 <li><a href="#再帰下降構文解析"><span class="toc-section-number">6.3</span> 再帰下降構文解析</a></li>
+<li><a href="#ll1文法--再帰下降で書けるかどうか"><span class="toc-section-number">6.4</span> LL1文法(&lt;-&gt; 再帰下降で書けるかどうか)</a></li>
 </ul></li>
 <li><a href="#整数論"><span class="toc-section-number">7</span> 整数論</a><ul>
 <li><a href="#最大公約数最小公倍数"><span class="toc-section-number">7.1</span> 最大公約数,最小公倍数</a><ul>
@@ -107,6 +110,8 @@ code > span.er { font-weight: bold; }
 <li><a href="#乱数"><span class="toc-section-number">7.6</span> 乱数</a></li>
 <li><a href="#基数変換"><span class="toc-section-number">7.7</span> 基数変換</a></li>
 <li><a href="#二次方程式"><span class="toc-section-number">7.8</span> 二次方程式</a></li>
+<li><a href="#連立方程式"><span class="toc-section-number">7.9</span> 連立方程式</a></li>
+<li><a href="#nと互いに素な数の個数"><span class="toc-section-number">7.10</span> nと互いに素な数の個数</a></li>
 </ul></li>
 <li><a href="#行列"><span class="toc-section-number">8</span> 行列</a><ul>
 <li><a href="#基本要素"><span class="toc-section-number">8.1</span> 基本要素</a></li>
@@ -147,8 +152,12 @@ code > span.er { font-weight: bold; }
 <li><a href="#最小費用流"><span class="toc-section-number">11.7</span> 最小費用流</a></li>
 <li><a href="#無向グラフにおける最小カット"><span class="toc-section-number">11.8</span> 無向グラフにおける最小カット</a></li>
 <li><a href="#強連結成分分解"><span class="toc-section-number">11.9</span> 強連結成分分解</a></li>
+<li><a href="#橋の列挙"><span class="toc-section-number">11.10</span> 橋の列挙</a></li>
+<li><a href="#lowest-common-ancestor"><span class="toc-section-number">11.11</span> Lowest Common Ancestor</a></li>
 </ul></li>
-<li><a href="#幾何"><span class="toc-section-number">12</span> 幾何</a></li>
+<li><a href="#幾何"><span class="toc-section-number">12</span> 幾何</a><ul>
+<li><a href="#最近点対"><span class="toc-section-number">12.1</span> 最近点対</a></li>
+</ul></li>
 <li><a href="#ゲーム"><span class="toc-section-number">13</span> ゲーム</a><ul>
 <li><a href="#nim"><span class="toc-section-number">13.1</span> Nim</a></li>
 </ul></li>
@@ -332,13 +341,11 @@ rep(i,n) cin &gt;&gt; V[i];</code></pre>
 <span class="kw">while</span>(cin &gt;&gt; n){
     <span class="co">//処理</span>
 }</code></pre>
-<p>n=0のとき終わりとかの場合は、条件に&amp;&amp;n!=0とかをつける。</p>
-<p>数値をカンマ区切りで読み込む。</p>
+<p>n=0のとき終わりとかの場合は、条件に&amp;&amp;n!=0とかをつける。<br />数値をカンマ区切りで読み込む。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> x,y;<span class="dt">char</span> c;
 <span class="co">//cにカンマが入る</span>
 cin &gt;&gt; x &gt;&gt; c &gt;&gt; y;</code></pre>
-<p>冗長かもだけど、一番楽。</p>
-<p>空白とか含めて一行読む。</p>
+<p>冗長かもだけど、一番楽。<br />空白とか含めて一行読む。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp">string s;
 getline(cin,s);</code></pre>
 <p>改行文字は、sに入らず、かつ読み捨てされる。<br />cinでは、改行文字は読み捨てないことに注意しよう。<br />つまり、数値&lt;改行&gt;文字列&lt;改行&gt;を読みたいときには、</p>
@@ -349,9 +356,9 @@ cin &gt;&gt; n;
 cin.ignore();
 <span class="co">// 文字列</span>
 getline(cin,s);</code></pre>
-<p>とする。cinは改行文字を残すので、ignoreでそれを読み捨てないといけない。<br />また、ignoreの引数は読み捨てる文字数。引数なしの場合は1を渡したのと同等<br />の効果がある。</p>
+<p>とする。cinは改行文字を残すので、ignoreでそれを読み捨てないといけない。<br />また、ignoreの引数は読み捨てる文字数。引数なしの場合は1を渡したのと同等の効果がある。</p>
 <h3 id="cout"><a href="#cout"><span class="header-section-number">3.1.2</span> cout</a></h3>
-<p>有効数字等が設定されている問題は、必ず多めに出力すること。多めに出す分に<br />は大丈夫。</p>
+<p>有効数字等が設定されている問題は、必ず多めに出力すること。多めに出す分には大丈夫。</p>
 <p>基本の使い方</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> n;vector&lt;<span class="dt">int</span>&gt; V(n);
 cout &lt;&lt; n &lt;&lt; endl;
@@ -404,7 +411,7 @@ cout &lt;&lt; d &lt;&lt; endl;</code></pre>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> n;<span class="dt">char</span> tmp[<span class="dv">256</span>];
 scanf(<span class="st">&quot;%d</span><span class="ch">\n</span><span class="st">&quot;</span>,&amp;n);
 gets(tmp);</code></pre>
-<p>stringに直接いれるのはだめ。scanfはcinと同様に改行を残す。getlineするな<br />らcin.ignore。getsするなら、直前のscanfで改行を読んでおく必要がある。<br />また、scanfで改行を読むのでなく、直後にgetc(stdin)してもいい。</p>
+<p>stringに直接いれるのはだめ。scanfはcinと同様に改行を残す。getlineするなら<br />cin.ignore。getsするなら、直前のscanfで改行を読んでおく必要がある。<br />また、scanfで改行を読むのでなく、直後にgetc(stdin)してもいい。</p>
 <h3 id="printf"><a href="#printf"><span class="header-section-number">3.2.2</span> printf</a></h3>
 <p>基本的な使い方</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> n = <span class="dv">100</span>;
@@ -457,7 +464,7 @@ printf(<span class="st">&quot;n is %d</span><span class="ch">\n</span><span clas
 <p>以下のコードをmain関数の最初に書くことで、cin,coutの速度が2倍程度になる。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp">ios::sync_with_stdio(<span class="kw">false</span>);
 cin.tie(<span class="dv">0</span>);</code></pre>
-<p>ただし、このコードはstdioとの同期を切るという意味なので、これを使うとき<br />にはprintfやscanfを使用してはだめ。</p>
+<p>ただし、このコードはstdioとの同期を切るという意味なので、これを使うときにはprintfやscanfを使用してはだめ。</p>
 <h1 id="stdvector"><a href="#stdvector"><span class="header-section-number">4</span> std::vector</a></h1>
 <p>ここでは、配列のSTL版である、vectorの使いかたについて書く。<br />ここに書かれている関数は、string等にも用いることができるものが多い。<br />ちなみに、vector&lt;bool&gt;は使ってはいけない。bitsetや、vector&lt;char&gt;をつかうこと。<br />また、all(vector)は、vector.begin(),vector.end()とdefineしている。</p>
 <h2 id="基本"><a href="#基本"><span class="header-section-number">4.1</span> 基本</a></h2>
@@ -552,6 +559,43 @@ sort(all(V));
     <span class="dt">int</span> upper = upper_bound(v.begin(),v.end(),<span class="dv">2</span>) - v.begin();
     <span class="co">// 2の個数</span>
     <span class="dt">int</span> number_of_2 = upper - lower;
+}</code></pre>
+<h3 id="合計の重さxを達成するような組み合わせの数え上げ"><a href="#合計の重さxを達成するような組み合わせの数え上げ"><span class="header-section-number">5.2.1</span> 合計の重さXを達成するような組み合わせの数え上げ</a></h3>
+<pre class="sourceCode cpp" include="cpp/combi_total.cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;vector&gt;</span>
+<span class="kw">using</span> <span class="kw">namespace</span> std;
+
+<span class="co">// if we have objects that each has w_{i} weight.</span>
+<span class="co">//  we calc how many combination that has total weight X.</span>
+<span class="co">//  O(2^(N/2) logN)?</span>
+<span class="kw">template</span>&lt;<span class="kw">typename</span> T&gt;
+<span class="dt">int</span> howmany_combination_such_that_total_weight_is_X(vector&lt;T&gt; W,<span class="dt">int</span> X){
+    <span class="co">// sort(all(W));</span>
+    <span class="dt">int</span> N = W.size();
+    vector&lt;vector&lt;T&gt;&gt; parts(<span class="dv">2</span>);
+    copy(W.begin(),W.begin()+N/<span class="dv">2</span>,back_inserter(parts[<span class="dv">0</span>]));
+    copy(W.begin()+N/<span class="dv">2</span>,W.end(),back_inserter(parts[<span class="dv">1</span>]));
+
+    <span class="dt">int</span> ret = <span class="dv">0</span>;
+    vector&lt;vector&lt;T&gt;&gt; sums(<span class="dv">2</span>,{<span class="dv">0</span>});
+    <span class="kw">for</span>(size_t p=<span class="dv">0</span>;p&lt;parts.size();p++){
+        <span class="kw">for</span>(size_t i=<span class="dv">0</span>;i&lt;parts[p].size();i++){
+            vector&lt;T&gt; nex;
+            <span class="kw">for</span>(size_t j=<span class="dv">0</span>;j&lt;sums[p].size();j++){
+                nex.push_back(sums[p][j]);
+                nex.push_back(sums[p][j]+parts[p][i]);
+            }
+            sums[p].swap(nex);
+        }
+    }
+    <span class="kw">for</span>(vector&lt;T&gt;&amp; sum : sums){
+        sort(sum.begin(),sum.end());
+    }
+
+    <span class="kw">for</span>(T s : sums[<span class="dv">0</span>]){
+        ret += upper_bound(sums[<span class="dv">1</span>].begin(),sums[<span class="dv">1</span>].end(),X-s)
+             - lower_bound(sums[<span class="dv">1</span>].begin(),sums[<span class="dv">1</span>].end(),X-s);
+    }
+    <span class="kw">return</span> ret;
 }</code></pre>
 <h1 id="文字列操作"><a href="#文字列操作"><span class="header-section-number">6</span> 文字列操作</a></h1>
 <p>stringをincludeする。cctypeもいるかも。</p>
@@ -674,6 +718,248 @@ ss &gt;&gt; s;</code></pre>
     }
     <span class="kw">return</span> <span class="dv">0</span>;
 }</code></pre>
+<h2 id="ll1文法--再帰下降で書けるかどうか"><a href="#ll1文法--再帰下降で書けるかどうか"><span class="header-section-number">6.4</span> LL1文法(&lt;-&gt; 再帰下降で書けるかどうか)</a></h2>
+<p>予測型構文解析表を埋めて重複をチュックする。テストしたい。<br />一般に、&quot;X -&gt; Xb,X -&gt; a&quot;なる生成規則は、&quot;X-&gt;aX',X'-&gt;bX',X'-&gt;&quot;とできる。<br />これは前者がab*なる形の文字列を導出するからである。</p>
+<pre class="sourceCode cpp" include="cpp/check_ll1.cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
+<span class="ot">#include &lt;vector&gt;</span>
+<span class="ot">#include &lt;set&gt;</span>
+<span class="ot">#include &lt;map&gt;</span>
+
+<span class="kw">using</span> <span class="kw">namespace</span> std;
+
+<span class="kw">struct</span> Rule{
+    <span class="dt">char</span> from;
+    vector&lt;<span class="dt">char</span>&gt; to;
+    Rule(<span class="dt">char</span> from_,vector&lt;<span class="dt">char</span>&gt; to_)
+        : from(from_),to(to_){
+    }
+};
+
+<span class="dt">bool</span> <span class="kw">operator</span>==(<span class="dt">const</span> Rule&amp; lhs, <span class="dt">const</span> Rule&amp; rhs){
+    <span class="kw">if</span>(lhs.from != rhs.from <span class="kw">or</span> lhs.to.size() != rhs.to.size()){
+        <span class="kw">return</span> <span class="kw">false</span>;
+    }
+    <span class="kw">for</span>(size_t i=<span class="dv">0</span>;i&lt;lhs.to.size();i++){
+        <span class="kw">if</span>(lhs.to[i] != rhs.to[i]){
+            <span class="kw">return</span> <span class="kw">false</span>;
+        }
+    }
+    <span class="kw">return</span> <span class="kw">true</span>;
+}
+
+<span class="dt">bool</span> <span class="kw">operator</span>&lt;(<span class="dt">const</span> Rule&amp; lhs, <span class="dt">const</span> Rule&amp; rhs){
+    <span class="kw">if</span>(lhs.from != rhs.from){
+        <span class="kw">return</span> lhs.from &lt; rhs.from;
+    }
+    <span class="kw">if</span>(lhs.to.size() != rhs.to.size()){
+        <span class="kw">return</span> lhs.to.size() &lt; rhs.to.size();
+    }
+    <span class="kw">for</span>(size_t i=<span class="dv">0</span>;i&lt;lhs.to.size();i++){
+        <span class="kw">if</span>(lhs.to[i] != rhs.to[i]){
+            <span class="kw">return</span> lhs.to[i] &lt; rhs.to[i];
+        }
+    }
+    <span class="kw">return</span> <span class="kw">false</span>;
+}
+
+<span class="dt">bool</span> <span class="kw">operator</span>&gt;(<span class="dt">const</span> Rule&amp; lhs, <span class="dt">const</span> Rule&amp; rhs){
+    <span class="kw">return</span> <span class="kw">not</span>(lhs == rhs) <span class="kw">and</span> <span class="kw">not</span>(lhs &lt; rhs);
+}
+
+ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream&amp; os,Rule r){
+    os &lt;&lt; r.from &lt;&lt; <span class="st">&quot;-&gt;&quot;</span>;
+    <span class="kw">for</span>(<span class="dt">char</span> c : r.to){
+        os &lt;&lt; <span class="st">&quot; &quot;</span> &lt;&lt; c;
+    }
+    <span class="kw">return</span> os;
+}
+
+<span class="kw">template</span>&lt;<span class="kw">typename</span> T&gt;
+ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream&amp; os,set&lt;T&gt; s){
+    os &lt;&lt; <span class="st">&quot;{&quot;</span>;
+    <span class="kw">for</span>(T v : s){
+        os &lt;&lt; v &lt;&lt; <span class="st">&quot;,&quot;</span>;
+    }
+    os &lt;&lt; <span class="st">&quot;}&quot;</span>;
+    <span class="kw">return</span> os;
+}
+
+<span class="co">// can be written in recursive descent parsing?</span>
+<span class="co">//  see tiger book(p.46).</span>
+<span class="dt">bool</span> can_be_written_in_recursive_descent_parsing(<span class="dt">const</span> set&lt;<span class="dt">char</span>&gt;&amp; terminal,
+                                                 <span class="dt">const</span> set&lt;<span class="dt">char</span>&gt;&amp; non_terminal,
+                                                 <span class="dt">const</span> vector&lt;Rule&gt;&amp; rules){
+    <span class="kw">for</span>(Rule r : rules){
+        cerr &lt;&lt; r &lt;&lt; endl;
+    }
+    map&lt;<span class="dt">char</span>,<span class="dt">bool</span>&gt; nullable;
+    map&lt;<span class="dt">char</span>,set&lt;<span class="dt">char</span>&gt;&gt; first,follow;
+    <span class="kw">for</span>(<span class="dt">char</span> c : non_terminal){
+        nullable[c] = <span class="kw">false</span>;
+        first[c] = {};
+        follow[c] = {};
+    }
+    <span class="kw">for</span>(<span class="dt">char</span> c : terminal){
+        nullable[c] = <span class="kw">false</span>;
+        first[c] = {c};
+        follow = {};
+    }
+
+    {
+        <span class="dt">bool</span> changed;
+        <span class="kw">do</span>{
+            changed = <span class="kw">false</span>;
+            <span class="kw">for</span>(Rule r : rules){
+                <span class="dt">bool</span> all_nullable = <span class="kw">true</span>;
+                <span class="kw">for</span>(<span class="dt">char</span> t : r.to){
+                    all_nullable = all_nullable <span class="kw">and</span> nullable[t];
+                }
+                <span class="kw">if</span>(all_nullable <span class="kw">and</span> <span class="kw">not</span> nullable[r.from]){
+                    nullable[r.from] = <span class="kw">true</span>;
+                    changed = <span class="kw">true</span>;
+                }
+                <span class="kw">for</span>(size_t i=<span class="dv">0</span>;i&lt;r.to.size();i++){
+                    <span class="dt">bool</span> nul = <span class="kw">true</span>;
+                    <span class="kw">for</span>(size_t k=<span class="dv">0</span>;k&lt;i;k++){
+                        nul = nul <span class="kw">and</span> nullable[r.to[k]];
+                    }
+                    <span class="kw">if</span>(nul){
+                        size_t bef = first[r.from].size();
+                        first[r.from].insert(first[r.to[i]].begin(),
+                                             first[r.to[i]].end());
+                        changed = changed <span class="kw">or</span> (bef != first[r.from].size());
+                    }
+                }
+                <span class="kw">for</span>(size_t i=<span class="dv">0</span>;i&lt;r.to.size();i++){
+                    <span class="co">// nullable[y[k]] for k &lt;- [i+1,]</span>
+                    <span class="dt">bool</span> nul = <span class="kw">true</span>;
+                    <span class="kw">for</span>(<span class="dt">int</span> k=i<span class="dv">+1</span>;k&lt;(<span class="dt">int</span>)r.to.size();k++){
+                        nul = nul <span class="kw">and</span> nullable[r.to[k]];
+                    }
+                    <span class="kw">if</span>(nul){
+                        size_t bef = follow[r.to[i]].size();
+                        follow[r.to[i]].insert(follow[r.from].begin(),
+                                               follow[r.from].end());
+                        changed = changed <span class="kw">or</span> (bef != follow[r.to[i]].size());
+                    }
+                }
+                <span class="kw">for</span>(size_t i=<span class="dv">0</span>;i&lt;r.to.size();i++){
+                    <span class="kw">for</span>(size_t j=i<span class="dv">+1</span>;j&lt;r.to.size();j++){
+                        <span class="co">// nullable[y[k]] for k &lt;- [i+1,j-1]</span>
+                        <span class="dt">bool</span> nul = <span class="kw">true</span>;
+                        <span class="kw">for</span>(size_t k=i<span class="dv">+1</span>;k&lt;j;k++){
+                            nul = nul <span class="kw">and</span> nullable[r.to[k]];
+                        }
+                        <span class="kw">if</span>(nul){
+                            size_t bef = follow[r.to[i]].size();
+                            follow[r.to[i]].insert(first[r.to[j]].begin(),
+                                                   first[r.to[j]].end());
+                            changed = changed <span class="kw">or</span> (bef != follow[r.to[i]].size());
+                        }
+                    }
+                }
+            }
+        }<span class="kw">while</span>(changed);
+    }
+    <span class="kw">for</span>(<span class="dt">char</span> c : non_terminal){
+        cerr &lt;&lt; c &lt;&lt; endl
+             &lt;&lt; <span class="st">&quot;nullable? &quot;</span> &lt;&lt; nullable[c] &lt;&lt; endl
+             &lt;&lt; <span class="st">&quot;first &quot;</span> &lt;&lt; first[c] &lt;&lt; endl
+             &lt;&lt; <span class="st">&quot;follow &quot;</span> &lt;&lt; follow[c] &lt;&lt; endl;
+    }
+    map&lt;<span class="dt">char</span>,map&lt;<span class="dt">char</span>,set&lt;Rule&gt;&gt;&gt; maps;
+    <span class="kw">for</span>(Rule r : rules){
+        <span class="co">// check r.to is nullable or not.</span>
+        <span class="co">//  and collect first.</span>
+        set&lt;<span class="dt">char</span>&gt; to_first;
+        <span class="dt">bool</span> to_nullable = <span class="kw">true</span>;
+        <span class="kw">for</span>(<span class="dt">char</span> t : r.to){
+            to_first.insert(first[t].begin(),first[t].end());
+            to_nullable = to_nullable <span class="kw">and</span> nullable[t];
+            <span class="kw">if</span>(<span class="kw">not</span> to_nullable) <span class="kw">break</span>;
+        }
+
+        <span class="kw">for</span>(<span class="dt">char</span> tf : to_first){
+            maps[r.from][tf].insert(r);
+        }
+        <span class="kw">if</span>(to_nullable){
+            <span class="kw">for</span>(<span class="dt">char</span> t : follow[r.from]){
+                maps[r.from][t].insert(r);
+            }
+        }
+    }
+
+    cerr &lt;&lt; <span class="st">&quot;Map&quot;</span> &lt;&lt; endl;
+    <span class="dt">bool</span> dup = <span class="kw">false</span>;
+    <span class="kw">for</span>(<span class="dt">const</span> pair&lt;<span class="dt">char</span>,map&lt;<span class="dt">char</span>,set&lt;Rule&gt;&gt;&gt; m : maps){
+        <span class="dt">int</span> from = m.first;
+        <span class="kw">for</span>(<span class="dt">const</span> pair&lt;<span class="dt">char</span>,set&lt;Rule&gt;&gt; p : m.second){
+            <span class="dt">int</span> to = p.first;
+            cerr &lt;&lt; <span class="dt">char</span>(from) &lt;&lt; <span class="st">&quot; &quot;</span> &lt;&lt; <span class="dt">char</span>(to) &lt;&lt; <span class="st">&quot; &quot;</span> &lt;&lt; p.second &lt;&lt; endl;
+            dup = dup <span class="kw">or</span> p.second.size() &gt; <span class="dv">1</span>;
+        }
+    }
+    <span class="kw">return</span> <span class="kw">not</span> dup;
+}
+
+
+<span class="dt">int</span> main(){
+    set&lt;<span class="dt">char</span>&gt; terminal;
+    set&lt;<span class="dt">char</span>&gt; non_terminal;
+
+    {
+        <span class="co">// terminal;</span>
+        <span class="dt">int</span> n;cin &gt;&gt; n;
+        <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;n;i++){
+            <span class="dt">char</span> c;cin &gt;&gt; c;
+            terminal.insert(c);
+        }
+    }
+
+    {
+        <span class="co">// non_terminal;</span>
+        <span class="dt">int</span> n;cin &gt;&gt; n;
+        <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;n;i++){
+            <span class="dt">char</span> c;cin &gt;&gt; c;
+            non_terminal.insert(c);
+        }
+    }
+
+    <span class="co">// number of rule.</span>
+    <span class="dt">int</span> n;
+    cin &gt;&gt; n;
+    vector&lt;Rule&gt; rules;
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;n;i++){
+        <span class="dt">int</span> k;cin &gt;&gt; k;
+        <span class="dt">char</span> from;cin &gt;&gt; from;
+        vector&lt;<span class="dt">char</span>&gt; to(k);
+        <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;k;j++){
+            cin &gt;&gt; to[j];
+        }
+        rules.push_back(Rule(from,to));
+    }
+    cout &lt;&lt; can_be_written_in_recursive_descent_parsing(terminal,non_terminal,rules) &lt;&lt; endl;
+    <span class="kw">return</span> <span class="dv">0</span>;
+}
+
+              <span class="co">// 9                  // 9</span>
+<span class="co">// 3          // $ + - * / i n ( )  // $ + - * / i n ( )</span>
+<span class="co">// a c d      // 3                  // 6</span>
+<span class="co">// 3          // S E T              // S E T D U F</span>
+<span class="co">// X Y Z      // 10                 // 12</span>
+<span class="co">// 6          // 2 S E $            // 2 S E $</span>
+<span class="co">// 1 X Y      // 3 E E p T          // 2 E T D</span>
+<span class="co">// 1 X a      // 3 E E m T          // 3 D + T D</span>
+<span class="co">// 0 Y        // 1 E T              // 3 D - T D</span>
+<span class="co">// 1 Y c      // 3 T T * F          // 0 D</span>
+<span class="co">// 1 Z d      // 3 T T / F          // 2 T F U</span>
+<span class="co">// 3 Z X Y Z  // 1 T F              // 3 U * F U</span>
+<span class="co">//  -&gt; 0      // 1 F i              // 3 U / F U</span>
+              <span class="co">// 1 F n              // 0 U</span>
+              <span class="co">// 3 F ( E )          // 1 F i</span>
+              <span class="co">//  -&gt; 0              // 1 F n</span>
+                                    <span class="co">// 3 F ( E )</span>
+                                    <span class="co">//  -&gt; 1</span></code></pre>
 <h1 id="整数論"><a href="#整数論"><span class="header-section-number">7</span> 整数論</a></h1>
 <h2 id="最大公約数最小公倍数"><a href="#最大公約数最小公倍数"><span class="header-section-number">7.1</span> 最大公約数,最小公倍数</a></h2>
 <p>ユークリッドの互除法を使う。intをlong longに置換してもいい。 <span class="math">\(O(\log n)\)</span></p>
@@ -718,7 +1004,6 @@ a ^ {m-2} \equiv \frac{1}{a} \pmod m\end{aligned}\]</span></p>
 <span class="kw">using</span> <span class="kw">namespace</span> std;
 
 <span class="co">//上限より余裕を取ること。</span>
-
 vector&lt;<span class="dt">bool</span>&gt; sieve(<span class="dt">const</span> <span class="dt">int</span> M){
     vector&lt;<span class="dt">bool</span>&gt; isPrime(M);
     <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">2</span>;i&lt;M;i++) isPrime[i] = <span class="kw">true</span>;
@@ -729,6 +1014,23 @@ vector&lt;<span class="dt">bool</span>&gt; sieve(<span class="dt">const</span> <
         }
     }
     <span class="kw">return</span> isPrime;
+}
+
+<span class="co">// リストがほしいときはこっち</span>
+vector&lt;<span class="dt">int</span>&gt; sieve(<span class="dt">const</span> <span class="dt">int</span> M){
+    vector&lt;<span class="dt">bool</span>&gt; isPrime(M);
+    vector&lt;<span class="dt">int</span>&gt; primes;
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">2</span>;i&lt;M;i++) isPrime[i] = <span class="kw">true</span>;
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">2</span>;i*i&lt;M;i++){
+        <span class="kw">if</span>(<span class="kw">not</span> isPrime[i]) <span class="kw">continue</span>;
+        <span class="kw">for</span>(<span class="dt">int</span> j=i*i;j&lt;M;j+=i){
+            isPrime[j] = <span class="kw">false</span>;
+        }
+    }
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">2</span>;i&lt;M;i++){
+        <span class="kw">if</span>(isPrime[i]) primes.push_back(i);
+    }
+    <span class="kw">return</span> primes;
 }</code></pre>
 <pre class="py" include="python/sieve.py"><code>from math import *
 
@@ -746,6 +1048,18 @@ def sieve(N):
 </code></pre>
 <p>素数のリストが欲しかったら、適当に突っ込むこと。<br />実際には<span class="math">\(O(n \log \log n)\)</span>だけれど、大体<span class="math">\(O(n)\)</span>だと思っていい。</p>
 <h3 id="素因数分解"><a href="#素因数分解"><span class="header-section-number">7.3.2</span> 素因数分解</a></h3>
+<pre class="sourceCode cpp" include="cpp/prime_decomposition.cpp"><code class="sourceCode cpp"><span class="co">// primes is primes under sqrt(N).</span>
+vector&lt;<span class="dt">int</span>&gt; prime_decomposition(<span class="dt">int</span> N,<span class="dt">const</span> vector&lt;<span class="dt">int</span>&gt;&amp; primes){
+    vector&lt;<span class="dt">int</span>&gt; ret;
+    <span class="kw">for</span>(<span class="dt">int</span> p : primes){
+        <span class="kw">while</span>(N % p == <span class="dv">0</span>){
+            N /= p;
+            ret.push_back(p);
+        }
+    }
+    <span class="kw">if</span>(N != <span class="dv">1</span>) ret.push_back(N);
+    <span class="kw">return</span> ret;
+}</code></pre>
 <h2 id="コンビネーション"><a href="#コンビネーション"><span class="header-section-number">7.4</span> コンビネーション</a></h2>
 <p>くみあわせ。</p>
 <pre class="sourceCode cpp" include="cpp/combi.cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
@@ -757,7 +1071,7 @@ def sieve(N):
 
 <span class="co">//いい感じのやつ (n=61まで大丈夫)</span>
 <span class="co">//  modにしても良い。O(N)</span>
-ll combi(<span class="dt">int</span> n,<span class="dt">int</span> r){
+ll nCr(<span class="dt">int</span> n,<span class="dt">int</span> r){
     <span class="kw">if</span>(n &lt; r) <span class="kw">return</span> <span class="dv">0</span>;
     r = min(r,n-r);
     ll ret = <span class="dv">1</span>;
@@ -766,6 +1080,36 @@ ll combi(<span class="dt">int</span> n,<span class="dt">int</span> r){
         ret /= i<span class="dv">+1</span>;
     }
     <span class="kw">return</span> ret;
+}
+
+
+ll mod_pow(ll x,ll n,ll mod){
+    <span class="kw">if</span>(n==<span class="dv">0</span>) <span class="kw">return</span> <span class="dv">1</span>;
+    ll ret = mod_pow(x * x % mod,n/<span class="dv">2</span>,mod);
+    <span class="kw">if</span>(n%<span class="dv">2</span> == <span class="dv">1</span>)  ret = ret * x % mod;
+    <span class="kw">return</span> ret;
+}
+ll nCr_mod(ll n,ll r,ll mod){
+    <span class="kw">if</span>(n &lt; r) <span class="kw">return</span> <span class="dv">0</span>;
+    r = min(r,n-r);
+    ll ret = <span class="dv">1</span>;
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;r;i++){
+        ret = (ret * (n-i)) % mod;
+        <span class="co">// ret /= i+1;</span>
+        ret = (ret * mod_pow(i<span class="dv">+1</span>,mod<span class="dv">-2</span>,mod)) % mod;
+    }
+    <span class="kw">return</span> ret;
+}
+
+<span class="co">// http://www.ravco.jp/cat/view.php?cat_id=6179</span>
+<span class="co">// 区別するn 個のものから，繰り返し用いることを許して，r 個取り出して作った組</span>
+<span class="co">// &lt;-&gt; 区別しないr 個のボールを，区別するn 個の箱に配る場合の総数</span>
+ll nHr(ll n,ll r){
+    <span class="kw">return</span> nCr(r+n<span class="dv">-1</span>,r);
+}
+
+ll nHr_mod(ll n,ll r,ll mod){
+    <span class="kw">return</span> nCr_mod(r+n<span class="dv">-1</span>,r,mod);
 }
 
 <span class="co">//パスカルの三角形 (n=66まで大丈夫)</span>
@@ -781,12 +1125,6 @@ ll combi_tri(<span class="dt">int</span> n,<span class="dt">int</span> r){
         }
     }
     <span class="kw">return</span> memo[n][r];
-}
-
-<span class="co">// 重複を許してn個からk個を選ぶ。</span>
-<span class="co">// 未検証</span>
-ll multicombi(ll n,ll k){
-    <span class="kw">return</span> combi(n+k<span class="dv">-1</span>,n<span class="dv">-1</span>);
 }
 
 <span class="co">// testing...</span>
@@ -1064,6 +1402,76 @@ vector&lt;<span class="dt">double</span>&gt; solve_quadratic_equation(<span clas
     }
     <span class="kw">return</span> ret;
 }</code></pre>
+<h2 id="連立方程式"><a href="#連立方程式"><span class="header-section-number">7.9</span> 連立方程式</a></h2>
+<p>テスト中</p>
+<pre class="sourceCode cpp" include="cpp/gauss_jordan.cpp"><code class="sourceCode cpp"><span class="dt">const</span> <span class="dt">int</span> none = <span class="dv">0</span>; <span class="co">// if no answer</span>
+<span class="dt">const</span> <span class="dt">int</span> one = <span class="dv">1</span>;  <span class="co">// if there is exactly one answer</span>
+<span class="dt">const</span> <span class="dt">int</span> many = <span class="dv">2</span>; <span class="co">// many answer.</span>
+<span class="co">// answer will be inserted in b.</span>
+<span class="co">//  test中</span>
+<span class="dt">int</span> normal_gauss_jordan(vector&lt;vector&lt;<span class="dt">double</span>&gt;&gt; A,vector&lt;<span class="dt">double</span>&gt;&amp; b){
+    <span class="dt">const</span> <span class="dt">double</span> EPS = <span class="fl">1e-8</span>;
+    <span class="dt">int</span> n = A.size();
+    <span class="dt">int</span> m = A[<span class="dv">0</span>].size();
+    <span class="dt">int</span> pi = <span class="dv">0</span>,pj = <span class="dv">0</span>;
+    <span class="kw">while</span>(pi &lt; n <span class="kw">and</span> pj &lt; m){
+        <span class="kw">for</span>(<span class="dt">int</span> i=pi<span class="dv">+1</span>;i&lt;n;i++){ <span class="co">// pivot</span>
+            <span class="kw">if</span>(abs(A[i][pj]) &gt; abs(A[pi][pj])){
+                swap(A[i],A[pi]);
+                swap(b[i],b[pi]);
+            }
+        }
+        <span class="kw">if</span>(abs(A[pi][pj]) &gt; EPS){
+            <span class="dt">double</span> d = A[pi][pj];
+            <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;m;j++){
+                A[pi][j] /= d;
+            }
+            b[pi] /= d;
+            <span class="kw">for</span>(<span class="dt">int</span> i=pi<span class="dv">+1</span>;i&lt;n;i++){
+                <span class="dt">double</span> k = A[i][pj];
+                <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;m;j++){
+                    A[i][j] -= k * A[pi][j];
+                }
+                b[i] -= k*b[pi];
+            }
+            pi++;
+        }
+        pj++;
+    }
+    <span class="kw">for</span>(<span class="dt">int</span> i=pi;i&lt;n;i++){
+        <span class="kw">if</span>(abs(b[i]) &gt; EPS){
+            <span class="kw">return</span> none;
+        }
+    }
+    <span class="kw">if</span>(pi &lt; m <span class="kw">or</span> pj &lt; m){
+        <span class="kw">return</span> many;
+    }
+    <span class="kw">for</span>(<span class="dt">int</span> j=m<span class="dv">-1</span>;j&gt;=<span class="dv">0</span>;j--){
+        <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;j;i++){
+            b[i] -= b[j] * A[i][j];
+        }
+    }
+    <span class="kw">return</span> one;
+}</code></pre>
+<h2 id="nと互いに素な数の個数"><a href="#nと互いに素な数の個数"><span class="header-section-number">7.10</span> nと互いに素な数の個数</a></h2>
+<p>EulerのTotient関数による。</p>
+<pre class="sourceCode cpp" include="cpp/euler_totient.cpp"><code class="sourceCode cpp"><span class="co">// nと互いに素な数の個数</span>
+<span class="co">// n (1-1/p1) ... (1-1/pn)</span>
+<span class="kw">template</span>&lt;<span class="kw">typename</span> T&gt;
+T totient(T n){
+    <span class="kw">if</span>(n == <span class="dv">0</span>) <span class="kw">return</span> <span class="dv">0</span>;
+    T ans = n;
+    <span class="kw">for</span>(T x=<span class="dv">2</span>;x*x &lt;= n;x++){
+        <span class="kw">if</span>(n % x == <span class="dv">0</span>){
+            ans -= ans/x;
+            <span class="kw">while</span>(n % x == <span class="dv">0</span>) n /= x;
+        }
+    }
+    <span class="kw">if</span>(n &gt; <span class="dv">1</span>){
+        ans -= ans/n;
+    }
+    <span class="kw">return</span> ans;
+}</code></pre>
 <h1 id="行列"><a href="#行列"><span class="header-section-number">8</span> 行列</a></h1>
 <h2 id="基本要素"><a href="#基本要素"><span class="header-section-number">8.1</span> 基本要素</a></h2>
 <p>正方行列用 //いつかなおす。</p>
@@ -1235,10 +1643,10 @@ vector&lt;<span class="dt">double</span>&gt; solve_quadratic_equation(<span clas
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// O(Nlog(N))</span>
 <span class="co">//  Sphagetthi source より.</span>
 vector&lt;<span class="dt">int</span>&gt; longest_increasing_subsequence(<span class="dt">const</span> vector&lt;<span class="dt">int</span>&gt;&amp; a){
-    <span class="dt">const</span> <span class="dt">int</span> n = len(a);
+    <span class="dt">const</span> <span class="dt">int</span> n = a.size();
     vector&lt;<span class="dt">int</span>&gt; A(n,<span class="dv">1</span>&lt;&lt;<span class="dv">30</span>);
     vector&lt;<span class="dt">int</span>&gt; id(n);
-    rep(i,n){
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;n;i++){
         id[i] = distance(A.begin(),lower_bound(A.begin(),A.end(),a[i]));
         A[id[i]] = a[i];
     }
@@ -1593,15 +2001,26 @@ ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream &amp;os,<span clas
 <h2 id="セグメント木"><a href="#セグメント木"><span class="header-section-number">10.5</span> セグメント木</a></h2>
 <h3 id="普通の"><a href="#普通の"><span class="header-section-number">10.5.1</span> 普通の</a></h3>
 <p>RMQ (POJ 3264)</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">typedef</span> pair&lt;<span class="dt">int</span>,<span class="dt">int</span>&gt; pii;
+<pre class="sourceCode cpp" include="cpp/segment_tree.cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;vector&gt;</span>
+<span class="kw">using</span> <span class="kw">namespace</span> std;
 
-<span class="co">// update i v -&gt; element[i] = v;</span>
-<span class="co">// get [l,r) -&gt; return minimum element in [l,r)</span>
 <span class="kw">struct</span> SegmentTree{
-    <span class="dt">static</span> <span class="dt">const</span> <span class="dt">int</span> INIT_VALUE = <span class="dv">1</span> &lt;&lt; <span class="dv">30</span>;
+    <span class="co">// edit this things! Range Sum Query</span>
+    <span class="dt">static</span> <span class="dt">const</span> <span class="dt">int</span> INIT_VALUE = <span class="dv">0</span>;
+    <span class="kw">inline</span> <span class="dt">int</span> calc(<span class="dt">int</span> a,<span class="dt">int</span> b){
+        <span class="kw">return</span> a+b;
+    }
+
+    <span class="co">// Range Minimum Query</span>
+    <span class="co">// static const int INIT_VALUE = 1 &lt;&lt; 30;</span>
+    <span class="co">// inline int calc(int a,int b){</span>
+    <span class="co">//     return min(a,b);</span>
+    <span class="co">// }</span>
+
+
     vector&lt;<span class="dt">int</span>&gt; data;
     <span class="dt">int</span> n;
-    SegmentTree(<span class="dt">int</span> _n){
+    <span class="kw">explicit</span> SegmentTree(<span class="dt">int</span> _n){
         n = <span class="dv">1</span>;
         <span class="kw">while</span>(n &lt; _n) n *= <span class="dv">2</span>;
         data = vector&lt;<span class="dt">int</span>&gt;(<span class="dv">2</span>*n<span class="dv">-1</span>,INIT_VALUE);
@@ -1612,7 +2031,7 @@ ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream &amp;os,<span clas
         data[k] = v;
         <span class="kw">while</span>(k &gt; <span class="dv">0</span>){
             k = parent(k);
-            data[k] = min(data[get_left(k)],data[get_right(k)]);
+            data[k] = calc(data[get_left(k)],data[get_right(k)]);
         }
     }
 
@@ -1627,7 +2046,7 @@ ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream &amp;os,<span clas
         <span class="kw">if</span>(a &lt;= l <span class="kw">and</span> r &lt;= b) <span class="kw">return</span> data[k];
         <span class="dt">int</span> vl = get(a,b,get_left(k),l,(l+r)/<span class="dv">2</span>);
         <span class="dt">int</span> vr = get(a,b,get_right(k),(l+r)/<span class="dv">2</span>,r);
-        <span class="kw">return</span> min(vl,vr);
+        <span class="kw">return</span> calc(vl,vr);
     }
 
     <span class="kw">inline</span> <span class="dt">int</span> get_left(<span class="dt">int</span> x){
@@ -1639,12 +2058,7 @@ ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream &amp;os,<span clas
     <span class="kw">inline</span> <span class="dt">int</span> parent(<span class="dt">int</span> x){
         <span class="kw">return</span> (x<span class="dv">-1</span>)/<span class="dv">2</span>;
     }
-};
-
-ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream&amp; os,<span class="dt">const</span> SegmentTree&amp; seg){
-    os &lt;&lt; seg.data;
-    <span class="kw">return</span> os;
-}</code></pre>
+};</code></pre>
 <h3 id="lazy"><a href="#lazy"><span class="header-section-number">10.5.2</span> Lazy</a></h3>
 <p>テスト中 参考: http://d.hatena.ne.jp/kyuridenamida/20121114/1352835261</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">typedef</span> pair&lt;<span class="dt">int</span>,<span class="dt">int</span>&gt; pii;
@@ -1786,6 +2200,30 @@ ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream&amp; os,<span clas
         : from(from),to(to),cost(cost) {};
 };
 
+<span class="dt">int</span> dijkstra(<span class="dt">const</span> <span class="dt">int</span> start,<span class="dt">const</span> <span class="dt">int</span> goal,
+             <span class="dt">const</span> vector&lt;vector&lt;Edge&gt; &gt; &amp;graph){
+    <span class="kw">typedef</span> pair&lt;<span class="dt">int</span>,<span class="dt">int</span>&gt; pii;
+    <span class="dt">int</span> N = graph.size();
+    vector&lt;<span class="dt">char</span>&gt; visited(N,<span class="kw">false</span>);
+    <span class="co">// cost where</span>
+    priority_queue&lt;pii,vector&lt;pii&gt;,greater&lt;pii&gt; &gt; que;
+    que.push(make_pair(<span class="dv">0</span>,start));
+    <span class="kw">while</span>(<span class="kw">not</span> que.empty()){
+        <span class="dt">int</span> cost,where;
+        cost = que.top().first;
+        where = que.top().second;
+        que.pop();
+        <span class="kw">if</span>(visited[where]) <span class="kw">continue</span>;
+        <span class="kw">if</span>(where == goal) <span class="kw">return</span> cost;
+        visited[where] = <span class="kw">true</span>;
+        <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;(<span class="dt">int</span>)graph[where].size();j++){
+            que.push(make_pair(graph[where][j].cost+cost,graph[where][j].to));
+        }
+    }
+    <span class="kw">return</span> -<span class="dv">1</span>;
+}
+
+
 <span class="dt">int</span> main(){
     <span class="dt">int</span> n,m;
     cin &gt;&gt; n &gt;&gt; m;
@@ -1841,34 +2279,37 @@ rep(i,m){
     }
 }</code></pre>
 <h2 id="最小全域木"><a href="#最小全域木"><span class="header-section-number">11.5</span> 最小全域木</a></h2>
-<p>プリム法による。<span class="math">\(O(N^2log(N))\)</span>だと思う。最小コストを求めるコードが以下。<br />ただし、vector<Edge>を使えばもっとよい。</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">typedef</span> pair&lt;<span class="dt">int</span>,<span class="dt">int</span>&gt; pii;
+<p>プリム法による。<span class="math">\(O(N^2log(N))\)</span>だと思う。最小コストを求めるコードが以下。</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> Edge{
+    <span class="dt">int</span> to, cost;
+    Edge(<span class="dt">int</span> to_,<span class="dt">int</span> cost_)
+        : to(to_),cost(cost_) {}
+};
 
-<span class="dt">int</span> main(){
-    <span class="dt">int</span> N;
-    <span class="kw">while</span>(cin &gt;&gt; N){
-        vector&lt;vector&lt;<span class="dt">int</span>&gt; &gt; M(N,vector&lt;<span class="dt">int</span>&gt;(N));
-        <span class="co">// 距離行列を読みこむ</span>
-        rep(i,N) rep(j,N) cin &gt;&gt; M[i][j];
-        vector&lt;<span class="dt">char</span>&gt; used(N,<span class="kw">false</span>);
-        ll ret = <span class="dv">0</span>;
-        <span class="co">// cost , where.</span>
-        priority_queue&lt;pii,vector&lt;pii&gt;,greater&lt;pii&gt; &gt; Q;
-        Q.push(mp(<span class="dv">0</span>,<span class="dv">0</span>));
-        <span class="kw">while</span>(!Q.empty()){
-            <span class="dt">int</span> cost = Q.top().first;
-            <span class="dt">int</span> where = Q.top().second;
-            Q.pop();
-            <span class="kw">if</span>(used[where]) <span class="kw">continue</span>;
-            used[where] = <span class="kw">true</span>;
-            ret += cost;
-            <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;N;i++){
-                Q.push(mp(M[where][i],i));
-            }
+
+vector&lt;vector&lt;Edge&gt;&gt; minimum_spanning_tree(<span class="dt">const</span> vector&lt;vector&lt;Edge&gt;&gt; &amp;graph){
+    <span class="kw">typedef</span> tuple&lt;<span class="dt">int</span>,<span class="dt">int</span>,<span class="dt">int</span>&gt; cft;  <span class="co">// cost,from,to</span>
+    <span class="dt">int</span> N = graph.size();
+    vector&lt;vector&lt;Edge&gt;&gt; ret(N);
+    vector&lt;<span class="dt">char</span>&gt; used(N,<span class="kw">false</span>);
+    priority_queue&lt;cft,vector&lt;cft&gt;,greater&lt;cft&gt;&gt; que;
+    que.push(make_tuple(<span class="dv">0</span>,-<span class="dv">1</span>,<span class="dv">0</span>));
+    <span class="kw">while</span>(<span class="kw">not</span> que.empty()){
+        <span class="dt">int</span> cost = get&lt;<span class="dv">0</span>&gt;(que.top());
+        <span class="dt">int</span> from = get&lt;<span class="dv">1</span>&gt;(que.top());
+        <span class="dt">int</span> to = get&lt;<span class="dv">2</span>&gt;(que.top());
+        que.pop();
+        <span class="kw">if</span>(used[to]) <span class="kw">continue</span>;
+        used[to] = <span class="kw">true</span>;
+        <span class="co">// ignore first.</span>
+        <span class="kw">if</span>(from != -<span class="dv">1</span>){
+            ret[from].push_back(Edge(to,cost));
         }
-        cout &lt;&lt; ret &lt;&lt; endl;
+        <span class="kw">for</span>(<span class="dt">const</span> Edge&amp; e : graph[to]){
+            que.push(make_tuple(e.cost,to,e.to));
+        }
     }
-    <span class="kw">return</span> <span class="dv">0</span>;
+    <span class="kw">return</span> ret;
 }</code></pre>
 <h2 id="最大流"><a href="#最大流"><span class="header-section-number">11.6</span> 最大流</a></h2>
 <p>Dinic法による。また、最大流最小カット定理より、最大流と最小カットは一致する。</p>
@@ -2193,6 +2634,161 @@ vector&lt;vector&lt;<span class="dt">int</span>&gt;&gt; strongly_connected_compo
     }
     <span class="kw">return</span> scc;
 }</code></pre>
+<h2 id="橋の列挙"><a href="#橋の列挙"><span class="header-section-number">11.10</span> 橋の列挙</a></h2>
+<pre class="sourceCode cpp" include="cpp/bridge.cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
+<span class="ot">#include &lt;vector&gt;</span>
+<span class="ot">#include &lt;algorithm&gt;</span>
+
+<span class="kw">using</span> <span class="kw">namespace</span> std;
+
+<span class="ot">#define all(c) c.begin(),c.end()</span>
+<span class="ot">#define repeat(i,n) for(int i=0;i&lt;static_cast&lt;int&gt;(n);i++)</span>
+
+<span class="kw">struct</span> Edge{
+    <span class="dt">int</span> to,cost;
+    Edge(<span class="dt">int</span> to_,<span class="dt">int</span> cost_)
+        :to(to_),cost(cost_){
+    }
+};
+
+<span class="dt">int</span> find_bridge_sub(<span class="dt">int</span> cur,<span class="dt">int</span> from,<span class="dt">int</span> number,
+                    <span class="dt">const</span> vector&lt;vector&lt;Edge&gt;&gt;&amp; graph,
+                    vector&lt;<span class="dt">int</span>&gt; &amp;pre_order,
+                    vector&lt;<span class="dt">int</span>&gt; &amp;low,
+                    vector&lt;vector&lt;Edge&gt; &gt; &amp;bridges){
+    pre_order[cur] = low[cur] = number;
+    number++;
+    <span class="kw">for</span>(<span class="dt">const</span> Edge&amp; e : graph[cur]){
+        <span class="co">// not visited</span>
+        <span class="kw">if</span>(pre_order[e.to] == -<span class="dv">1</span>){
+            number = find_bridge_sub(e.to,cur,number,graph,pre_order,low,bridges);
+            <span class="kw">if</span>(pre_order[e.to] == low[e.to]){
+                bridges[cur].push_back(e);
+            }
+        }
+        <span class="kw">if</span>(from != e.to){ <span class="co">//ignore parent.</span>
+            low[cur] = min(low[cur],low[e.to]);
+        }
+    }
+    <span class="kw">return</span> number;
+}
+
+<span class="co">// assume it is connected graph.</span>
+vector&lt;vector&lt;Edge&gt;&gt; find_bridge(<span class="dt">const</span> vector&lt;vector&lt;Edge&gt;&gt;&amp; graph){
+    <span class="dt">int</span> N = graph.size();
+    vector&lt;<span class="dt">int</span>&gt; pre_order(N,-<span class="dv">1</span>),lowest_number_of_connected(N,N<span class="dv">+1</span>);
+    vector&lt;vector&lt;Edge&gt;&gt; ret(N);
+    find_bridge_sub(<span class="dv">0</span>,-<span class="dv">1</span>,<span class="dv">0</span>,graph,pre_order,lowest_number_of_connected,ret);
+
+    <span class="co">// optional: make sure from &lt; e.to</span>
+    <span class="co">//  You can use following if graph is bidirectional.</span>
+    <span class="co">// vector&lt;vector&lt;Edge&gt;&gt; swapped(N);</span>
+    <span class="co">// repeat(f,graph.size()){</span>
+    <span class="co">//     for(const Edge&amp; e: ret[f]){</span>
+    <span class="co">//         if(f &lt; e.to){</span>
+    <span class="co">//             swapped[f].push_back(e);</span>
+    <span class="co">//         }else{</span>
+    <span class="co">//             swapped[e.to].push_back(Edge(f,e.cost));</span>
+    <span class="co">//         }</span>
+    <span class="co">//     }</span>
+    <span class="co">// }</span>
+    <span class="co">// ret = swapped;</span>
+    <span class="kw">return</span> ret;
+}
+
+
+<span class="dt">int</span> main(){
+    <span class="dt">int</span> V_SIZE,E_SIZE;
+    cin &gt;&gt; V_SIZE &gt;&gt; E_SIZE;
+    vector&lt;vector&lt;Edge&gt;&gt; graph(V_SIZE);
+    repeat(i,E_SIZE){
+        <span class="dt">int</span> s,t;
+        cin &gt;&gt; s &gt;&gt; t;
+        graph[s].push_back(Edge(t,<span class="dv">1</span>));
+        graph[t].push_back(Edge(s,<span class="dv">1</span>));
+    }
+
+    vector&lt;vector&lt;Edge&gt;&gt; bridges = find_bridge(graph);
+    repeat(f,graph.size()){
+        vector&lt;Edge&gt; &amp;es = bridges[f];
+        sort(all(es),[](Edge lhs,Edge rhs){<span class="kw">return</span> lhs.to &lt; rhs.to;});
+        <span class="kw">for</span>(<span class="dt">const</span> Edge&amp; e : es){
+            cout &lt;&lt; f &lt;&lt; <span class="st">&quot; &quot;</span> &lt;&lt; e.to &lt;&lt; endl;
+        }
+    }
+    <span class="kw">return</span> <span class="dv">0</span>;
+}</code></pre>
+<h2 id="lowest-common-ancestor"><a href="#lowest-common-ancestor"><span class="header-section-number">11.11</span> Lowest Common Ancestor</a></h2>
+<p>木において、根から最も遠い、u,vの共通の祖先をLCAと呼ぶ。</p>
+<pre class="sourceCode cpp" include="cpp/lca.cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;vector&gt;</span>
+<span class="ot">#include &lt;cmath&gt;</span>
+<span class="kw">using</span> <span class="kw">namespace</span> std;
+
+<span class="co">// lowest common ancestor.</span>
+<span class="co">//  queue version.</span>
+<span class="kw">struct</span> LCASolver{
+    vector&lt;vector&lt;<span class="dt">int</span>&gt;&gt; children;
+    <span class="dt">int</span> root;
+    <span class="co">// if root,parent is -1.</span>
+    vector&lt;<span class="dt">int</span>&gt; parent;
+    vector&lt;<span class="dt">int</span>&gt; depth;
+
+    vector&lt;vector&lt;<span class="dt">int</span>&gt;&gt; parent_pow2;
+
+    LCASolver(vector&lt;vector&lt;<span class="dt">int</span>&gt;&gt; children_,<span class="dt">int</span> root_)
+        : children(children_),root(root_){
+        calc_parent_and_depth();
+        calc_parent_pow2();
+    };
+    
+    <span class="dt">int</span> lca(<span class="dt">int</span> u,<span class="dt">int</span> v){
+        <span class="co">// make sure depth(u) &gt; depth(v).</span>
+        <span class="kw">if</span>(depth[u] &lt; depth[v]) swap(u,v);
+        <span class="kw">for</span>(size_t k=<span class="dv">0</span>;k&lt;parent_pow2.size();k++){
+            <span class="kw">if</span>(((depth[u] - depth[v]) &gt;&gt; k) &amp; <span class="dv">1</span>){
+                u = parent_pow2[k][u];
+            }
+        }
+
+        <span class="kw">if</span>(u == v) <span class="kw">return</span> u;
+        <span class="kw">for</span>(<span class="dt">int</span> k=(<span class="dt">int</span>)parent_pow2.size()-<span class="dv">1</span>;k&gt;=<span class="dv">0</span>;k--){
+            <span class="kw">if</span>(parent_pow2[k][u] != parent_pow2[k][v]){
+                u = parent_pow2[k][u];
+                v = parent_pow2[k][v];
+            }
+        }
+        <span class="kw">return</span> parent_pow2[<span class="dv">0</span>][u];
+    }
+
+<span class="kw">private</span>:
+    <span class="dt">void</span> calc_parent_and_depth(){
+        parent = vector&lt;<span class="dt">int</span>&gt;(children.size(),-<span class="dv">1</span>);
+        depth = vector&lt;<span class="dt">int</span>&gt;(children.size(),-<span class="dv">1</span>);
+        sub_calc_parent_and_depth(root,-<span class="dv">1</span>,<span class="dv">0</span>);
+    }
+    <span class="dt">void</span> sub_calc_parent_and_depth(<span class="dt">int</span> cur,<span class="dt">int</span> par,<span class="dt">int</span> dep){
+        parent[cur] = par;
+        depth[cur] = dep;
+        <span class="kw">for</span>(<span class="dt">int</span> child : children[cur]){
+            <span class="kw">if</span>(child != par){
+                sub_calc_parent_and_depth(child,cur,dep<span class="dv">+1</span>);
+            }
+        }
+    }
+    <span class="dt">void</span> calc_parent_pow2(){
+        <span class="co">// parent_pow2[k][i] = 2^k parent of node i.</span>
+        parent_pow2 = vector&lt;vector&lt;<span class="dt">int</span>&gt;&gt;(ceil(log(children.size())/log(<span class="dv">2</span>)),
+                                          vector&lt;<span class="dt">int</span>&gt;(children.size(),-<span class="dv">1</span>));
+        parent_pow2[<span class="dv">0</span>] = parent;
+        <span class="kw">for</span>(size_t k=<span class="dv">0</span>;k<span class="dv">+1</span>&lt;parent_pow2.size();k++){
+            <span class="kw">for</span>(size_t v=<span class="dv">0</span>;v&lt;children.size();v++){
+                <span class="kw">if</span>(parent_pow2[k][v] &gt;= <span class="dv">0</span>){
+                    parent_pow2[k<span class="dv">+1</span>][v] = parent_pow2[k][parent_pow2[k][v]];
+                }
+            }
+        }
+    }
+};</code></pre>
 <h1 id="幾何"><a href="#幾何"><span class="header-section-number">12</span> 幾何</a></h1>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;complex&gt;</span>
 <span class="kw">using</span> <span class="kw">namespace</span> std;
@@ -2344,30 +2940,24 @@ point nearest_point_linesegment_and_point(point a1,point a2,point b){
     <span class="kw">return</span> <span class="dv">0</span>;
 }
 
-<span class="co">// 点が真に多角形の中にはいっているか</span>
-<span class="dt">bool</span> is_inner_point_vertex(vector&lt;point&gt; ps,point a){
+<span class="co">// 点が真に多角形(凸?)の中にはいっているか</span>
+<span class="dt">bool</span> is_inner_point_vertex(<span class="dt">const</span> vector&lt;point&gt; &amp;ps,point a){
     <span class="dt">int</span> cc = ccw(ps[<span class="dv">0</span>],ps[<span class="dv">1</span>],a);
     <span class="kw">if</span>(<span class="kw">not</span>(cc == <span class="dv">1</span> <span class="kw">or</span> cc == -<span class="dv">1</span>)) <span class="kw">return</span> <span class="kw">false</span>;
-    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;ps.size();i++){
+    <span class="kw">for</span>(size_t i=<span class="dv">0</span>;i&lt;ps.size();i++){
         <span class="kw">if</span>(cc != ccw(ps[i],ps[(i<span class="dv">+1</span>)%ps.size()],a)) <span class="kw">return</span> <span class="kw">false</span>;
     }
     <span class="kw">return</span> <span class="kw">true</span>;
 }
 
 <span class="co">// 点が辺上、もしくは内部にある。(未検証)</span>
-<span class="dt">bool</span> is_inner_point_vertex_or_line(vector&lt;point&gt; ps,point a){
-    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;ps.size();i++){
-        <span class="kw">if</span>(ccw(ps[i],ps[(i<span class="dv">+1</span>)%ps.size()],a) == +<span class="dv">2</span> <span class="kw">or</span>
-           abs(ps[i]-a) &lt; EPS ){
+<span class="dt">bool</span> is_inner_point_vertex_or_line(<span class="dt">const</span> vector&lt;point&gt; &amp;ps,point a){
+    <span class="kw">for</span>(size_t i=<span class="dv">0</span>;i&lt;ps.size();i++){
+        <span class="kw">if</span>(dist_linesegment_and_point(ps[i],ps[(i<span class="dv">+1</span>)%ps.size()],a) &lt; EPS){
             <span class="kw">return</span> <span class="kw">true</span>;
         }
     }
-    <span class="dt">int</span> cc = ccw(ps[<span class="dv">0</span>],ps[<span class="dv">1</span>],a);
-    <span class="kw">if</span>(<span class="kw">not</span>(cc == <span class="dv">1</span> <span class="kw">or</span> cc == -<span class="dv">1</span>)) <span class="kw">return</span> <span class="kw">false</span>;
-    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;ps.size();i++){
-        <span class="kw">if</span>(cc != ccw(ps[i],ps[(i<span class="dv">+1</span>)%ps.size()],a)) <span class="kw">return</span> <span class="kw">false</span>;
-    }
-    <span class="kw">return</span> <span class="kw">true</span>;
+    <span class="kw">return</span> is_inner_point_vertex(ps,a);
 }
 
 
@@ -2385,6 +2975,35 @@ vector&lt;point&gt; convex_hull(vector&lt;point&gt; ps){
     }
     ch.resize(k<span class="dv">-1</span>);
     <span class="kw">return</span> ch;
+}
+
+<span class="co">// remember,pts make convex.</span>
+<span class="co">// (http://judge.u-aizu.ac.jp/onlinejudge/cdescription.jsp?cid=ACAC002&amp;pid=C)</span>
+<span class="dt">double</span> convex_diameter(<span class="dt">const</span> vector&lt;point&gt;&amp; pts){
+    <span class="dt">const</span> <span class="dt">int</span> n = pts.size();
+    <span class="dt">int</span> is=<span class="dv">0</span>,js=<span class="dv">0</span>; <span class="co">// initial antipode.</span>
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">1</span>;i&lt;n;i++){
+        <span class="kw">if</span>(pts[i].imag() &gt; pts[is].imag()) is = i;
+        <span class="kw">if</span>(pts[i].imag() &lt; pts[js].imag()) js = i;
+    }
+    <span class="dt">double</span> maxd = abs(pts[is]-pts[js]);
+    <span class="dt">int</span> i,j,maxi,maxj;
+    i = maxi = is;
+    j = maxj = js;
+    <span class="kw">do</span>{
+        <span class="kw">if</span>(cross(pts[(i<span class="dv">+1</span>)%n]-pts[i],
+                 pts[(j<span class="dv">+1</span>)%n]-pts[j]) &gt;= <span class="dv">0</span>){
+            j = (j<span class="dv">+1</span>)%n;
+        }<span class="kw">else</span>{
+            i = (i<span class="dv">+1</span>)%n;
+        }
+        <span class="kw">if</span>(abs(pts[i]-pts[j]) &gt; maxd){
+            maxd = abs(pts[i]-pts[j]);
+            maxi = i;maxj = j;
+        }
+    } <span class="kw">while</span>(<span class="kw">not</span>(i == is <span class="kw">and</span> j == js));
+    <span class="co">// pts[maxi],pts[maxj] is pair of max diff.</span>
+    <span class="kw">return</span> maxd;
 }
 
 <span class="co">// 円と円の交点(2点ある前提)</span>
@@ -2415,6 +3034,80 @@ vector&lt;point&gt; circles_point(point c1,<span class="dt">double</span> r1,poi
         ret += triangle_area(v[<span class="dv">0</span>],v[i],v[i<span class="dv">+1</span>]);
     }
     <span class="kw">return</span> ret;
+}</code></pre>
+<h2 id="最近点対"><a href="#最近点対"><span class="header-section-number">12.1</span> 最近点対</a></h2>
+<pre class="sourceCode cpp" include="cpp/closest_pair_of_points.cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;complex&gt;</span>
+<span class="ot">#include &lt;algorithm&gt;</span>
+<span class="ot">#include &lt;iostream&gt;</span>
+<span class="ot">#include &lt;vector&gt;</span>
+
+
+<span class="kw">using</span> <span class="kw">namespace</span> std;
+
+<span class="dt">const</span> <span class="dt">double</span> INF = <span class="fl">1e9</span>;
+<span class="kw">typedef</span> complex&lt;<span class="dt">double</span>&gt; point;
+<span class="dt">double</span> sub_closest_pair_in_field(<span class="dt">const</span> vector&lt;point&gt; &amp;ps){
+    <span class="dt">int</span> N = ps.size();
+    <span class="kw">if</span>(N &lt;= <span class="dv">3</span>){
+        <span class="dt">double</span> ret = INF;
+        <span class="kw">for</span>(size_t i=<span class="dv">0</span>;i&lt;ps.size();i++){
+            <span class="kw">for</span>(size_t j=i<span class="dv">+1</span>;j&lt;ps.size();j++){
+                ret = min(ret,abs(ps[i]-ps[j]));
+            }
+        }
+        <span class="kw">return</span> ret;
+    }
+
+    point middle = ps[N/<span class="dv">2</span>];
+    vector&lt;point&gt; left(ps.begin(),ps.begin()+N/<span class="dv">2</span>);
+    vector&lt;point&gt; right(ps.begin()+N/<span class="dv">2+1</span>,ps.end());
+
+    <span class="dt">double</span> d = min(sub_closest_pair_in_field(left),
+                   sub_closest_pair_in_field(right));
+
+    vector&lt;point&gt; strip;
+    <span class="kw">for</span>(<span class="dt">const</span> point&amp; p : ps){
+        <span class="kw">if</span>(abs(middle.real()-p.real()) &lt; d){
+            strip.push_back(p);
+        }
+    }
+    sort(strip.begin(),strip.end(),[](<span class="dt">const</span> complex&lt;<span class="dt">double</span>&gt;&amp; lhs,
+                                      <span class="dt">const</span> complex&lt;<span class="dt">double</span>&gt;&amp; rhs){
+                                          <span class="kw">return</span> lhs.imag() &lt; rhs.imag();
+                                      });
+
+    <span class="kw">for</span>(size_t i=<span class="dv">0</span>;i&lt;strip.size();i++){
+        <span class="kw">for</span>(size_t j=i<span class="dv">+1</span>;j&lt;strip.size() <span class="kw">and</span>
+                         (strip[j].imag() - strip[i].imag()) &lt; d;j++){
+            d = min(d,abs(strip[i]-strip[j]));
+        }
+    }
+    <span class="kw">return</span> d;
+}
+
+<span class="co">// find closest pair in field.return distance.</span>
+<span class="co">//  O(nlogn) http://www.geeksforgeeks.org/closest-pair-of-points/</span>
+<span class="dt">double</span> closest_pair_in_field(vector&lt;point&gt; ps){
+    sort(ps.begin(),ps.end(),[](<span class="dt">const</span> complex&lt;<span class="dt">double</span>&gt;&amp; lhs,
+                                <span class="dt">const</span> complex&lt;<span class="dt">double</span>&gt;&amp; rhs){
+                                    <span class="kw">return</span> lhs.real() &lt; rhs.real();
+                                });
+    <span class="kw">return</span> sub_closest_pair_in_field(ps);
+}
+
+<span class="dt">int</span> main(){
+    <span class="dt">int</span> n;cin &gt;&gt; n;
+    vector&lt;point&gt; ps(n);
+    repeat(i,n){
+        <span class="dt">double</span> x,y;
+        cin &gt;&gt; x &gt;&gt; y;
+        ps[i].real(x);
+        ps[i].imag(y);
+    }
+
+    cout &lt;&lt; fixed &lt;&lt; setprecision(<span class="dv">10</span>);
+    cout &lt;&lt; closest_pair_in_field(ps) &lt;&lt; endl;
+    <span class="kw">return</span> <span class="dv">0</span>;
 }</code></pre>
 <h1 id="ゲーム"><a href="#ゲーム"><span class="header-section-number">13</span> ゲーム</a></h1>
 <h2 id="nim"><a href="#nim"><span class="header-section-number">13.1</span> Nim</a></h2>

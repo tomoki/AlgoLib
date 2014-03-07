@@ -46,10 +46,10 @@ string lcs(const string& a,const string& b){
 // O(Nlog(N))
 //  Sphagetthi source より.
 vector<int> longest_increasing_subsequence(const vector<int>& a){
-    const int n = len(a);
+    const int n = a.size();
     vector<int> A(n,1<<30);
     vector<int> id(n);
-    rep(i,n){
+    for(int i=0;i<n;i++){
         id[i] = distance(A.begin(),lower_bound(A.begin(),A.end(),a[i]));
         A[id[i]] = a[i];
     }
