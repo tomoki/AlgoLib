@@ -58,31 +58,42 @@ h6 tt, h6 code {
 
 h1 {
   font-size: 28px;
-  color: black; }
+  color: black;
+  background-color: beige;
+}
 
 h2 {
   font-size: 24px;
   border-bottom: 1px solid #cccccc;
+  background-color:lightgoldenrodyellow;
   color: black; }
 
 h3 {
-  font-size: 18px; }
+  font-size: 18px;
+  background-color:lightyellow;
+}
 
 h4 {
-  font-size: 16px; }
+  font-size: 16px;
+  background-color:honeydew;
+}
 
 h5 {
-  font-size: 14px; }
+  font-size: 14px;
+  background-color:papayawhip;
+}
 
 h6 {
   color: #777777;
-  font-size: 14px; }
+  font-size: 14px;
+  background-color:oldlace;
+}
 
 p, blockquote, ul, ol, dl, li, table, pre {
   margin: 15px 0; }
 
 hr {
-  background: transparent url("../../images/modules/pulls/dirty-shade.png") repeat-x 0 0;
+  /* background: transparent url("../../images/modules/pulls/dirty-shade.png") repeat-x 0 0; */
   border: 0 none;
   color: #cccccc;
   height: 4px;
@@ -253,6 +264,7 @@ code, tt {
   border-radius: 3px; }
 
 pre code {
+  font-family: Consolas, 'Courier New', Courier, Monaco, monospace;
   margin: 0;
   padding: 0;
   white-space: pre;

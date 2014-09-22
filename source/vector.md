@@ -92,3 +92,8 @@ do{
    cout << endl;
 }while(next_permutation(all(V)));
 ~~~~~~
+
+## 座標圧縮
+
+~~~~~~{.cpp include=cpp/zip.cpp}
+~~~~~~

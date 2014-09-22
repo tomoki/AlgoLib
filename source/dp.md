@@ -141,3 +141,7 @@ int main(){
 ~~~~~~{include="cpp/hist.cpp" .cpp}
 ~~~~~~
 
+## なんか長方形の和をもとめるやつ
+
+~~~~~~{include="cpp/2d_area.cpp" .cpp}
+~~~~~~

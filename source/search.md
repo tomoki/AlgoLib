@@ -55,7 +55,39 @@ int main(){
 }
 ~~~~~~
 
+## 三分探索
+凸関数の極値を求める
+
+~~~~~~{.cpp}
+// 凸関数の極大な点をもとめる
+template<typename F,typename T>
+T ternary_search(F f,T left,T right){
+    for(int i=0;i<1000;i++){
+        T l = (2*left + right) / 3;
+        T r = (left + 2*right) / 3;
+        if(f(l) < f(r)){
+            left = l;
+        }else{
+            right = r;
+        }
+    }
+    return (left+right)/2;
+}
+
+// 凹関数の極小な・を求める
+template<typename F,typename T>
+T ternary_search_concave(F f,T left,T right){
+    return ternary_search([f](T x){return -f(x);},left,right);
+}
+~~~~~~
+
 ### 合計の重さXを達成するような組み合わせの数え上げ
 
 ~~~~~~{.cpp include="cpp/combi_total.cpp"}
+~~~~~~
+
+## ぐるぐる
+いつかつかうかも。 http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1189
+
+~~~~~~{.cpp include="cpp/guruguru.cpp"}
 ~~~~~~

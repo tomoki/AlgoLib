@@ -76,12 +76,15 @@ code > span.er { font-weight: bold; }
 <li><a href="#unique"><span class="toc-section-number">4.3</span> unique</a></li>
 <li><a href="#rotate"><span class="toc-section-number">4.4</span> rotate</a></li>
 <li><a href="#next_permutation"><span class="toc-section-number">4.5</span> next_permutation</a></li>
+<li><a href="#座標圧縮"><span class="toc-section-number">4.6</span> 座標圧縮</a></li>
 </ul></li>
 <li><a href="#探索"><span class="toc-section-number">5</span> 探索</a><ul>
 <li><a href="#全探索"><span class="toc-section-number">5.1</span> 全探索</a></li>
-<li><a href="#二分探索"><span class="toc-section-number">5.2</span> 二分探索</a><ul>
-<li><a href="#合計の重さxを達成するような組み合わせの数え上げ"><span class="toc-section-number">5.2.1</span> 合計の重さXを達成するような組み合わせの数え上げ</a></li>
+<li><a href="#二分探索"><span class="toc-section-number">5.2</span> 二分探索</a></li>
+<li><a href="#三分探索"><span class="toc-section-number">5.3</span> 三分探索</a><ul>
+<li><a href="#合計の重さxを達成するような組み合わせの数え上げ"><span class="toc-section-number">5.3.1</span> 合計の重さXを達成するような組み合わせの数え上げ</a></li>
 </ul></li>
+<li><a href="#ぐるぐる"><span class="toc-section-number">5.4</span> ぐるぐる</a></li>
 </ul></li>
 <li><a href="#文字列操作"><span class="toc-section-number">6</span> 文字列操作</a><ul>
 <li><a href="#stdstring"><span class="toc-section-number">6.1</span> std::string</a><ul>
@@ -131,6 +134,7 @@ code > span.er { font-weight: bold; }
 <li><a href="#巡回セールスマン問題"><span class="toc-section-number">9.3</span> 巡回セールスマン問題</a></li>
 <li><a href="#ナップサック問題"><span class="toc-section-number">9.4</span> ナップサック問題</a></li>
 <li><a href="#ヒストグラム内の最大長方形のサイズ"><span class="toc-section-number">9.5</span> ヒストグラム内の最大長方形のサイズ</a></li>
+<li><a href="#なんか長方形の和をもとめるやつ"><span class="toc-section-number">9.6</span> なんか長方形の和をもとめるやつ</a></li>
 </ul></li>
 <li><a href="#データ構造"><span class="toc-section-number">10</span> データ構造</a><ul>
 <li><a href="#union-find"><span class="toc-section-number">10.1</span> Union-Find</a></li>
@@ -171,9 +175,9 @@ code > span.er { font-weight: bold; }
 </ul></li>
 </ul>
 </nav>
-<h1 id="テンプレート"><a href="#テンプレート"><span class="header-section-number">1</span> テンプレート</a></h1>
+<h1 id="テンプレート"><span class="header-section-number">1</span> テンプレート</h1>
 <p>各種バッドノウハウを含む。</p>
-<h2 id="c"><a href="#c"><span class="header-section-number">1.1</span> C++</a></h2>
+<h2 id="c"><span class="header-section-number">1.1</span> C++</h2>
 <pre class="sourceCode cpp" include="cpp/template.cpp"><code class="sourceCode cpp"><span class="co">// compile in C++11. use -std=c++11.</span>
 <span class="ot">#include &lt;iostream&gt;</span>
 <span class="ot">#include &lt;iomanip&gt;</span>
@@ -216,7 +220,7 @@ code > span.er { font-weight: bold; }
 <span class="kw">template</span>&lt;<span class="kw">typename</span> T&gt;
 ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream&amp; os,<span class="dt">const</span> vector&lt;T&gt;&amp; vec){
     os &lt;&lt; <span class="st">&quot;[&quot;</span>;
-    <span class="kw">for</span>(<span class="dt">const</span> <span class="dt">auto</span>&amp; v : vec){
+    <span class="kw">for</span>(<span class="dt">const</span> <span class="kw">auto</span>&amp; v : vec){
         os &lt;&lt; v &lt;&lt; <span class="st">&quot;,&quot;</span>;
     }
     os &lt;&lt; <span class="st">&quot;]&quot;</span>;
@@ -241,7 +245,7 @@ vector&lt;T&gt; input(<span class="dt">const</span> <span class="dt">int</span> 
 <span class="dt">int</span> main(){
     <span class="kw">return</span> <span class="dv">0</span>;
 }</code></pre>
-<h2 id="python"><a href="#python"><span class="header-section-number">1.2</span> Python</a></h2>
+<h2 id="python"><span class="header-section-number">1.2</span> Python</h2>
 <pre class="sourceCode python" include="python/template.py"><code class="sourceCode python"><span class="co">#!/usr/bin/env python</span>
 <span class="co">#coding:utf-8</span>
 
@@ -259,12 +263,12 @@ vector&lt;T&gt; input(<span class="dt">const</span> <span class="dt">int</span> 
 
 <span class="kw">if</span> <span class="ot">__name__</span> == <span class="st">&quot;__main__&quot;</span>:
     main()</code></pre>
-<h1 id="算術型"><a href="#算術型"><span class="header-section-number">2</span> 算術型</a></h1>
-<h2 id="int"><a href="#int"><span class="header-section-number">2.1</span> int</a></h2>
+<h1 id="算術型"><span class="header-section-number">2</span> 算術型</h1>
+<h2 id="int"><span class="header-section-number">2.1</span> int</h2>
 <p>基本中の基本。<span class="math">\(10^{9}\)</span>くらい。こわいときにはlong longを使うことを推奨。</p>
-<h2 id="long-long"><a href="#long-long"><span class="header-section-number">2.2</span> long long</a></h2>
+<h2 id="long-long"><span class="header-section-number">2.2</span> long long</h2>
 <p>大きい整数。<span class="math">\(10^{18}\)</span>?くらい。</p>
-<h3 id="ビット演算"><a href="#ビット演算"><span class="header-section-number">2.2.1</span> ビット演算</a></h3>
+<h3 id="ビット演算"><span class="header-section-number">2.2.1</span> ビット演算</h3>
 <p>ビットDPとかに使う。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// 立ってるbitの数を数える</span>
 <span class="dt">int</span> popcount(ll x){
@@ -276,7 +280,7 @@ vector&lt;T&gt; input(<span class="dt">const</span> <span class="dt">int</span> 
     <span class="kw">return</span> ret;
 }
 <span class="co">// 下から2番目のビットを立てる。1llと書くことに注意</span>
-x |= (1ll &lt;&lt; <span class="dv">1</span>);
+x |= (<span class="dv">1ll</span> &lt;&lt; <span class="dv">1</span>);
 
 <span class="co">// 集合演算</span>
 <span class="co">// 和</span>
@@ -288,7 +292,7 @@ ll z = x ^ y;
 <span class="co">// ループ</span>
 <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;N;i++){
     <span class="co">// i番目が立っていれば</span>
-    <span class="kw">if</span>(x &amp; (1ll &lt;&lt; i)){
+    <span class="kw">if</span>(x &amp; (<span class="dv">1ll</span> &lt;&lt; i)){
         <span class="co">//something.</span>
     }
 }
@@ -301,35 +305,35 @@ dp[<span class="dv">0</span>][<span class="dv">0</span>] = <span class="dv">1</s
         <span class="co">//something.</span>
     }
 }</code></pre>
-<h2 id="double"><a href="#double"><span class="header-section-number">2.3</span> double</a></h2>
+<h2 id="double"><span class="header-section-number">2.3</span> double</h2>
 <p>floatは使ってはだめ。</p>
-<h2 id="char"><a href="#char"><span class="header-section-number">2.4</span> char</a></h2>
+<h2 id="char"><span class="header-section-number">2.4</span> char</h2>
 <p>-128 ~ 127くらい。ちいさい。基本的には文字を入れるのに使う。vector&lt;char&gt;を<br />vector&lt;bool&gt;の代わりに使ってもいい。</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">char</span> c = &#39;a&#39;;
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">char</span> c = <span class="st">&#39;a&#39;</span>;
 <span class="co">//cctypeが必要。大文字に変換する。すでに大文字のときは何も起こらない。</span>
 c = toupper(c);
 <span class="co">//小文字に変換する。</span>
 c = tolower(c);
 <span class="co">//vector&lt;bool&gt;の代わり。</span>
 vector&lt;<span class="dt">char</span>&gt; used(<span class="dv">10</span>,<span class="kw">false</span>);</code></pre>
-<h2 id="bool"><a href="#bool"><span class="header-section-number">2.5</span> bool</a></h2>
+<h2 id="bool"><span class="header-section-number">2.5</span> bool</h2>
 <p>true(==1)とかfalse(==0)を入れるためだけに使う。ただしvector&lt;bool&gt;は使ってはいけない。</p>
-<h2 id="補助関数"><a href="#補助関数"><span class="header-section-number">2.6</span> 補助関数</a></h2>
+<h2 id="補助関数"><span class="header-section-number">2.6</span> 補助関数</h2>
 <p>上記の型に関する便利な関数。</p>
 <p>床関数、天井関数、および四捨五入。返り値はdouble。cmathをincludeする。</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">double</span> x = <span class="fl">0.3</span>;
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">double</span> x = <span class="fl">0.</span><span class="dv">3</span>;
 <span class="dt">int</span> f = floor(x); <span class="co">// -&gt; 0</span>
 <span class="dt">int</span> c = ceil(x); <span class="co">// -&gt; 1</span>
 <span class="dt">int</span> r = round(x) <span class="co">// -&gt; 0</span></code></pre>
 <p>任意の場所で四捨五入したいときには、<span class="math">\(10^{n}\)</span>をかけて、roundした後に、<br /><span class="math">\(10^{n}\)</span>で割ればいい。</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">double</span> x = <span class="fl">0.123456789</span>;
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">double</span> x = <span class="fl">0.</span><span class="dv">123456789</span>;
 <span class="co">//0.123</span>
-<span class="dt">double</span> r = round(x*<span class="dv">1000</span>) / <span class="fl">1000.0</span>;</code></pre>
-<h1 id="入出力"><a href="#入出力"><span class="header-section-number">3</span> 入出力</a></h1>
+<span class="dt">double</span> r = round(x*<span class="dv">1000</span>) / <span class="fl">1000.</span><span class="dv">0</span>;</code></pre>
+<h1 id="入出力"><span class="header-section-number">3</span> 入出力</h1>
 <p>基本はcin,coutを使おう。</p>
-<h2 id="cincout"><a href="#cincout"><span class="header-section-number">3.1</span> cin,cout</a></h2>
+<h2 id="cincout"><span class="header-section-number">3.1</span> cin,cout</h2>
 <p>iostream,iomanipをincludeしておくこと。</p>
-<h3 id="cin"><a href="#cin"><span class="header-section-number">3.1.1</span> cin</a></h3>
+<h3 id="cin"><span class="header-section-number">3.1.1</span> cin</h3>
 <p>基本的な使い方について。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> n;
 cin &gt;&gt; n;
@@ -357,7 +361,7 @@ cin.ignore();
 <span class="co">// 文字列</span>
 getline(cin,s);</code></pre>
 <p>とする。cinは改行文字を残すので、ignoreでそれを読み捨てないといけない。<br />また、ignoreの引数は読み捨てる文字数。引数なしの場合は1を渡したのと同等の効果がある。</p>
-<h3 id="cout"><a href="#cout"><span class="header-section-number">3.1.2</span> cout</a></h3>
+<h3 id="cout"><span class="header-section-number">3.1.2</span> cout</h3>
 <p>有効数字等が設定されている問題は、必ず多めに出力すること。多めに出す分には大丈夫。</p>
 <p>基本の使い方</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> n;vector&lt;<span class="dt">int</span>&gt; V(n);
@@ -365,7 +369,7 @@ cout &lt;&lt; n &lt;&lt; endl;
 rep(i,n) cout &lt;&lt; V[i] &lt;&lt; <span class="st">&quot; &quot;</span>;
 cout &lt;&lt; endl;</code></pre>
 <p>以下主なiomanipの使い方</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> n = <span class="dv">123</span>;<span class="dt">double</span> d = <span class="fl">1.23</span>;
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> n = <span class="dv">123</span>;<span class="dt">double</span> d = <span class="fl">1.</span><span class="dv">23</span>;
 
 <span class="co">//10進数 −&gt; 123</span>
 cout &lt;&lt; dec &lt;&lt; n &lt;&lt; endl ;
@@ -384,12 +388,12 @@ cout &lt;&lt; dec;
 
 <span class="co">//幅が10になるようにする。デフォルトは右寄せ</span>
 <span class="co">// -&gt; xxxxxxx123 (default)</span>
-cout &lt;&lt; setfill(&#39;x&#39;) &lt;&lt; setw(<span class="dv">10</span>) &lt;&lt; right &lt;&lt; n &lt;&lt; endl;
+cout &lt;&lt; setfill(<span class="st">&#39;x&#39;</span>) &lt;&lt; setw(<span class="dv">10</span>) &lt;&lt; right &lt;&lt; n &lt;&lt; endl;
 
 <span class="co">// -&gt; 123xxxxxxx</span>
-cout &lt;&lt; setfill(&#39;x&#39;) &lt;&lt; setw(<span class="dv">10</span>) &lt;&lt; left &lt;&lt; n &lt;&lt; endl;
+cout &lt;&lt; setfill(<span class="st">&#39;x&#39;</span>) &lt;&lt; setw(<span class="dv">10</span>) &lt;&lt; left &lt;&lt; n &lt;&lt; endl;
 <span class="co">// -&gt; 123yyyyyyy</span>
-cout &lt;&lt; setfill(&#39;y&#39;) &lt;&lt; setw(<span class="dv">10</span>) &lt;&lt; n &lt;&lt; endl;
+cout &lt;&lt; setfill(<span class="st">&#39;y&#39;</span>) &lt;&lt; setw(<span class="dv">10</span>) &lt;&lt; n &lt;&lt; endl;
 
 <span class="co">//小数点以下10桁表示に。</span>
 cout &lt;&lt; fixed &lt;&lt; setprecision(<span class="dv">10</span>);
@@ -404,18 +408,18 @@ cout.unsetf(ios::fixed);
 <span class="co">// -&gt; 1.23</span>
 cout &lt;&lt; d &lt;&lt; endl;</code></pre>
 <p>基本的には、引数のあるマニピュレータの効果は保存される。</p>
-<h2 id="scanfprintf"><a href="#scanfprintf"><span class="header-section-number">3.2</span> scanf,printf</a></h2>
+<h2 id="scanfprintf"><span class="header-section-number">3.2</span> scanf,printf</h2>
 <p>C++では、cstdioをinclude。複雑な書式とかが必要なときにはこっちを使うといいかもしれない。</p>
-<h3 id="scanf"><a href="#scanf"><span class="header-section-number">3.2.1</span> scanf</a></h3>
+<h3 id="scanf"><span class="header-section-number">3.2.1</span> scanf</h3>
 <p>基本的な使い方</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> n;<span class="dt">char</span> tmp[<span class="dv">256</span>];
-scanf(<span class="st">&quot;%d</span><span class="ch">\n</span><span class="st">&quot;</span>,&amp;n);
+scanf(<span class="st">&quot;</span><span class="ch">%d\n</span><span class="st">&quot;</span>,&amp;n);
 gets(tmp);</code></pre>
 <p>stringに直接いれるのはだめ。scanfはcinと同様に改行を残す。getlineするなら<br />cin.ignore。getsするなら、直前のscanfで改行を読んでおく必要がある。<br />また、scanfで改行を読むのでなく、直後にgetc(stdin)してもいい。</p>
-<h3 id="printf"><a href="#printf"><span class="header-section-number">3.2.2</span> printf</a></h3>
+<h3 id="printf"><span class="header-section-number">3.2.2</span> printf</h3>
 <p>基本的な使い方</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> n = <span class="dv">100</span>;
-printf(<span class="st">&quot;n is %d</span><span class="ch">\n</span><span class="st">&quot;</span>,n);</code></pre>
+printf(<span class="st">&quot;n is </span><span class="ch">%d\n</span><span class="st">&quot;</span>,n);</code></pre>
 <p>scanfとほとんど同様の使い方ができる。</p>
 <table>
 <caption>書式指定子</caption>
@@ -460,22 +464,22 @@ printf(<span class="st">&quot;n is %d</span><span class="ch">\n</span><span clas
 </tr>
 </tbody>
 </table>
-<h2 id="高速化"><a href="#高速化"><span class="header-section-number">3.3</span> 高速化</a></h2>
+<h2 id="高速化"><span class="header-section-number">3.3</span> 高速化</h2>
 <p>以下のコードをmain関数の最初に書くことで、cin,coutの速度が2倍程度になる。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp">ios::sync_with_stdio(<span class="kw">false</span>);
 cin.tie(<span class="dv">0</span>);</code></pre>
 <p>ただし、このコードはstdioとの同期を切るという意味なので、これを使うときにはprintfやscanfを使用してはだめ。</p>
-<h1 id="stdvector"><a href="#stdvector"><span class="header-section-number">4</span> std::vector</a></h1>
+<h1 id="stdvector"><span class="header-section-number">4</span> std::vector</h1>
 <p>ここでは、配列のSTL版である、vectorの使いかたについて書く。<br />ここに書かれている関数は、string等にも用いることができるものが多い。<br />ちなみに、vector&lt;bool&gt;は使ってはいけない。bitsetや、vector&lt;char&gt;をつかうこと。<br />また、all(vector)は、vector.begin(),vector.end()とdefineしている。</p>
-<h2 id="基本"><a href="#基本"><span class="header-section-number">4.1</span> 基本</a></h2>
+<h2 id="基本"><span class="header-section-number">4.1</span> 基本</h2>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">//要素数10で、初期値は-1にする。</span>
-vector&lt;<span class="dt">int</span>&gt; vec(<span class="dv">10</span>,-<span class="dv">1</span>);
+vector&lt;<span class="dt">int</span>&gt; vec(<span class="dv">10</span>,<span class="dv">-1</span>);
 <span class="co">//vecの最初から3つの要素をコピーする。</span>
-vector&lt;<span class="dt">int</span>&gt; newvec(vec.begin(),vec.begin()+<span class="dv">3</span>);
+vector&lt;<span class="dt">int</span>&gt; newvec(vec.begin(),vec.begin()<span class="dv">+3</span>);
 <span class="co">//vecの最初から3つの要素を削除する。</span>
-vec.erase(vec.begin(),vec.begin()+<span class="dv">3</span>);</code></pre>
-<h2 id="並び換え"><a href="#並び換え"><span class="header-section-number">4.2</span> 並び換え</a></h2>
-<h3 id="sort"><a href="#sort"><span class="header-section-number">4.2.1</span> sort</a></h3>
+vec.erase(vec.begin(),vec.begin()<span class="dv">+3</span>);</code></pre>
+<h2 id="並び換え"><span class="header-section-number">4.2</span> 並び換え</h2>
+<h3 id="sort"><span class="header-section-number">4.2.1</span> sort</h3>
 <p>C++のsortは、<span class="math">\(O(n \log n)\)</span>で、introsort。何も指定しない場合には昇順にソートされる。<br />注意すべきなのは、C++11では、最悪ケースで<span class="math">\(O(n \log n)\)</span>となること。C++03では特に何も制限はないが、g++ならば<span class="math">\(O(n \log n)\)</span>である。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">//昇順 (sort(vec.begin(),vec.end())) (2,1,3) -&gt; (1,2,3)</span>
 sort(all(vec));
@@ -491,23 +495,23 @@ sort(all(vec),greater&lt;<span class="dt">int</span>&gt;());</code></pre>
     sort(all(vec),comp);
     sort(all(vec),[](<span class="dt">int</span> l,<span class="dt">int</span> r) {<span class="kw">return</span> abs(l)&lt;abs(r)});
 }</code></pre>
-<h3 id="stable_sort"><a href="#stable_sort"><span class="header-section-number">4.2.2</span> stable_sort</a></h3>
+<h3 id="stable_sort"><span class="header-section-number">4.2.2</span> stable_sort</h3>
 <p>sortとちがって、同じ優先順位の要素の順番は保存される。最悪計算量は<span class="math">\(O(n \log ^ 2 n)\)</span>である。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp">stable_sort(all(vec),comp);</code></pre>
-<h2 id="unique"><a href="#unique"><span class="header-section-number">4.3</span> unique</a></h2>
+<h2 id="unique"><span class="header-section-number">4.3</span> unique</h2>
 <p>隣あう同じ要素を一つにまとめる。eraseすることに注意。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> ints[] = {<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">1</span>};
 vector&lt;<span class="dt">int</span>&gt; vec(ints,ints<span class="dv">+5</span>);
 vec.erase(unique(all(vec)),vec.end());
 <span class="co">// 1 2 1</span>
 repeat(i,vec.size()) cout &lt;&lt; vec[i] &lt;&lt; endl;</code></pre>
-<h2 id="rotate"><a href="#rotate"><span class="header-section-number">4.4</span> rotate</a></h2>
+<h2 id="rotate"><span class="header-section-number">4.4</span> rotate</h2>
 <p>rotateは第二引数の場所を先頭にするように回転する。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span>[] ints = {<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>};
 vector&lt;<span class="dt">int</span>&gt; vec(ints,ints<span class="dv">+5</span>);
-rotate(vec.begin(),vec.begin()+<span class="dv">1</span>),vec.end()); <span class="co">//2,3,4,5,1</span>
-rotate(vec.begin(),vec.end()-<span class="dv">1</span>,vec.end()); <span class="co">//5,1,2,3,4</span></code></pre>
-<h2 id="next_permutation"><a href="#next_permutation"><span class="header-section-number">4.5</span> next_permutation</a></h2>
+rotate(vec.begin(),vec.begin()<span class="dv">+1</span>),vec.end()); <span class="co">//2,3,4,5,1</span>
+rotate(vec.begin(),vec.end()<span class="dv">-1</span>,vec.end()); <span class="co">//5,1,2,3,4</span></code></pre>
+<h2 id="next_permutation"><span class="header-section-number">4.5</span> next_permutation</h2>
 <p>順列をすべて列挙する。<span class="math">\(N!\)</span>個なので、それなりの勢いで大きくなる。章末の付録参照。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp">vector&lt;<span class="dt">int</span>&gt; V = {<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">4</span>};
 <span class="co">//ソートすること。</span>
@@ -519,16 +523,94 @@ sort(all(V));
    }
    cout &lt;&lt; endl;
 }<span class="kw">while</span>(next_permutation(all(V)));</code></pre>
-<h1 id="探索"><a href="#探索"><span class="header-section-number">5</span> 探索</a></h1>
-<h2 id="全探索"><a href="#全探索"><span class="header-section-number">5.1</span> 全探索</a></h2>
+<h2 id="座標圧縮"><span class="header-section-number">4.6</span> 座標圧縮</h2>
+<pre class="sourceCode cpp" include="cpp/zip.cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
+<span class="ot">#include &lt;vector&gt;</span>
+<span class="ot">#include &lt;iomanip&gt;</span>
+<span class="ot">#include &lt;algorithm&gt;</span>
+<span class="ot">#define rep(x,n) for(int x=0;x&lt;(n);x++)</span>
+<span class="ot">#define all(vec) vec.begin(),vec.end()</span>
+
+
+<span class="kw">using</span> <span class="kw">namespace</span> std;
+<span class="kw">template</span>&lt;<span class="kw">typename</span> T&gt;
+ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream&amp; os,<span class="dt">const</span> vector&lt;T&gt;&amp; vec){
+    os &lt;&lt; <span class="st">&quot;[&quot;</span>;
+    <span class="kw">for</span>(<span class="dt">const</span> <span class="kw">auto</span>&amp; v : vec){
+        os &lt;&lt; v &lt;&lt; <span class="st">&quot;,&quot;</span>;
+    }
+    os &lt;&lt; <span class="st">&quot;]&quot;</span>;
+    <span class="kw">return</span> os;
+}
+
+<span class="co">// 重なる長方形がカバーしている面積</span>
+<span class="dt">int</span> main(){
+    <span class="dt">int</span> k = <span class="dv">0</span>;
+    <span class="kw">while</span>(<span class="kw">true</span>){
+        k++;
+        <span class="dt">int</span> n; cin &gt;&gt; n;
+        <span class="kw">if</span>(n == <span class="dv">0</span>) <span class="kw">break</span>;
+        <span class="co">// (X1,Y1) is upper left.</span>
+        <span class="co">// (X1,Y1) is lower right.</span>
+        vector&lt;<span class="dt">double</span>&gt; X1(n),X2(n),Y1(n),Y2(n);
+        rep(i,n){
+            <span class="dt">double</span> x,y,r;
+            cin &gt;&gt; x &gt;&gt; y &gt;&gt; r;
+            X1[i] = x-r;
+            X2[i] = x+r;
+            Y1[i] = y-r;
+            Y2[i] = y+r;
+        }
+        <span class="co">// X,Yは全てのX座標,Y座標</span>
+        vector&lt;<span class="dt">double</span>&gt; X,Y;
+        X.insert(X.end(),all(X1));
+        X.insert(X.end(),all(X2));
+        Y.insert(Y.end(),all(Y1));
+        Y.insert(Y.end(),all(Y2));
+
+        <span class="co">// sortして重複を削除</span>
+        sort(all(X));
+        sort(all(Y));
+        X.erase(unique(all(X)),X.end());
+        Y.erase(unique(all(Y)),Y.end());
+
+        <span class="co">// X1,X2,Y1,Y2の値をX,Y中のindexにする。この時点でintにすべきかも。</span>
+        rep(i,n){
+            X1[i] = lower_bound(all(X),X1[i]) - X.begin();
+            X2[i] = lower_bound(all(X),X2[i]) - X.begin();
+            Y1[i] = lower_bound(all(Y),Y1[i]) - Y.begin();
+            Y2[i] = lower_bound(all(Y),Y2[i]) - Y.begin();
+        }
+        vector&lt;vector&lt;<span class="dt">char</span>&gt;&gt; is_on(X.size(),vector&lt;<span class="dt">char</span>&gt;(Y.size()));
+        <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;n;i++){
+            <span class="kw">for</span>(<span class="dt">int</span> sx=X1[i];sx&lt;X2[i];sx++){
+                <span class="kw">for</span>(<span class="dt">int</span> sy=Y1[i];sy&lt;Y2[i];sy++){
+                    is_on[sx][sy] = <span class="kw">true</span>;
+                }
+            }
+        }
+        <span class="dt">double</span> ans = <span class="dv">0</span>;
+        <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;X.size()<span class="dv">-1</span>;i++){
+            <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;Y.size()<span class="dv">-1</span>;j++){
+                <span class="kw">if</span>(is_on[i][j]){
+                    ans += (X[i<span class="dv">+1</span>]-X[i]) * (Y[j<span class="dv">+1</span>]-Y[j]);
+                }
+            }
+        }
+        cout &lt;&lt; fixed &lt;&lt; setprecision(<span class="dv">2</span>);
+        cout &lt;&lt; k &lt;&lt; <span class="st">&quot; &quot;</span> &lt;&lt; ans &lt;&lt; endl;
+    }
+}</code></pre>
+<h1 id="探索"><span class="header-section-number">5</span> 探索</h1>
+<h2 id="全探索"><span class="header-section-number">5.1</span> 全探索</h2>
 <p>全部しらべる。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> linear_search(vector&lt;<span class="dt">int</span>&gt; V,<span class="dt">int</span> val){
     repeat(i,V.size()){
         <span class="kw">if</span>(V[i] == val) <span class="kw">return</span> i;
     }
-    <span class="kw">return</span> -<span class="dv">1</span>;
+    <span class="kw">return</span> <span class="dv">-1</span>;
 }</code></pre>
-<h2 id="二分探索"><a href="#二分探索"><span class="header-section-number">5.2</span> 二分探索</a></h2>
+<h2 id="二分探索"><span class="header-section-number">5.2</span> 二分探索</h2>
 <p>ある条件を満たす最小のものを探す。ただし単調増加な物にしかつかえない。<br />叙述関数をPとすると、</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">double</span> lower = <span class="dv">0</span>,upper = <span class="dv">1000000</span>;
 <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;<span class="dv">200</span>;i++){
@@ -560,7 +642,29 @@ sort(all(V));
     <span class="co">// 2の個数</span>
     <span class="dt">int</span> number_of_2 = upper - lower;
 }</code></pre>
-<h3 id="合計の重さxを達成するような組み合わせの数え上げ"><a href="#合計の重さxを達成するような組み合わせの数え上げ"><span class="header-section-number">5.2.1</span> 合計の重さXを達成するような組み合わせの数え上げ</a></h3>
+<h2 id="三分探索"><span class="header-section-number">5.3</span> 三分探索</h2>
+<p>凸関数の極値を求める</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// 凸関数の極大な点をもとめる</span>
+<span class="kw">template</span>&lt;<span class="kw">typename</span> F,<span class="kw">typename</span> T&gt;
+T ternary_search(F f,T left,T right){
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;<span class="dv">1000</span>;i++){
+        T l = (<span class="dv">2</span>*left + right) / <span class="dv">3</span>;
+        T r = (left + <span class="dv">2</span>*right) / <span class="dv">3</span>;
+        <span class="kw">if</span>(f(l) &lt; f(r)){
+            left = l;
+        }<span class="kw">else</span>{
+            right = r;
+        }
+    }
+    <span class="kw">return</span> (left+right)/<span class="dv">2</span>;
+}
+
+<span class="co">// 凹関数の極小な・を求める</span>
+<span class="kw">template</span>&lt;<span class="kw">typename</span> F,<span class="kw">typename</span> T&gt;
+T ternary_search_concave(F f,T left,T right){
+    <span class="kw">return</span> ternary_search([f](T x){<span class="kw">return</span> -f(x);},left,right);
+}</code></pre>
+<h3 id="合計の重さxを達成するような組み合わせの数え上げ"><span class="header-section-number">5.3.1</span> 合計の重さXを達成するような組み合わせの数え上げ</h3>
 <pre class="sourceCode cpp" include="cpp/combi_total.cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;vector&gt;</span>
 <span class="kw">using</span> <span class="kw">namespace</span> std;
 
@@ -597,11 +701,49 @@ sort(all(V));
     }
     <span class="kw">return</span> ret;
 }</code></pre>
-<h1 id="文字列操作"><a href="#文字列操作"><span class="header-section-number">6</span> 文字列操作</a></h1>
+<h2 id="ぐるぐる"><span class="header-section-number">5.4</span> ぐるぐる</h2>
+<p>いつかつかうかも。 http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1189</p>
+<pre class="sourceCode cpp" include="cpp/guruguru.cpp"><code class="sourceCode cpp"><span class="co">// WH/2,WH/2 を中心としたぐるぐる。</span>
+<span class="co">// まんなかは1</span>
+vector&lt;vector&lt;<span class="dt">int</span>&gt;&gt; guruguru(<span class="dt">int</span> N){
+    <span class="dt">const</span> <span class="dt">int</span> WH = sqrt(N) + <span class="dv">2</span>;
+    vector&lt;vector&lt;<span class="dt">int</span>&gt;&gt; field(WH,vector&lt;<span class="dt">int</span>&gt;(WH,N + <span class="dv">100</span>));
+    {
+        <span class="dt">int</span> cx=WH/<span class="dv">2</span>,cy=WH/<span class="dv">2</span>;
+        field[cy][cx] = <span class="dv">1</span>;
+        <span class="dt">int</span> c = <span class="dv">2</span>;
+        <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;;i++){
+            <span class="dt">int</span> sx = cx + i<span class="dv">+1</span>;
+            <span class="dt">int</span> sy = cy + i;
+            <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;<span class="dv">2</span>*i<span class="dv">+2</span>;j++){
+                field[sy-j][sx] = c;
+                c++;
+                <span class="kw">if</span>(c &gt;= MAXN) <span class="kw">goto</span> end;
+            }
+            vector&lt;<span class="dt">int</span>&gt; dx = {<span class="dv">-1</span>,<span class="dv">0</span>,<span class="dv">1</span>};
+            vector&lt;<span class="dt">int</span>&gt; dy = {<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>};
+            <span class="co">// left</span>
+            <span class="dt">int</span> ny = sy<span class="dv">-2</span>*i<span class="dv">-1</span>;
+            <span class="dt">int</span> nx = sx;
+            <span class="kw">for</span>(<span class="dt">int</span> k=<span class="dv">0</span>;k&lt;<span class="dv">3</span>;k++){
+                <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;<span class="dv">2</span>*(i<span class="dv">+1</span>);j++){
+                    ny = ny + dy[k];
+                    nx = nx + dx[k];
+                    field[ny][nx] = c;
+                    c++;
+                    <span class="kw">if</span>(c &gt;= MAXN) <span class="kw">goto</span> end;
+                }
+            }
+        }
+end:;
+    }
+    <span class="kw">return</span> field;
+}</code></pre>
+<h1 id="文字列操作"><span class="header-section-number">6</span> 文字列操作</h1>
 <p>stringをincludeする。cctypeもいるかも。</p>
-<h2 id="stdstring"><a href="#stdstring"><span class="header-section-number">6.1</span> std::string</a></h2>
+<h2 id="stdstring"><span class="header-section-number">6.1</span> std::string</h2>
 <p>charをラップしたテンプレートクラス。 基本的な使い方について</p>
-<h3 id="部分列"><a href="#部分列"><span class="header-section-number">6.1.1</span> 部分列</a></h3>
+<h3 id="部分列"><span class="header-section-number">6.1.1</span> 部分列</h3>
 <pre class="sourceCode cpp"><code class="sourceCode cpp">          <span class="co">//0123456789</span>
 string str(<span class="st">&quot;abcdefghij&quot;</span>);
 <span class="co">// 5番目以降</span>
@@ -611,26 +753,26 @@ str.substr(<span class="dv">5</span>,<span class="dv">3</span>); <span class="co
 <span class="co">//全部小文字にする</span>
 transform(s.begin(),s.end(),s.begin(),::tolower);</code></pre>
 <p>substrは一つの引数でそこから先全部、二つの場合は第一引数の位置から、第二<br />引数の数だけ持ってくる。</p>
-<h3 id="検索"><a href="#検索"><span class="header-section-number">6.1.2</span> 検索</a></h3>
+<h3 id="検索"><span class="header-section-number">6.1.2</span> 検索</h3>
 <p>stringには、いくつかのfindが定義されている。線形検索なので、早い検索が必<br />要なときには後述するKMP法やBM法を用いること。</p>
 <ul>
 <li><p>find 引数が最初に現れる位置</p></li>
 <li><p>rfind 引数が最後に表われる位置</p></li>
 <li><p>find_first_of 引数の文字のどれかが最初に表われる位置</p></li>
 <li><p>find_last_of 引数の文字のどれかが最後に表われる位置</p></li>
-<li><p>find_first_not_of<br /> 引数の文字のどれかではない文字が最初に表われる位置</p></li>
-<li><p>find_first_not_of<br /> 引数の文字のどれかではない文字が最後に表われる位置</p></li>
+<li><p>find_first_not_of<br />引数の文字のどれかではない文字が最初に表われる位置</p></li>
+<li><p>find_first_not_of<br />引数の文字のどれかではない文字が最後に表われる位置</p></li>
 </ul>
 <p>第二引数として探すための最初の位置を指定できる。</p>
-<h4 id="boyer-moore法"><a href="#boyer-moore法"><span class="header-section-number">6.1.2.1</span> Boyer Moore法</a></h4>
-<h4 id="kmp法"><a href="#kmp法"><span class="header-section-number">6.1.2.2</span> KMP法</a></h4>
-<h2 id="stringstream"><a href="#stringstream"><span class="header-section-number">6.2</span> stringstream</a></h2>
+<h4 id="boyer-moore法"><span class="header-section-number">6.1.2.1</span> Boyer Moore法</h4>
+<h4 id="kmp法"><span class="header-section-number">6.1.2.2</span> KMP法</h4>
+<h2 id="stringstream"><span class="header-section-number">6.2</span> stringstream</h2>
 <p>cinやcoutのようなstreamをstringを元に作成したりする。基本的には、string<br />をフォーマットしたり、intやlongに、intやlongから変換するために使用する。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp">stringstream ss;
 ss &lt;&lt; <span class="dv">102</span>;
 string s;
 ss &gt;&gt; s;</code></pre>
-<h2 id="再帰下降構文解析"><a href="#再帰下降構文解析"><span class="header-section-number">6.3</span> 再帰下降構文解析</a></h2>
+<h2 id="再帰下降構文解析"><span class="header-section-number">6.3</span> 再帰下降構文解析</h2>
 <p>BNFを書いて、それにしたがっていく。左再帰除去を忘れずに。</p>
 <pre class="sourceCode cpp" include="cpp/parse.cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
 <span class="ot">#include &lt;string&gt;</span>
@@ -655,8 +797,8 @@ ss &gt;&gt; s;</code></pre>
 <span class="co">// &lt;四則演算の式&gt; ::= &lt;乗算除算の式&gt; (+ or -) &lt;乗算除算の式&gt; (+ or -) ...</span>
 <span class="dt">int</span> expression(Cursor &amp;c){
     <span class="dt">int</span> ret = term(c);
-    <span class="kw">while</span>(*c == &#39;+&#39; <span class="kw">or</span> *c == &#39;-&#39;){
-        <span class="kw">if</span>(*c == &#39;+&#39;){
+    <span class="kw">while</span>(*c == <span class="st">&#39;+&#39;</span> <span class="kw">or</span> *c == <span class="st">&#39;-&#39;</span>){
+        <span class="kw">if</span>(*c == <span class="st">&#39;+&#39;</span>){
             c++;
             ret += term(c);
         }<span class="kw">else</span>{
@@ -670,8 +812,8 @@ ss &gt;&gt; s;</code></pre>
 <span class="co">// &lt;乗算除算の式&gt; ::= &lt;括弧か数&gt; (* or /) &lt;括弧か数&gt; (* or /) ...</span>
 <span class="dt">int</span> term(Cursor &amp;c){
     <span class="dt">int</span> ret = factor(c);
-    <span class="kw">while</span>(*c == &#39;*&#39; <span class="kw">or</span> *c == &#39;/&#39;){
-        <span class="kw">if</span>(*c == &#39;*&#39;){
+    <span class="kw">while</span>(*c == <span class="st">&#39;*&#39;</span> <span class="kw">or</span> *c == <span class="st">&#39;/&#39;</span>){
+        <span class="kw">if</span>(*c == <span class="st">&#39;*&#39;</span>){
             c++;
             ret *= factor(c);
         }<span class="kw">else</span>{
@@ -684,7 +826,7 @@ ss &gt;&gt; s;</code></pre>
 
 <span class="co">// &lt;括弧か数&gt;     ::= &#39;(&#39; &lt;四則演算の式&gt; &#39;)&#39; or &lt;数&gt;</span>
 <span class="dt">int</span> factor(Cursor &amp;c){
-    <span class="kw">if</span>(*c == &#39;(&#39;){
+    <span class="kw">if</span>(*c == <span class="st">&#39;(&#39;</span>){
         c++;
         <span class="dt">int</span> ret = expression(c);
         c++; <span class="co">// &#39;)&#39;</span>
@@ -718,7 +860,7 @@ ss &gt;&gt; s;</code></pre>
     }
     <span class="kw">return</span> <span class="dv">0</span>;
 }</code></pre>
-<h2 id="ll1文法--再帰下降で書けるかどうか"><a href="#ll1文法--再帰下降で書けるかどうか"><span class="header-section-number">6.4</span> LL1文法(&lt;-&gt; 再帰下降で書けるかどうか)</a></h2>
+<h2 id="ll1文法--再帰下降で書けるかどうか"><span class="header-section-number">6.4</span> LL1文法(&lt;-&gt; 再帰下降で書けるかどうか)</h2>
 <p>予測型構文解析表を埋めて重複をチュックする。テストしたい。<br />一般に、&quot;X -&gt; Xb,X -&gt; a&quot;なる生成規則は、&quot;X-&gt;aX',X'-&gt;bX',X'-&gt;&quot;とできる。<br />これは前者がab*なる形の文字列を導出するからである。</p>
 <pre class="sourceCode cpp" include="cpp/check_ll1.cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
 <span class="ot">#include &lt;vector&gt;</span>
@@ -960,20 +1102,20 @@ ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream&amp; os,set&lt;T&g
               <span class="co">//  -&gt; 0              // 1 F n</span>
                                     <span class="co">// 3 F ( E )</span>
                                     <span class="co">//  -&gt; 1</span></code></pre>
-<h1 id="整数論"><a href="#整数論"><span class="header-section-number">7</span> 整数論</a></h1>
-<h2 id="最大公約数最小公倍数"><a href="#最大公約数最小公倍数"><span class="header-section-number">7.1</span> 最大公約数,最小公倍数</a></h2>
+<h1 id="整数論"><span class="header-section-number">7</span> 整数論</h1>
+<h2 id="最大公約数最小公倍数"><span class="header-section-number">7.1</span> 最大公約数,最小公倍数</h2>
 <p>ユークリッドの互除法を使う。intをlong longに置換してもいい。 <span class="math">\(O(\log n)\)</span></p>
-<h3 id="最大公約数"><a href="#最大公約数"><span class="header-section-number">7.1.1</span> 最大公約数</a></h3>
+<h3 id="最大公約数"><span class="header-section-number">7.1.1</span> 最大公約数</h3>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> gcd(<span class="dt">int</span> a,<span class="dt">int</span> b){
     <span class="kw">return</span> b==<span class="dv">0</span> ? a : gcd(b,a%b);
 }</code></pre>
-<h3 id="最小公倍数"><a href="#最小公倍数"><span class="header-section-number">7.1.2</span> 最小公倍数</a></h3>
+<h3 id="最小公倍数"><span class="header-section-number">7.1.2</span> 最小公倍数</h3>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> lcm(<span class="dt">int</span> a,<span class="dt">int</span> b){
     <span class="kw">return</span> a*b / gcd(a,b);
 }</code></pre>
-<h2 id="mod"><a href="#mod"><span class="header-section-number">7.2</span> mod</a></h2>
+<h2 id="mod"><span class="header-section-number">7.2</span> mod</h2>
 <p>long longに入らないような答えのときにmodが登場する。</p>
-<h3 id="modの計算式について"><a href="#modの計算式について"><span class="header-section-number">7.2.1</span> modの計算式について</a></h3>
+<h3 id="modの計算式について"><span class="header-section-number">7.2.1</span> modの計算式について</h3>
 <p><span class="math">\[\begin{aligned}
 a \equiv c &amp; \pmod m \\
 b \equiv d &amp; \pmod m\end{aligned}\]</span></p>
@@ -988,7 +1130,7 @@ a ^ m \equiv a \pmod m \\
 a ^ {m-1} \equiv 1 \pmod m \\
 a ^ {m-2} \equiv \frac{1}{a} \pmod m\end{aligned}\]</span></p>
 <p>つまり、<span class="math">\(a\)</span>で割ることと、<span class="math">\(a^{m-2}\)</span>を掛けることは同じである。<br />これは、<span class="math">\(C(10000,5000) \pmod p\)</span>といった式を計算する際、次の冪乗の演算と組みあわせて用いる。</p>
-<h3 id="冪乗のmod"><a href="#冪乗のmod"><span class="header-section-number">7.2.2</span> 冪乗のmod</a></h3>
+<h3 id="冪乗のmod"><span class="header-section-number">7.2.2</span> 冪乗のmod</h3>
 <p>いわゆるmod_pow。計算量は<span class="math">\(O(\log n)\)</span>。</p>
 <pre class="sourceCode cpp" include="cpp/mod_pow.cpp"><code class="sourceCode cpp">ll mod_pow(ll x,ll n,ll mod){
     <span class="kw">if</span>(n==<span class="dv">0</span>) <span class="kw">return</span> <span class="dv">1</span>;
@@ -997,8 +1139,8 @@ a ^ {m-2} \equiv \frac{1}{a} \pmod m\end{aligned}\]</span></p>
     <span class="kw">return</span> ret;
 }</code></pre>
 <p>ちなみにC++のpowを使うときに、引数が整数で、返り値も整数であることを期待<br />するときには、上記のpowを使うべき。なぜならC++のpowは<br />double,double-&gt;doubleな関数であるから。</p>
-<h2 id="素数"><a href="#素数"><span class="header-section-number">7.3</span> 素数</a></h2>
-<h3 id="エラトステネスの篩"><a href="#エラトステネスの篩"><span class="header-section-number">7.3.1</span> エラトステネスの篩</a></h3>
+<h2 id="素数"><span class="header-section-number">7.3</span> 素数</h2>
+<h3 id="エラトステネスの篩"><span class="header-section-number">7.3.1</span> エラトステネスの篩</h3>
 <pre class="sourceCode cpp" include="cpp/sieve.cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
 <span class="ot">#include &lt;vector&gt;</span>
 <span class="kw">using</span> <span class="kw">namespace</span> std;
@@ -1047,7 +1189,7 @@ def sieve(N):
     return primes
 </code></pre>
 <p>素数のリストが欲しかったら、適当に突っ込むこと。<br />実際には<span class="math">\(O(n \log \log n)\)</span>だけれど、大体<span class="math">\(O(n)\)</span>だと思っていい。</p>
-<h3 id="素因数分解"><a href="#素因数分解"><span class="header-section-number">7.3.2</span> 素因数分解</a></h3>
+<h3 id="素因数分解"><span class="header-section-number">7.3.2</span> 素因数分解</h3>
 <pre class="sourceCode cpp" include="cpp/prime_decomposition.cpp"><code class="sourceCode cpp"><span class="co">// primes is primes under sqrt(N).</span>
 vector&lt;<span class="dt">int</span>&gt; prime_decomposition(<span class="dt">int</span> N,<span class="dt">const</span> vector&lt;<span class="dt">int</span>&gt;&amp; primes){
     vector&lt;<span class="dt">int</span>&gt; ret;
@@ -1060,7 +1202,7 @@ vector&lt;<span class="dt">int</span>&gt; prime_decomposition(<span class="dt">i
     <span class="kw">if</span>(N != <span class="dv">1</span>) ret.push_back(N);
     <span class="kw">return</span> ret;
 }</code></pre>
-<h2 id="コンビネーション"><a href="#コンビネーション"><span class="header-section-number">7.4</span> コンビネーション</a></h2>
+<h2 id="コンビネーション"><span class="header-section-number">7.4</span> コンビネーション</h2>
 <p>くみあわせ。</p>
 <pre class="sourceCode cpp" include="cpp/combi.cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
 <span class="ot">#include &lt;vector&gt;</span>
@@ -1181,7 +1323,7 @@ ll combi_tri(<span class="dt">int</span> n,<span class="dt">int</span> r){
 <span class="kw">template</span>&lt;<span class="kw">typename</span> T&gt;
 ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream&amp; os,<span class="dt">const</span> vector&lt;T&gt;&amp; vec){
     os &lt;&lt; <span class="st">&quot;[&quot;</span>;
-    <span class="kw">for</span>(<span class="dt">const</span> <span class="dt">auto</span>&amp; v : vec){
+    <span class="kw">for</span>(<span class="dt">const</span> <span class="kw">auto</span>&amp; v : vec){
         os &lt;&lt; v &lt;&lt; <span class="st">&quot;,&quot;</span>;
     }
     os &lt;&lt; <span class="st">&quot;]&quot;</span>;
@@ -1199,8 +1341,8 @@ ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream&amp; os,<span clas
 }
 
 <span class="dt">void</span> subset_combination(<span class="dt">int</span> n, <span class="dt">int</span> k){
-    ull S = (1ULL &lt;&lt; k) - 1ULL;
-    ull E = ~((1ULL &lt;&lt; n) - 1ULL);
+    ull S = (<span class="dv">1ULL</span> &lt;&lt; k) - <span class="dv">1ULL</span>;
+    ull E = ~((<span class="dv">1ULL</span> &lt;&lt; n) - <span class="dv">1ULL</span>);
     <span class="kw">while</span>(!(S &amp; E)){
         print_bit(S, n);
         ull smallest = S &amp; -S;
@@ -1222,7 +1364,7 @@ ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream&amp; os,<span clas
 
     <span class="kw">return</span> <span class="dv">0</span>;
 }</code></pre>
-<h2 id="確率的なアレ"><a href="#確率的なアレ"><span class="header-section-number">7.5</span> 確率的なアレ</a></h2>
+<h2 id="確率的なアレ"><span class="header-section-number">7.5</span> 確率的なアレ</h2>
 <p>テスト中。</p>
 <pre class="sourceCode cpp" include="cpp/pollard_rho.cpp"><code class="sourceCode cpp"><span class="co">// n&lt; 341550071728321 , ok.</span>
 <span class="ot">#include &lt;iostream&gt;</span>
@@ -1353,14 +1495,14 @@ vector&lt;ll&gt; pollard_rho(ll n,<span class="dt">const</span> vector&lt;ll&gt;
     }
     <span class="kw">return</span> <span class="dv">0</span>;
 }</code></pre>
-<h2 id="乱数"><a href="#乱数"><span class="header-section-number">7.6</span> 乱数</a></h2>
+<h2 id="乱数"><span class="header-section-number">7.6</span> 乱数</h2>
 <p>XORShiftをつかったらうれしいかもしれない。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> <span class="dt">long</span> xor128(){
     <span class="dt">static</span> <span class="dt">unsigned</span> <span class="dt">long</span> x=<span class="dv">123456789</span>,y=<span class="dv">362436069</span>,z=<span class="dv">521288629</span>,w=<span class="dv">88675123</span>;
     <span class="dt">unsigned</span> <span class="dt">long</span> t;
     t=(x^(x&lt;&lt;<span class="dv">11</span>));x=y;y=z;z=w; <span class="kw">return</span>( w=(w^(w&gt;&gt;<span class="dv">19</span>))^(t^(t&gt;&gt;<span class="dv">8</span>)) );
 }</code></pre>
-<h2 id="基数変換"><a href="#基数変換"><span class="header-section-number">7.7</span> 基数変換</a></h2>
+<h2 id="基数変換"><span class="header-section-number">7.7</span> 基数変換</h2>
 <pre class="sourceCode cpp" include="cpp/digit_conv.cpp"><code class="sourceCode cpp">vector&lt;<span class="dt">int</span>&gt; int_to_digits(<span class="dt">int</span> base,<span class="dt">int</span> N){
     vector&lt;<span class="dt">int</span>&gt; rev_ret;
     <span class="kw">while</span>(N != <span class="dv">0</span>){
@@ -1379,7 +1521,7 @@ vector&lt;ll&gt; pollard_rho(ll n,<span class="dt">const</span> vector&lt;ll&gt;
     }
     <span class="kw">return</span> ret;
 }</code></pre>
-<h2 id="二次方程式"><a href="#二次方程式"><span class="header-section-number">7.8</span> 二次方程式</a></h2>
+<h2 id="二次方程式"><span class="header-section-number">7.8</span> 二次方程式</h2>
 <pre class="sourceCode cpp" include="cpp/solve_quadratic_equation.cpp"><code class="sourceCode cpp"><span class="co">// solve ax^2 + bx + c = 0.</span>
 vector&lt;<span class="dt">double</span>&gt; solve_quadratic_equation(<span class="dt">double</span> a,<span class="dt">double</span> b,<span class="dt">double</span> c){
     vector&lt;<span class="dt">double</span>&gt; ret;
@@ -1389,10 +1531,10 @@ vector&lt;<span class="dt">double</span>&gt; solve_quadratic_equation(<span clas
         <span class="dt">double</span> d = b*b<span class="dv">-4</span>*a*c;
         <span class="kw">if</span>(d &gt;= <span class="dv">0</span>){
             <span class="kw">if</span>(b &gt;= <span class="dv">0</span>){
-                ret.push_back(-<span class="dv">2</span>*c/(b+sqrt(d)));
+                ret.push_back(<span class="dv">-2</span>*c/(b+sqrt(d)));
                 ret.push_back((-b-sqrt(d))/(<span class="dv">2</span>*a));
             }<span class="kw">else</span>{
-                ret.push_back(-<span class="dv">2</span>*c/(b-sqrt(d)));
+                ret.push_back(<span class="dv">-2</span>*c/(b-sqrt(d)));
                 ret.push_back((-b+sqrt(d))/(<span class="dv">2</span>*a));
             }
             <span class="kw">if</span>(abs(ret[<span class="dv">0</span>]-ret[<span class="dv">1</span>]) &lt; EPS){
@@ -1402,7 +1544,7 @@ vector&lt;<span class="dt">double</span>&gt; solve_quadratic_equation(<span clas
     }
     <span class="kw">return</span> ret;
 }</code></pre>
-<h2 id="連立方程式"><a href="#連立方程式"><span class="header-section-number">7.9</span> 連立方程式</a></h2>
+<h2 id="連立方程式"><span class="header-section-number">7.9</span> 連立方程式</h2>
 <p>テスト中</p>
 <pre class="sourceCode cpp" include="cpp/gauss_jordan.cpp"><code class="sourceCode cpp"><span class="dt">const</span> <span class="dt">int</span> none = <span class="dv">0</span>; <span class="co">// if no answer</span>
 <span class="dt">const</span> <span class="dt">int</span> one = <span class="dv">1</span>;  <span class="co">// if there is exactly one answer</span>
@@ -1453,7 +1595,7 @@ vector&lt;<span class="dt">double</span>&gt; solve_quadratic_equation(<span clas
     }
     <span class="kw">return</span> one;
 }</code></pre>
-<h2 id="nと互いに素な数の個数"><a href="#nと互いに素な数の個数"><span class="header-section-number">7.10</span> nと互いに素な数の個数</a></h2>
+<h2 id="nと互いに素な数の個数"><span class="header-section-number">7.10</span> nと互いに素な数の個数</h2>
 <p>EulerのTotient関数による。</p>
 <pre class="sourceCode cpp" include="cpp/euler_totient.cpp"><code class="sourceCode cpp"><span class="co">// nと互いに素な数の個数</span>
 <span class="co">// n (1-1/p1) ... (1-1/pn)</span>
@@ -1472,12 +1614,12 @@ T totient(T n){
     }
     <span class="kw">return</span> ans;
 }</code></pre>
-<h1 id="行列"><a href="#行列"><span class="header-section-number">8</span> 行列</a></h1>
-<h2 id="基本要素"><a href="#基本要素"><span class="header-section-number">8.1</span> 基本要素</a></h2>
+<h1 id="行列"><span class="header-section-number">8</span> 行列</h1>
+<h2 id="基本要素"><span class="header-section-number">8.1</span> 基本要素</h2>
 <p>正方行列用 //いつかなおす。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// 適宜intにしたりすること。</span>
 <span class="kw">typedef</span> vector&lt;vector&lt;ll&gt; &gt; ll_mat;</code></pre>
-<h2 id="基本演算"><a href="#基本演算"><span class="header-section-number">8.2</span> 基本演算</a></h2>
+<h2 id="基本演算"><span class="header-section-number">8.2</span> 基本演算</h2>
 <p>かけ算とmod。たしざんはcoming soon.</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">namespace</span> std{
     ll_mat <span class="kw">operator</span>*(<span class="dt">const</span> ll_mat&amp; lhs,<span class="dt">const</span> ll_mat&amp; rhs){
@@ -1504,8 +1646,8 @@ T totient(T n){
         <span class="kw">return</span> ret;
     }
 };</code></pre>
-<h2 id="基本操作"><a href="#基本操作"><span class="header-section-number">8.3</span> 基本操作</a></h2>
-<h3 id="累乗"><a href="#累乗"><span class="header-section-number">8.3.1</span> 累乗</a></h3>
+<h2 id="基本操作"><span class="header-section-number">8.3</span> 基本操作</h2>
+<h3 id="累乗"><span class="header-section-number">8.3.1</span> 累乗</h3>
 <pre class="sourceCode cpp"><code class="sourceCode cpp">vector&lt;vector&lt;ll&gt; &gt;  mod_pow(vector&lt;vector&lt;ll&gt; &gt; x,ll n,ll mod){
     <span class="kw">if</span>(n==<span class="dv">0</span>){
         vector&lt;vector&lt;ll&gt; &gt; E(x.size(),vector&lt;ll&gt;(x.size()));
@@ -1518,7 +1660,7 @@ T totient(T n){
     <span class="kw">if</span>(n%<span class="dv">2</span> == <span class="dv">1</span>)  ret = ret * x % mod;
     <span class="kw">return</span> ret;
 }</code></pre>
-<h3 id="表示"><a href="#表示"><span class="header-section-number">8.3.2</span> 表示</a></h3>
+<h3 id="表示"><span class="header-section-number">8.3.2</span> 表示</h3>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> display_matrix(vector&lt;vector&lt;ll&gt; &gt; mat){
     <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;mat.size();i++){
         <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;mat[<span class="dv">0</span>].size();j++){
@@ -1527,7 +1669,7 @@ T totient(T n){
         cerr &lt;&lt; endl;
     }
 }</code></pre>
-<h3 id="ベクトルとのかけ算"><a href="#ベクトルとのかけ算"><span class="header-section-number">8.3.3</span> ベクトルとのかけ算</a></h3>
+<h3 id="ベクトルとのかけ算"><span class="header-section-number">8.3.3</span> ベクトルとのかけ算</h3>
 <p>一次元列ベクトルとのかけ算</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp">vector&lt;ll&gt; mat_multi(vector&lt;vector&lt;ll&gt; &gt; lhs,vector&lt;ll&gt; rhs,<span class="dt">int</span> mod){
     vector&lt;ll&gt; ret(rhs.size());
@@ -1539,7 +1681,7 @@ T totient(T n){
     }
     <span class="kw">return</span> ret;
 }</code></pre>
-<h2 id="gauss-jordan"><a href="#gauss-jordan"><span class="header-section-number">8.4</span> Gauss-Jordan</a></h2>
+<h2 id="gauss-jordan"><span class="header-section-number">8.4</span> Gauss-Jordan</h2>
 <p>GF上で連立方程式を解く</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// Gauss-Jordan. Solve equation on GF.</span>
 <span class="dt">int</span> invert(<span class="dt">int</span> x){
@@ -1602,8 +1744,8 @@ T totient(T n){
     }
     <span class="kw">return</span> one;
 }</code></pre>
-<h1 id="動的計画法およびそれに似たやつらtodo"><a href="#動的計画法およびそれに似たやつらtodo"><span class="header-section-number">9</span> 動的計画法およびそれに似たやつら。(TODO)</a></h1>
-<h2 id="lcs"><a href="#lcs"><span class="header-section-number">9.1</span> LCS</a></h2>
+<h1 id="動的計画法およびそれに似たやつらtodo"><span class="header-section-number">9</span> 動的計画法およびそれに似たやつら。(TODO)</h1>
+<h2 id="lcs"><span class="header-section-number">9.1</span> LCS</h2>
 <p>Longest common sequence.O(NM)</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp">string lcs(<span class="dt">const</span> string&amp; a,<span class="dt">const</span> string&amp; b){
     <span class="dt">const</span> <span class="dt">int</span> n = a.size(),m = b.size();
@@ -1613,14 +1755,14 @@ T totient(T n){
     <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;n;i++){
         <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;m;j++){
             <span class="kw">if</span>(a[i] == b[j]){
-                x[i<span class="dv">+1</span>][j<span class="dv">+1</span>] = x[i][j]+<span class="dv">1</span>;
+                x[i<span class="dv">+1</span>][j<span class="dv">+1</span>] = x[i][j]<span class="dv">+1</span>;
                 y[i<span class="dv">+1</span>][j<span class="dv">+1</span>] = <span class="dv">0</span>;
             }<span class="kw">else</span> <span class="kw">if</span>(x[i<span class="dv">+1</span>][j] &lt; x[i][j<span class="dv">+1</span>]){
                 x[i<span class="dv">+1</span>][j<span class="dv">+1</span>] = x[i][j<span class="dv">+1</span>];
                 y[i<span class="dv">+1</span>][j<span class="dv">+1</span>] = <span class="dv">1</span>;
             }<span class="kw">else</span>{
                 x[i<span class="dv">+1</span>][j<span class="dv">+1</span>] = x[i<span class="dv">+1</span>][j];
-                y[i<span class="dv">+1</span>][j<span class="dv">+1</span>] = -<span class="dv">1</span>;
+                y[i<span class="dv">+1</span>][j<span class="dv">+1</span>] = <span class="dv">-1</span>;
             }
         }
     }
@@ -1638,8 +1780,8 @@ T totient(T n){
     reverse(all(ret));
     <span class="kw">return</span> ret;
 }</code></pre>
-<h2 id="lis"><a href="#lis"><span class="header-section-number">9.2</span> LIS</a></h2>
-<h3 id="onlogn"><a href="#onlogn"><span class="header-section-number">9.2.1</span> O(NlogN)</a></h3>
+<h2 id="lis"><span class="header-section-number">9.2</span> LIS</h2>
+<h3 id="onlogn"><span class="header-section-number">9.2.1</span> O(NlogN)</h3>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// O(Nlog(N))</span>
 <span class="co">//  Sphagetthi source より.</span>
 vector&lt;<span class="dt">int</span>&gt; longest_increasing_subsequence(<span class="dt">const</span> vector&lt;<span class="dt">int</span>&gt;&amp; a){
@@ -1657,7 +1799,7 @@ vector&lt;<span class="dt">int</span>&gt; longest_increasing_subsequence(<span c
     }
     <span class="kw">return</span> b;
 }</code></pre>
-<h2 id="巡回セールスマン問題"><a href="#巡回セールスマン問題"><span class="header-section-number">9.3</span> 巡回セールスマン問題</a></h2>
+<h2 id="巡回セールスマン問題"><span class="header-section-number">9.3</span> 巡回セールスマン問題</h2>
 <p>bit演算をする。bitのループを先に回すこと。<span class="math">\(O(N^2\times2^{N})\)</span></p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp">ll dp[<span class="dv">1</span> &lt;&lt; N][N];
 dp[<span class="dv">0</span>][<span class="dv">0</span>] = <span class="dv">1</span>;
@@ -1667,7 +1809,7 @@ dp[<span class="dv">0</span>][<span class="dv">0</span>] = <span class="dv">1</s
         <span class="co">//something.</span>
     }
 }</code></pre>
-<h2 id="ナップサック問題"><a href="#ナップサック問題"><span class="header-section-number">9.4</span> ナップサック問題</a></h2>
+<h2 id="ナップサック問題"><span class="header-section-number">9.4</span> ナップサック問題</h2>
 <p>個数制限なしのとき</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
 <span class="ot">#include &lt;vector&gt;</span>
@@ -1724,7 +1866,7 @@ dp[<span class="dv">0</span>][<span class="dv">0</span>] = <span class="dv">1</s
     cout &lt;&lt; retv &lt;&lt; endl &lt;&lt; retw &lt;&lt; endl;
     <span class="kw">return</span> <span class="dv">0</span>;
 }</code></pre>
-<h2 id="ヒストグラム内の最大長方形のサイズ"><a href="#ヒストグラム内の最大長方形のサイズ"><span class="header-section-number">9.5</span> ヒストグラム内の最大長方形のサイズ</a></h2>
+<h2 id="ヒストグラム内の最大長方形のサイズ"><span class="header-section-number">9.5</span> ヒストグラム内の最大長方形のサイズ</h2>
 <pre class="sourceCode cpp" include="cpp/hist.cpp"><code class="sourceCode cpp"><span class="ot">#define repeat(i,n) for(int i=0;i&lt;static_cast&lt;int&gt;(n);i++)</span>
 <span class="kw">typedef</span> vector&lt;<span class="dt">int</span>&gt; vi;
 <span class="kw">typedef</span> vector&lt;vi&gt; vvi;
@@ -1776,7 +1918,7 @@ T max_rectangle_size_in_histogram(<span class="dt">const</span> vector&lt;T&gt;&
                     <span class="kw">if</span>(matrix[i][j] == <span class="dv">0</span>){
                         up[i][j] = <span class="dv">0</span>;
                     }<span class="kw">else</span>{
-                        up[i][j] = up[i<span class="dv">-1</span>][j]+<span class="dv">1</span>;
+                        up[i][j] = up[i<span class="dv">-1</span>][j]<span class="dv">+1</span>;
                     }
                 }
             }
@@ -1789,13 +1931,97 @@ T max_rectangle_size_in_histogram(<span class="dt">const</span> vector&lt;T&gt;&
     }
     <span class="kw">return</span> ret;
 }</code></pre>
-<h1 id="データ構造"><a href="#データ構造"><span class="header-section-number">10</span> データ構造</a></h1>
-<h2 id="union-find"><a href="#union-find"><span class="header-section-number">10.1</span> Union-Find</a></h2>
+<h2 id="なんか長方形の和をもとめるやつ"><span class="header-section-number">9.6</span> なんか長方形の和をもとめるやつ</h2>
+<pre class="sourceCode cpp" include="cpp/2d_area.cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;vector&gt;</span>
+<span class="ot">#include &lt;iostream&gt;</span>
+
+<span class="kw">using</span> <span class="kw">namespace</span> std;
+
+<span class="co">// ret[i][j] = sum of all field in [0,i) x [0,j).</span>
+<span class="kw">template</span>&lt;<span class="kw">typename</span> T&gt;
+vector&lt;vector&lt;T&gt;&gt; calc_sum(<span class="dt">const</span> vector&lt;vector&lt;T&gt;&gt;&amp; field){
+    <span class="dt">int</span> h = field.size();
+    <span class="dt">int</span> w = field[<span class="dv">0</span>].size();
+    vector&lt;vector&lt;T&gt;&gt; ret(h<span class="dv">+1</span>,vector&lt;T&gt;(w<span class="dv">+1</span>));
+    <span class="kw">for</span>(<span class="dt">int</span> y=<span class="dv">1</span>;y&lt;=h;y++){
+        <span class="kw">for</span>(<span class="dt">int</span> x=<span class="dv">1</span>;x&lt;=w;x++){
+            ret[y][x] = ret[y][x<span class="dv">-1</span>] + field[y<span class="dv">-1</span>][x<span class="dv">-1</span>];
+        }
+    }
+    <span class="kw">for</span>(<span class="dt">int</span> x=<span class="dv">0</span>;x&lt;=w;x++){
+        <span class="kw">for</span>(<span class="dt">int</span> y=<span class="dv">1</span>;y&lt;=h;y++){
+            ret[y][x] = ret[y][x] + ret[y<span class="dv">-1</span>][x];
+        }
+    }
+    <span class="kw">return</span> ret;
+}
+
+<span class="co">// calc [sy,gy] x [sx,gx]</span>
+<span class="kw">template</span>&lt;<span class="kw">typename</span> T&gt;
+T calc(<span class="dt">const</span> vector&lt;vector&lt;T&gt;&gt;&amp; v,<span class="dt">int</span> sy,<span class="dt">int</span> sx,<span class="dt">int</span> gy,<span class="dt">int</span> gx){
+    <span class="co">// for close section</span>
+    gy++;gx++;
+    <span class="kw">return</span> v[gy][gx] - v[sy][gx] - v[gy][sx] + v[sy][sx];
+}
+
+<span class="dt">int</span> main(){
+    vector&lt;vector&lt;<span class="dt">int</span>&gt;&gt; field = {{<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>},
+                                 {<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>},
+                                 {<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">8</span>}};
+    <span class="kw">auto</span> s = calc_sum(field);
+    <span class="co">// calc 3+5+6 + 6+7+8</span>
+    cout &lt;&lt; calc(s,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">2</span>,<span class="dv">2</span>) &lt;&lt; endl;
+
+    <span class="kw">return</span> <span class="dv">0</span>;
+}
+
+<span class="co">// 座標圧縮</span>
+<span class="dt">int</span> main(){
+    <span class="dt">int</span> n,m;cin &gt;&gt; n &gt;&gt; m;
+
+    vector&lt;<span class="dt">int</span>&gt; index_of_x(n),index_of_y(n);
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;n;i++){
+        cin &gt;&gt; index_of_x[i] &gt;&gt; index_of_y[i];
+    }
+    vector&lt;<span class="dt">int</span>&gt; value_of_x = index_of_x,
+                value_of_y = index_of_y;
+
+    sort(all(value_of_x));
+    sort(all(value_of_y));
+    value_of_x.erase(unique(all(value_of_x)),value_of_x.end());
+    value_of_y.erase(unique(all(value_of_y)),value_of_y.end());
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;n;i++){
+        index_of_x[i] = lower_bound(all(value_of_x),index_of_x[i]) - value_of_x.begin();
+        index_of_y[i] = lower_bound(all(value_of_y),index_of_y[i]) - value_of_y.begin();
+    }
+    vector&lt;vector&lt;<span class="dt">int</span>&gt;&gt; p(value_of_y.size(),vector&lt;<span class="dt">int</span>&gt;(value_of_x.size()));
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;n;i++){
+        p[index_of_y[i]][index_of_x[i]] += <span class="dv">1</span>;
+    }
+    <span class="kw">auto</span> v = calc_sum(p);
+
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;m;i++){
+        <span class="dt">int</span> x1,y1,x2,y2;
+        cin &gt;&gt; x1 &gt;&gt; y1 &gt;&gt; x2 &gt;&gt; y2;
+
+        <span class="dt">int</span> sx = lower_bound(all(value_of_x),x1) - value_of_x.begin();
+        <span class="dt">int</span> gx = upper_bound(all(value_of_x),x2) - value_of_x.begin();
+        <span class="dt">int</span> sy = lower_bound(all(value_of_y),y1) - value_of_y.begin();
+        <span class="dt">int</span> gy = upper_bound(all(value_of_y),y2) - value_of_y.begin();
+
+        <span class="dt">int</span> ans = v[gy][gx] - v[sy][gx] - v[gy][sx] + v[sy][sx];
+        cout &lt;&lt; ans &lt;&lt; endl;
+    }
+
+    <span class="kw">return</span> <span class="dv">0</span>;
+}</code></pre>
+<h1 id="データ構造"><span class="header-section-number">10</span> データ構造</h1>
+<h2 id="union-find"><span class="header-section-number">10.1</span> Union-Find</h2>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> UnionFind{
-    <span class="dt">const</span> <span class="dt">int</span> is_root = -<span class="dv">1</span>;
+    <span class="dt">const</span> <span class="dt">int</span> is_root = <span class="dv">-1</span>;
     vector&lt;<span class="dt">int</span>&gt; data;
     UnionFind(<span class="dt">int</span> n){
-        data = vector&lt;<span class="dt">int</span>&gt;(n,-<span class="dv">1</span>);
+        data = vector&lt;<span class="dt">int</span>&gt;(n,<span class="dv">-1</span>);
     }
     <span class="co">// 親を探す</span>
     <span class="dt">int</span> root(<span class="dt">int</span> x){
@@ -1827,7 +2053,7 @@ T max_rectangle_size_in_histogram(<span class="dt">const</span> vector&lt;T&gt;&
         <span class="kw">return</span> -data[root(x)];
     }
 };</code></pre>
-<h2 id="ヒープ"><a href="#ヒープ"><span class="header-section-number">10.2</span> ヒープ</a></h2>
+<h2 id="ヒープ"><span class="header-section-number">10.2</span> ヒープ</h2>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;queue&gt;</span>
 <span class="ot">#include &lt;iostream&gt;</span>
 
@@ -1873,7 +2099,7 @@ T max_rectangle_size_in_histogram(<span class="dt">const</span> vector&lt;T&gt;&
         Q.pop();
     }
 }</code></pre>
-<h2 id="bitset"><a href="#bitset"><span class="header-section-number">10.3</span> bitset</a></h2>
+<h2 id="bitset"><span class="header-section-number">10.3</span> bitset</h2>
 <p>限られた大きさのvector&lt;bool&gt;を使いたいときに、bitsetを使うことができる。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
 <span class="ot">#include &lt;bitset&gt;</span>
@@ -1925,7 +2151,7 @@ T max_rectangle_size_in_histogram(<span class="dt">const</span> vector&lt;T&gt;&
     <span class="co">// 関数オブジェクトを作る必要アリ</span>
     map&lt;bitset&lt;N&gt;,<span class="dt">int</span>,bit_cmp&gt; M;
 }</code></pre>
-<h2 id="分数"><a href="#分数"><span class="header-section-number">10.4</span> 分数</a></h2>
+<h2 id="分数"><span class="header-section-number">10.4</span> 分数</h2>
 <p>テストちゅう.</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">typedef</span> <span class="dt">long</span> <span class="dt">long</span> ll;
 ll gcd(ll a,ll b){
@@ -1933,8 +2159,8 @@ ll gcd(ll a,ll b){
 }
 
 ll lcm(ll a,ll b){
-    <span class="kw">if</span>(a &lt; <span class="dv">0</span>) a *= -<span class="dv">1</span>;
-    <span class="kw">if</span>(b &lt; <span class="dv">0</span>) b *= -<span class="dv">1</span>;
+    <span class="kw">if</span>(a &lt; <span class="dv">0</span>) a *= <span class="dv">-1</span>;
+    <span class="kw">if</span>(b &lt; <span class="dv">0</span>) b *= <span class="dv">-1</span>;
     <span class="kw">return</span> a*b / gcd(a,b);
 }
 
@@ -1945,8 +2171,8 @@ ll lcm(ll a,ll b){
         n = c / _d;
         d = c / _n;
         <span class="kw">if</span>(d &lt; <span class="dv">0</span>){
-            n *= -<span class="dv">1</span>;
-            d *= -<span class="dv">1</span>;
+            n *= <span class="dv">-1</span>;
+            d *= <span class="dv">-1</span>;
         }
     }
 
@@ -1987,7 +2213,7 @@ ll lcm(ll a,ll b){
         <span class="kw">return</span> Fraction(n,d);
     }
     Fraction <span class="kw">operator</span>-() <span class="dt">const</span>{
-        <span class="kw">return</span> (*<span class="kw">this</span>) * -<span class="dv">1</span>;
+        <span class="kw">return</span> (*<span class="kw">this</span>) * <span class="dv">-1</span>;
     }
     Fraction <span class="kw">operator</span>*(<span class="dt">const</span> ll&amp; a) <span class="dt">const</span>{
         <span class="kw">return</span> Fraction(a*n,d) ;
@@ -1998,8 +2224,8 @@ ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream &amp;os,<span clas
     os &lt;&lt; f.n &lt;&lt; <span class="st">&quot;/&quot;</span> &lt;&lt; f.d;
     <span class="kw">return</span> os;
 }</code></pre>
-<h2 id="セグメント木"><a href="#セグメント木"><span class="header-section-number">10.5</span> セグメント木</a></h2>
-<h3 id="普通の"><a href="#普通の"><span class="header-section-number">10.5.1</span> 普通の</a></h3>
+<h2 id="セグメント木"><span class="header-section-number">10.5</span> セグメント木</h2>
+<h3 id="普通の"><span class="header-section-number">10.5.1</span> 普通の</h3>
 <p>RMQ (POJ 3264)</p>
 <pre class="sourceCode cpp" include="cpp/segment_tree.cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;vector&gt;</span>
 <span class="kw">using</span> <span class="kw">namespace</span> std;
@@ -2059,7 +2285,7 @@ ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream &amp;os,<span clas
         <span class="kw">return</span> (x<span class="dv">-1</span>)/<span class="dv">2</span>;
     }
 };</code></pre>
-<h3 id="lazy"><a href="#lazy"><span class="header-section-number">10.5.2</span> Lazy</a></h3>
+<h3 id="lazy"><span class="header-section-number">10.5.2</span> Lazy</h3>
 <p>テスト中 参考: http://d.hatena.ne.jp/kyuridenamida/20121114/1352835261</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">typedef</span> pair&lt;<span class="dt">int</span>,<span class="dt">int</span>&gt; pii;
 <span class="co">// update [l,r) v -&gt; +v to all element in [l,r).</span>
@@ -2146,14 +2372,14 @@ ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream&amp; os,<span clas
     <span class="kw">return</span> os;
 }
 </code></pre>
-<h1 id="グラフ"><a href="#グラフ"><span class="header-section-number">11</span> グラフ</a></h1>
-<h2 id="構成要素"><a href="#構成要素"><span class="header-section-number">11.1</span> 構成要素</a></h2>
+<h1 id="グラフ"><span class="header-section-number">11</span> グラフ</h1>
+<h2 id="構成要素"><span class="header-section-number">11.1</span> 構成要素</h2>
 <p>隣接行列を使うか、vector&lt;Edge&gt;みたいのを使うかの二択。場合によってはNode<br />みたいなのも使うかも。隣接行列を使うとメモリとか探すのとか重い。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> Edge{
     <span class="dt">int</span> to,cost;
     Edge(<span class="dt">int</span> to,<span class="dt">int</span> cost) : to(to),cost(cost) {};
 };</code></pre>
-<h2 id="ベルマンフォード"><a href="#ベルマンフォード"><span class="header-section-number">11.2</span> ベルマンフォード</a></h2>
+<h2 id="ベルマンフォード"><span class="header-section-number">11.2</span> ベルマンフォード</h2>
 <p>O(N|E|)</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">const</span> <span class="dt">int</span> INF = <span class="dv">1</span> &lt;&lt; <span class="dv">30</span>;
 <span class="co">// s:始点,dist:距離,prev:最短経路木</span>
@@ -2161,7 +2387,7 @@ ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream&amp; os,<span clas
     <span class="dt">int</span> n = graph.size();
     <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;n;i++) dist[i] = INF;
     dist[s] = <span class="dv">0</span>;
-    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;n;i++) prev[i] = -<span class="dv">1</span>;
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;n;i++) prev[i] = <span class="dv">-1</span>;
 
     <span class="dt">bool</span> neg_cycle = <span class="kw">false</span>;
     <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;n;i++){
@@ -2181,7 +2407,7 @@ ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream&amp; os,<span clas
     }
     <span class="kw">return</span> !neg_cycle;
 }</code></pre>
-<h2 id="ダイクストラ"><a href="#ダイクストラ"><span class="header-section-number">11.3</span> ダイクストラ</a></h2>
+<h2 id="ダイクストラ"><span class="header-section-number">11.3</span> ダイクストラ</h2>
 <p>負の経路があったらダメ</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
 <span class="ot">#include &lt;vector&gt;</span>
@@ -2220,7 +2446,7 @@ ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream&amp; os,<span clas
             que.push(make_pair(graph[where][j].cost+cost,graph[where][j].to));
         }
     }
-    <span class="kw">return</span> -<span class="dv">1</span>;
+    <span class="kw">return</span> <span class="dv">-1</span>;
 }
 
 
@@ -2236,7 +2462,7 @@ ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream&amp; os,<span clas
         V[b].push_back(Edge(b,a,cost));
     }
 
-    <span class="dt">int</span> ret = -<span class="dv">1</span>;
+    <span class="dt">int</span> ret = <span class="dv">-1</span>;
     <span class="dt">int</span> p,q;
     cin &gt;&gt; p &gt;&gt; q;
     vector&lt;<span class="dt">char</span>&gt; visited(m,<span class="kw">false</span>);
@@ -2262,7 +2488,7 @@ ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream&amp; os,<span clas
     cout &lt;&lt; ret &lt;&lt; endl;
     <span class="kw">return</span> <span class="dv">0</span>;
 }</code></pre>
-<h2 id="ワーシャルフロイド"><a href="#ワーシャルフロイド"><span class="header-section-number">11.4</span> ワーシャルフロイド</a></h2>
+<h2 id="ワーシャルフロイド"><span class="header-section-number">11.4</span> ワーシャルフロイド</h2>
 <p>負の経路があってもOK。すべてのノードに対してすべてのノードへの距離を求め<br />る。もし負の閉路があったらiからiはマイナスになる。<span class="math">\(O(|V|^{3})\)</span></p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// m はノードの個数。NOはでかい数</span>
 vector&lt;vector&lt;<span class="dt">int</span>&gt; &gt; V(m,vector&lt;<span class="dt">int</span>&gt;(m,NO));
@@ -2278,7 +2504,7 @@ rep(i,m){
         }
     }
 }</code></pre>
-<h2 id="最小全域木"><a href="#最小全域木"><span class="header-section-number">11.5</span> 最小全域木</a></h2>
+<h2 id="最小全域木"><span class="header-section-number">11.5</span> 最小全域木</h2>
 <p>プリム法による。<span class="math">\(O(N^2log(N))\)</span>だと思う。最小コストを求めるコードが以下。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> Edge{
     <span class="dt">int</span> to, cost;
@@ -2293,7 +2519,7 @@ vector&lt;vector&lt;Edge&gt;&gt; minimum_spanning_tree(<span class="dt">const</s
     vector&lt;vector&lt;Edge&gt;&gt; ret(N);
     vector&lt;<span class="dt">char</span>&gt; used(N,<span class="kw">false</span>);
     priority_queue&lt;cft,vector&lt;cft&gt;,greater&lt;cft&gt;&gt; que;
-    que.push(make_tuple(<span class="dv">0</span>,-<span class="dv">1</span>,<span class="dv">0</span>));
+    que.push(make_tuple(<span class="dv">0</span>,<span class="dv">-1</span>,<span class="dv">0</span>));
     <span class="kw">while</span>(<span class="kw">not</span> que.empty()){
         <span class="dt">int</span> cost = get&lt;<span class="dv">0</span>&gt;(que.top());
         <span class="dt">int</span> from = get&lt;<span class="dv">1</span>&gt;(que.top());
@@ -2302,7 +2528,7 @@ vector&lt;vector&lt;Edge&gt;&gt; minimum_spanning_tree(<span class="dt">const</s
         <span class="kw">if</span>(used[to]) <span class="kw">continue</span>;
         used[to] = <span class="kw">true</span>;
         <span class="co">// ignore first.</span>
-        <span class="kw">if</span>(from != -<span class="dv">1</span>){
+        <span class="kw">if</span>(from != <span class="dv">-1</span>){
             ret[from].push_back(Edge(to,cost));
         }
         <span class="kw">for</span>(<span class="dt">const</span> Edge&amp; e : graph[to]){
@@ -2311,7 +2537,7 @@ vector&lt;vector&lt;Edge&gt;&gt; minimum_spanning_tree(<span class="dt">const</s
     }
     <span class="kw">return</span> ret;
 }</code></pre>
-<h2 id="最大流"><a href="#最大流"><span class="header-section-number">11.6</span> 最大流</a></h2>
+<h2 id="最大流"><span class="header-section-number">11.6</span> 最大流</h2>
 <p>Dinic法による。また、最大流最小カット定理より、最大流と最小カットは一致する。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> Edge{
     <span class="dt">int</span> to,cap,rev;
@@ -2320,11 +2546,11 @@ vector&lt;vector&lt;Edge&gt;&gt; minimum_spanning_tree(<span class="dt">const</s
 
 <span class="dt">void</span> add_edge(vector&lt;vector&lt;Edge&gt; &gt;&amp; E,<span class="dt">int</span> from,<span class="dt">int</span> to,<span class="dt">int</span> cap){
     E[from].push_back(Edge(to,cap,E[to].size()));
-    E[to].push_back(Edge(from,<span class="dv">0</span>,E[from].size()-<span class="dv">1</span>));
+    E[to].push_back(Edge(from,<span class="dv">0</span>,E[from].size()<span class="dv">-1</span>));
 }
 
 vector&lt;<span class="dt">int</span>&gt; levels(vector&lt;vector&lt;Edge&gt; &gt; &amp;E,<span class="dt">int</span> s){
-    vector&lt;<span class="dt">int</span>&gt; level(E.size(),-<span class="dv">1</span>);
+    vector&lt;<span class="dt">int</span>&gt; level(E.size(),<span class="dv">-1</span>);
     level[s] = <span class="dv">0</span>;
     queue&lt;<span class="dt">int</span>&gt; Q;
     Q.push(s);
@@ -2333,8 +2559,8 @@ vector&lt;<span class="dt">int</span>&gt; levels(vector&lt;vector&lt;Edge&gt; &g
         Q.pop();
         <span class="kw">for</span>(size_t i=<span class="dv">0</span>;i&lt;E[v].size();i++){
             Edge &amp;e = E[v][i];
-            <span class="kw">if</span>(e.cap &gt; <span class="dv">0</span> <span class="kw">and</span> level[e.to] == -<span class="dv">1</span>){
-                level[e.to] = level[v]+<span class="dv">1</span>;
+            <span class="kw">if</span>(e.cap &gt; <span class="dv">0</span> <span class="kw">and</span> level[e.to] == <span class="dv">-1</span>){
+                level[e.to] = level[v]<span class="dv">+1</span>;
                 Q.push(e.to);
             }
         }
@@ -2404,7 +2630,7 @@ vector&lt;<span class="dt">int</span>&gt; levels(vector&lt;vector&lt;Edge&gt; &g
     }
     <span class="kw">return</span> <span class="dv">0</span>;
 }</code></pre>
-<h2 id="最小費用流"><a href="#最小費用流"><span class="header-section-number">11.7</span> 最小費用流</a></h2>
+<h2 id="最小費用流"><span class="header-section-number">11.7</span> 最小費用流</h2>
 <p>Primal-Dual法による。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">typedef</span> pair&lt;<span class="dt">int</span>,<span class="dt">int</span>&gt; pii;
 
@@ -2416,7 +2642,7 @@ vector&lt;<span class="dt">int</span>&gt; levels(vector&lt;vector&lt;Edge&gt; &g
 
 <span class="dt">void</span> add_edge(vector&lt;vector&lt;Edge&gt; &gt; &amp;E,<span class="dt">int</span> from,<span class="dt">int</span> to,<span class="dt">int</span> cap,<span class="dt">int</span> cost){
     E[from].push_back(Edge(to,cap,cost,E[to].size()));
-    E[to].push_back(Edge(from,<span class="dv">0</span>,-cost,E[from].size()-<span class="dv">1</span>));
+    E[to].push_back(Edge(from,<span class="dv">0</span>,-cost,E[from].size()<span class="dv">-1</span>));
 }
 
 <span class="co">// s -&gt; t (flow f)</span>
@@ -2450,7 +2676,7 @@ vector&lt;<span class="dt">int</span>&gt; levels(vector&lt;vector&lt;Edge&gt; &g
             }
         }
         <span class="kw">if</span>(dist[t] == INF){
-            <span class="kw">return</span> -<span class="dv">1</span>;
+            <span class="kw">return</span> <span class="dv">-1</span>;
         }
         <span class="kw">for</span>(<span class="dt">int</span> v=<span class="dv">0</span>;v&lt;E.size();v++){
             h[v] += dist[v];
@@ -2481,12 +2707,12 @@ vector&lt;<span class="dt">int</span>&gt; levels(vector&lt;vector&lt;Edge&gt; &g
             <span class="kw">for</span>(<span class="dt">int</span> w=<span class="dv">0</span>;w&lt;M;w++){
                 <span class="dt">char</span> x;
                 cin &gt;&gt; x;
-                <span class="kw">if</span>(x == &#39;H&#39;) houses.push_back(make_pair(h,w));
-                <span class="kw">else</span> <span class="kw">if</span>(x == &#39;m&#39;) men.push_back(make_pair(h,w));
+                <span class="kw">if</span>(x == <span class="st">&#39;H&#39;</span>) houses.push_back(make_pair(h,w));
+                <span class="kw">else</span> <span class="kw">if</span>(x == <span class="st">&#39;m&#39;</span>) men.push_back(make_pair(h,w));
             }
         }
 
-        vector&lt;vector&lt;Edge&gt; &gt; E(men.size()+houses.size()+<span class="dv">2</span>);
+        vector&lt;vector&lt;Edge&gt; &gt; E(men.size()+houses.size()<span class="dv">+2</span>);
         <span class="dt">int</span> s = men.size()+houses.size();
         <span class="dt">int</span> t = s<span class="dv">+1</span>;
 
@@ -2507,7 +2733,7 @@ vector&lt;<span class="dt">int</span>&gt; levels(vector&lt;vector&lt;Edge&gt; &g
     }
     <span class="kw">return</span> <span class="dv">0</span>;
 }</code></pre>
-<h2 id="無向グラフにおける最小カット"><a href="#無向グラフにおける最小カット"><span class="header-section-number">11.8</span> 無向グラフにおける最小カット</a></h2>
+<h2 id="無向グラフにおける最小カット"><span class="header-section-number">11.8</span> 無向グラフにおける最小カット</h2>
 <p>Nagamochi-Ibaraki/Storer-Wagnerの方法によってO(V^3)で計算できる。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> Edge{
     <span class="dt">int</span> to,cap,rev;
@@ -2516,7 +2742,7 @@ vector&lt;<span class="dt">int</span>&gt; levels(vector&lt;vector&lt;Edge&gt; &g
 
 <span class="dt">void</span> add_edge(vector&lt;vector&lt;Edge&gt; &gt;&amp; E,<span class="dt">int</span> from,<span class="dt">int</span> to,<span class="dt">int</span> cap){
     E[from].push_back(Edge(to,cap,E[to].size()));
-    E[to].push_back(Edge(from,<span class="dv">0</span>,E[from].size()-<span class="dv">1</span>));
+    E[to].push_back(Edge(from,<span class="dv">0</span>,E[from].size()<span class="dv">-1</span>));
 }
 
 <span class="co">// Nagamochi-Ibaraki/Stoer-Wagner</span>
@@ -2543,7 +2769,7 @@ vector&lt;<span class="dt">int</span>&gt; levels(vector&lt;vector&lt;Edge&gt; &g
             u = v;
             v = max_element(ws.begin(),ws.end()) - ws.begin();
             w = ws[v];
-            ws[v] = -<span class="dv">1</span>;
+            ws[v] = <span class="dv">-1</span>;
             <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;m;i++){
                 <span class="kw">if</span>(ws[i] &gt;= <span class="dv">0</span>) {
                     ws[i] += adj[h[v]][h[i]];
@@ -2562,18 +2788,18 @@ vector&lt;<span class="dt">int</span>&gt; levels(vector&lt;vector&lt;Edge&gt; &g
 
 <span class="dt">int</span> main(){
     <span class="dt">int</span> N,M;
-    <span class="kw">while</span>(scanf(<span class="st">&quot;%d %d</span><span class="ch">\n</span><span class="st">&quot;</span>,&amp;N,&amp;M) != EOF){
+    <span class="kw">while</span>(scanf(<span class="st">&quot;</span><span class="ch">%d</span><span class="st"> </span><span class="ch">%d\n</span><span class="st">&quot;</span>,&amp;N,&amp;M) != EOF){
         vector&lt;vector&lt;Edge&gt; &gt; graph(N);
         <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;M;i++){
             <span class="dt">int</span> a,b,c;
-            scanf(<span class="st">&quot;%d %d %d</span><span class="ch">\n</span><span class="st">&quot;</span>,&amp;a,&amp;b,&amp;c);
+            scanf(<span class="st">&quot;</span><span class="ch">%d</span><span class="st"> </span><span class="ch">%d</span><span class="st"> </span><span class="ch">%d\n</span><span class="st">&quot;</span>,&amp;a,&amp;b,&amp;c);
             add_edge(graph,a,b,c);
             add_edge(graph,b,a,c);
         }
-        printf(<span class="st">&quot;%d</span><span class="ch">\n</span><span class="st">&quot;</span>,minimum_cut_of_undirected_graph(graph));
+        printf(<span class="st">&quot;</span><span class="ch">%d\n</span><span class="st">&quot;</span>,minimum_cut_of_undirected_graph(graph));
     }
     <span class="kw">return</span> <span class="dv">0</span>;</code></pre>
-<h2 id="強連結成分分解"><a href="#強連結成分分解"><span class="header-section-number">11.9</span> 強連結成分分解</a></h2>
+<h2 id="強連結成分分解"><span class="header-section-number">11.9</span> 強連結成分分解</h2>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> Edge{
     <span class="dt">int</span> to,cost;
     Edge(<span class="dt">int</span> t,<span class="dt">int</span> c)
@@ -2584,7 +2810,7 @@ vector&lt;<span class="dt">int</span>&gt; levels(vector&lt;vector&lt;Edge&gt; &g
 <span class="dt">void</span> check_back_number(<span class="dt">const</span> vector&lt;vector&lt;Edge&gt;&gt;&amp; graph,
                        <span class="dt">int</span> v,vector&lt;<span class="dt">char</span>&gt;&amp; used,vector&lt;<span class="dt">int</span>&gt;&amp; back_number){
     used[v] = <span class="kw">true</span>;
-    <span class="kw">for</span>(<span class="dt">const</span> <span class="dt">auto</span>&amp; e : graph[v]){
+    <span class="kw">for</span>(<span class="dt">const</span> <span class="kw">auto</span>&amp; e : graph[v]){
         <span class="kw">if</span>(<span class="kw">not</span> used[e.to]){
             check_back_number(graph,e.to,used,back_number);
         }
@@ -2596,7 +2822,7 @@ vector&lt;<span class="dt">int</span>&gt; levels(vector&lt;vector&lt;Edge&gt; &g
                    <span class="dt">int</span> v,vector&lt;<span class="dt">char</span>&gt;&amp; used,vector&lt;<span class="dt">int</span>&gt;&amp; s){
     used[v] = <span class="kw">true</span>;
     s.push_back(v);
-    <span class="kw">for</span>(<span class="dt">const</span> <span class="dt">auto</span>&amp; e : graph[v]){
+    <span class="kw">for</span>(<span class="dt">const</span> <span class="kw">auto</span>&amp; e : graph[v]){
         <span class="kw">if</span>(<span class="kw">not</span> used[e.to]) {
             collect_nodes(graph,e.to,used,s);
         }
@@ -2620,7 +2846,7 @@ vector&lt;vector&lt;<span class="dt">int</span>&gt;&gt; strongly_connected_compo
         vector&lt;<span class="dt">char</span>&gt; used(N);
         vector&lt;vector&lt;Edge&gt;&gt; reversed_graph(N);
         <span class="kw">for</span>(<span class="dt">int</span> from=<span class="dv">0</span>;from&lt;N;from++){
-            <span class="kw">for</span>(<span class="dt">const</span> <span class="dt">auto</span>&amp; e : graph[from]){
+            <span class="kw">for</span>(<span class="dt">const</span> <span class="kw">auto</span>&amp; e : graph[from]){
                 reversed_graph[e.to].push_back(Edge(from,e.cost));
             }
         }
@@ -2634,7 +2860,7 @@ vector&lt;vector&lt;<span class="dt">int</span>&gt;&gt; strongly_connected_compo
     }
     <span class="kw">return</span> scc;
 }</code></pre>
-<h2 id="橋の列挙"><a href="#橋の列挙"><span class="header-section-number">11.10</span> 橋の列挙</a></h2>
+<h2 id="橋の列挙"><span class="header-section-number">11.10</span> 橋の列挙</h2>
 <pre class="sourceCode cpp" include="cpp/bridge.cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
 <span class="ot">#include &lt;vector&gt;</span>
 <span class="ot">#include &lt;algorithm&gt;</span>
@@ -2660,7 +2886,7 @@ vector&lt;vector&lt;<span class="dt">int</span>&gt;&gt; strongly_connected_compo
     number++;
     <span class="kw">for</span>(<span class="dt">const</span> Edge&amp; e : graph[cur]){
         <span class="co">// not visited</span>
-        <span class="kw">if</span>(pre_order[e.to] == -<span class="dv">1</span>){
+        <span class="kw">if</span>(pre_order[e.to] == <span class="dv">-1</span>){
             number = find_bridge_sub(e.to,cur,number,graph,pre_order,low,bridges);
             <span class="kw">if</span>(pre_order[e.to] == low[e.to]){
                 bridges[cur].push_back(e);
@@ -2676,9 +2902,9 @@ vector&lt;vector&lt;<span class="dt">int</span>&gt;&gt; strongly_connected_compo
 <span class="co">// assume it is connected graph.</span>
 vector&lt;vector&lt;Edge&gt;&gt; find_bridge(<span class="dt">const</span> vector&lt;vector&lt;Edge&gt;&gt;&amp; graph){
     <span class="dt">int</span> N = graph.size();
-    vector&lt;<span class="dt">int</span>&gt; pre_order(N,-<span class="dv">1</span>),lowest_number_of_connected(N,N<span class="dv">+1</span>);
+    vector&lt;<span class="dt">int</span>&gt; pre_order(N,<span class="dv">-1</span>),lowest_number_of_connected(N,N<span class="dv">+1</span>);
     vector&lt;vector&lt;Edge&gt;&gt; ret(N);
-    find_bridge_sub(<span class="dv">0</span>,-<span class="dv">1</span>,<span class="dv">0</span>,graph,pre_order,lowest_number_of_connected,ret);
+    find_bridge_sub(<span class="dv">0</span>,<span class="dv">-1</span>,<span class="dv">0</span>,graph,pre_order,lowest_number_of_connected,ret);
 
     <span class="co">// optional: make sure from &lt; e.to</span>
     <span class="co">//  You can use following if graph is bidirectional.</span>
@@ -2718,7 +2944,7 @@ vector&lt;vector&lt;Edge&gt;&gt; find_bridge(<span class="dt">const</span> vecto
     }
     <span class="kw">return</span> <span class="dv">0</span>;
 }</code></pre>
-<h2 id="lowest-common-ancestor"><a href="#lowest-common-ancestor"><span class="header-section-number">11.11</span> Lowest Common Ancestor</a></h2>
+<h2 id="lowest-common-ancestor"><span class="header-section-number">11.11</span> Lowest Common Ancestor</h2>
 <p>木において、根から最も遠い、u,vの共通の祖先をLCAと呼ぶ。</p>
 <pre class="sourceCode cpp" include="cpp/lca.cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;vector&gt;</span>
 <span class="ot">#include &lt;cmath&gt;</span>
@@ -2751,7 +2977,7 @@ vector&lt;vector&lt;Edge&gt;&gt; find_bridge(<span class="dt">const</span> vecto
         }
 
         <span class="kw">if</span>(u == v) <span class="kw">return</span> u;
-        <span class="kw">for</span>(<span class="dt">int</span> k=(<span class="dt">int</span>)parent_pow2.size()-<span class="dv">1</span>;k&gt;=<span class="dv">0</span>;k--){
+        <span class="kw">for</span>(<span class="dt">int</span> k=(<span class="dt">int</span>)parent_pow2.size()<span class="dv">-1</span>;k&gt;=<span class="dv">0</span>;k--){
             <span class="kw">if</span>(parent_pow2[k][u] != parent_pow2[k][v]){
                 u = parent_pow2[k][u];
                 v = parent_pow2[k][v];
@@ -2762,9 +2988,9 @@ vector&lt;vector&lt;Edge&gt;&gt; find_bridge(<span class="dt">const</span> vecto
 
 <span class="kw">private</span>:
     <span class="dt">void</span> calc_parent_and_depth(){
-        parent = vector&lt;<span class="dt">int</span>&gt;(children.size(),-<span class="dv">1</span>);
-        depth = vector&lt;<span class="dt">int</span>&gt;(children.size(),-<span class="dv">1</span>);
-        sub_calc_parent_and_depth(root,-<span class="dv">1</span>,<span class="dv">0</span>);
+        parent = vector&lt;<span class="dt">int</span>&gt;(children.size(),<span class="dv">-1</span>);
+        depth = vector&lt;<span class="dt">int</span>&gt;(children.size(),<span class="dv">-1</span>);
+        sub_calc_parent_and_depth(root,<span class="dv">-1</span>,<span class="dv">0</span>);
     }
     <span class="dt">void</span> sub_calc_parent_and_depth(<span class="dt">int</span> cur,<span class="dt">int</span> par,<span class="dt">int</span> dep){
         parent[cur] = par;
@@ -2778,7 +3004,7 @@ vector&lt;vector&lt;Edge&gt;&gt; find_bridge(<span class="dt">const</span> vecto
     <span class="dt">void</span> calc_parent_pow2(){
         <span class="co">// parent_pow2[k][i] = 2^k parent of node i.</span>
         parent_pow2 = vector&lt;vector&lt;<span class="dt">int</span>&gt;&gt;(ceil(log(children.size())/log(<span class="dv">2</span>)),
-                                          vector&lt;<span class="dt">int</span>&gt;(children.size(),-<span class="dv">1</span>));
+                                          vector&lt;<span class="dt">int</span>&gt;(children.size(),<span class="dv">-1</span>));
         parent_pow2[<span class="dv">0</span>] = parent;
         <span class="kw">for</span>(size_t k=<span class="dv">0</span>;k<span class="dv">+1</span>&lt;parent_pow2.size();k++){
             <span class="kw">for</span>(size_t v=<span class="dv">0</span>;v&lt;children.size();v++){
@@ -2789,7 +3015,7 @@ vector&lt;vector&lt;Edge&gt;&gt; find_bridge(<span class="dt">const</span> vecto
         }
     }
 };</code></pre>
-<h1 id="幾何"><a href="#幾何"><span class="header-section-number">12</span> 幾何</a></h1>
+<h1 id="幾何"><span class="header-section-number">12</span> 幾何</h1>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;complex&gt;</span>
 <span class="kw">using</span> <span class="kw">namespace</span> std;
 
@@ -2825,7 +3051,7 @@ point unit_vector(point a){
 <span class="co">// 法線ベクトル</span>
 pair&lt;point,point&gt; normal_vector(point a){
     point n1 = a * point(<span class="dv">0</span>,<span class="dv">1</span>);
-    point n2 = a * point(<span class="dv">0</span>,-<span class="dv">1</span>);
+    point n2 = a * point(<span class="dv">0</span>,<span class="dv">-1</span>);
     <span class="kw">return</span> make_pair(n1,n2);
 }
 
@@ -2933,17 +3159,17 @@ point nearest_point_linesegment_and_point(point a1,point a2,point b){
 <span class="co">// 点の進行方向</span>
 <span class="dt">int</span> ccw(point a,point b,point c){
     b -= a;c -= a;
-    <span class="kw">if</span>(cross(b,c) &gt; <span class="dv">0</span>) <span class="kw">return</span> +<span class="dv">1</span>;    <span class="co">// counter clockwise</span>
-    <span class="kw">if</span>(cross(b,c) &lt; <span class="dv">0</span>) <span class="kw">return</span> -<span class="dv">1</span>;    <span class="co">// clockwise</span>
-    <span class="kw">if</span>(dot(b,c) &lt; <span class="dv">0</span>) <span class="kw">return</span> +<span class="dv">2</span>;      <span class="co">// c -- a -- b</span>
-    <span class="kw">if</span>(norm(b) &lt; norm(c)) <span class="kw">return</span> -<span class="dv">2</span>; <span class="co">// a -- b -- c</span>
+    <span class="kw">if</span>(cross(b,c) &gt; <span class="dv">0</span>) <span class="kw">return</span> <span class="dv">+1</span>;    <span class="co">// counter clockwise</span>
+    <span class="kw">if</span>(cross(b,c) &lt; <span class="dv">0</span>) <span class="kw">return</span> <span class="dv">-1</span>;    <span class="co">// clockwise</span>
+    <span class="kw">if</span>(dot(b,c) &lt; <span class="dv">0</span>) <span class="kw">return</span> <span class="dv">+2</span>;      <span class="co">// c -- a -- b</span>
+    <span class="kw">if</span>(norm(b) &lt; norm(c)) <span class="kw">return</span> <span class="dv">-2</span>; <span class="co">// a -- b -- c</span>
     <span class="kw">return</span> <span class="dv">0</span>;
 }
 
 <span class="co">// 点が真に多角形(凸?)の中にはいっているか</span>
 <span class="dt">bool</span> is_inner_point_vertex(<span class="dt">const</span> vector&lt;point&gt; &amp;ps,point a){
     <span class="dt">int</span> cc = ccw(ps[<span class="dv">0</span>],ps[<span class="dv">1</span>],a);
-    <span class="kw">if</span>(<span class="kw">not</span>(cc == <span class="dv">1</span> <span class="kw">or</span> cc == -<span class="dv">1</span>)) <span class="kw">return</span> <span class="kw">false</span>;
+    <span class="kw">if</span>(<span class="kw">not</span>(cc == <span class="dv">1</span> <span class="kw">or</span> cc == <span class="dv">-1</span>)) <span class="kw">return</span> <span class="kw">false</span>;
     <span class="kw">for</span>(size_t i=<span class="dv">0</span>;i&lt;ps.size();i++){
         <span class="kw">if</span>(cc != ccw(ps[i],ps[(i<span class="dv">+1</span>)%ps.size()],a)) <span class="kw">return</span> <span class="kw">false</span>;
     }
@@ -3030,12 +3256,12 @@ vector&lt;point&gt; circles_point(point c1,<span class="dt">double</span> r1,poi
 <span class="co">// clockwiseだと負</span>
 <span class="dt">double</span> vertex_area(vector&lt;point&gt; v){
     <span class="dt">double</span> ret = <span class="dv">0</span>;
-    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">1</span>;i&lt;v.size()-<span class="dv">1</span>;i++){
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">1</span>;i&lt;v.size()<span class="dv">-1</span>;i++){
         ret += triangle_area(v[<span class="dv">0</span>],v[i],v[i<span class="dv">+1</span>]);
     }
     <span class="kw">return</span> ret;
 }</code></pre>
-<h2 id="最近点対"><a href="#最近点対"><span class="header-section-number">12.1</span> 最近点対</a></h2>
+<h2 id="最近点対"><span class="header-section-number">12.1</span> 最近点対</h2>
 <pre class="sourceCode cpp" include="cpp/closest_pair_of_points.cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;complex&gt;</span>
 <span class="ot">#include &lt;algorithm&gt;</span>
 <span class="ot">#include &lt;iostream&gt;</span>
@@ -3109,8 +3335,8 @@ vector&lt;point&gt; circles_point(point c1,<span class="dt">double</span> r1,poi
     cout &lt;&lt; closest_pair_in_field(ps) &lt;&lt; endl;
     <span class="kw">return</span> <span class="dv">0</span>;
 }</code></pre>
-<h1 id="ゲーム"><a href="#ゲーム"><span class="header-section-number">13</span> ゲーム</a></h1>
-<h2 id="nim"><a href="#nim"><span class="header-section-number">13.1</span> Nim</a></h2>
+<h1 id="ゲーム"><span class="header-section-number">13</span> ゲーム</h1>
+<h2 id="nim"><span class="header-section-number">13.1</span> Nim</h2>
 <p>いくつかのコインの山がある。この中からプレイヤーは山を一つ選び、1個以上の任意の<br />数のコインを取る。最後のコインを取ったプレイヤーが勝ちである。この問題に<br />対しては以下のことが知られている。すべての山のxorをとったとき、それが0で<br />あるとき、後攻の勝ち、それ以外のときは先攻の勝ち。</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
 <span class="ot">#include &lt;vector&gt;</span>
@@ -3126,8 +3352,8 @@ vector&lt;point&gt; circles_point(point c1,<span class="dt">double</span> r1,poi
     <span class="kw">if</span>(xor_sum != <span class="dv">0</span>) cout &lt;&lt; <span class="st">&quot;First Player Win&quot;</span> &lt;&lt; endl;
     <span class="kw">else</span> cout &lt;&lt; <span class="st">&quot;Second Player Win&quot;</span> &lt;&lt; endl;
 }</code></pre>
-<h1 id="いろんなデータ"><a href="#いろんなデータ"><span class="header-section-number">14</span> いろんなデータ</a></h1>
-<h2 id="階乗"><a href="#階乗"><span class="header-section-number">14.1</span> 階乗</a></h2>
+<h1 id="いろんなデータ"><span class="header-section-number">14</span> いろんなデータ</h1>
+<h2 id="階乗"><span class="header-section-number">14.1</span> 階乗</h2>
 <table>
 <thead>
 <tr class="header">
@@ -3182,7 +3408,7 @@ vector&lt;point&gt; circles_point(point c1,<span class="dt">double</span> r1,poi
 </tr>
 </tbody>
 </table>
-<h2 id="数単位変換"><a href="#数単位変換"><span class="header-section-number">14.2</span> 数単位変換</a></h2>
+<h2 id="数単位変換"><span class="header-section-number">14.2</span> 数単位変換</h2>
 <table>
 <thead>
 <tr class="header">
@@ -3254,7 +3480,7 @@ vector&lt;point&gt; circles_point(point c1,<span class="dt">double</span> r1,poi
 </tr>
 </tbody>
 </table>
-<h2 id="bit"><a href="#bit"><span class="header-section-number">14.3</span> bit</a></h2>
+<h2 id="bit"><span class="header-section-number">14.3</span> bit</h2>
 <table>
 <thead>
 <tr class="header">
@@ -3336,8 +3562,8 @@ vector&lt;point&gt; circles_point(point c1,<span class="dt">double</span> r1,poi
 </tr>
 </tbody>
 </table>
-<h2 id="最低限の設定ファイル"><a href="#最低限の設定ファイル"><span class="header-section-number">14.4</span> 最低限の設定ファイル</a></h2>
-<h3 id="vim用"><a href="#vim用"><span class="header-section-number">14.4.1</span> vim用</a></h3>
+<h2 id="最低限の設定ファイル"><span class="header-section-number">14.4</span> 最低限の設定ファイル</h2>
+<h3 id="vim用"><span class="header-section-number">14.4.1</span> vim用</h3>
 <p>最低限のもの。ホームにおく。</p>
 <pre><code>set fileencoding=utf-8
 set nocompatible
