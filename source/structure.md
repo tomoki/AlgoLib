@@ -320,6 +320,10 @@ ostream& operator<<(ostream& os,const LazySegmentTree& seg){
     os << seg.data << endl << seg.lazy;
     return os;
 }
+~~~~~~
 
+## 定数個のみを保持するpriority_queue
+ビームサーチとかに使える？
 
+~~~~~~{.cpp include="cpp/lens_queue.cpp"}
 ~~~~~~

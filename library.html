@@ -145,6 +145,7 @@ code > span.er { font-weight: bold; }
 <li><a href="#普通の"><span class="toc-section-number">10.5.1</span> 普通の</a></li>
 <li><a href="#lazy"><span class="toc-section-number">10.5.2</span> Lazy</a></li>
 </ul></li>
+<li><a href="#定数個のみを保持するpriority_queue"><span class="toc-section-number">10.6</span> 定数個のみを保持するpriority_queue</a></li>
 </ul></li>
 <li><a href="#グラフ"><span class="toc-section-number">11</span> グラフ</a><ul>
 <li><a href="#構成要素"><span class="toc-section-number">11.1</span> 構成要素</a></li>
@@ -165,12 +166,15 @@ code > span.er { font-weight: bold; }
 <li><a href="#ゲーム"><span class="toc-section-number">13</span> ゲーム</a><ul>
 <li><a href="#nim"><span class="toc-section-number">13.1</span> Nim</a></li>
 </ul></li>
-<li><a href="#いろんなデータ"><span class="toc-section-number">14</span> いろんなデータ</a><ul>
-<li><a href="#階乗"><span class="toc-section-number">14.1</span> 階乗</a></li>
-<li><a href="#数単位変換"><span class="toc-section-number">14.2</span> 数単位変換</a></li>
-<li><a href="#bit"><span class="toc-section-number">14.3</span> bit</a></li>
-<li><a href="#最低限の設定ファイル"><span class="toc-section-number">14.4</span> 最低限の設定ファイル</a><ul>
-<li><a href="#vim用"><span class="toc-section-number">14.4.1</span> vim用</a></li>
+<li><a href="#なんか最適化とか"><span class="toc-section-number">14</span> なんか最適化とか</a><ul>
+<li><a href="#焼き鈍し"><span class="toc-section-number">14.1</span> 焼き鈍し</a></li>
+</ul></li>
+<li><a href="#いろんなデータ"><span class="toc-section-number">15</span> いろんなデータ</a><ul>
+<li><a href="#階乗"><span class="toc-section-number">15.1</span> 階乗</a></li>
+<li><a href="#数単位変換"><span class="toc-section-number">15.2</span> 数単位変換</a></li>
+<li><a href="#bit"><span class="toc-section-number">15.3</span> bit</a></li>
+<li><a href="#最低限の設定ファイル"><span class="toc-section-number">15.4</span> 最低限の設定ファイル</a><ul>
+<li><a href="#vim用"><span class="toc-section-number">15.4.1</span> vim用</a></li>
 </ul></li>
 </ul></li>
 </ul>
@@ -2370,8 +2374,107 @@ ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream &amp;os,<span clas
 ostream&amp; <span class="kw">operator</span>&lt;&lt;(ostream&amp; os,<span class="dt">const</span> LazySegmentTree&amp; seg){
     os &lt;&lt; seg.data &lt;&lt; endl &lt;&lt; seg.lazy;
     <span class="kw">return</span> os;
+}</code></pre>
+<h2 id="定数個のみを保持するpriority_queue"><span class="header-section-number">10.6</span> 定数個のみを保持するpriority_queue</h2>
+<p>ビームサーチとかに使える？</p>
+<pre class="sourceCode cpp" include="cpp/lens_queue.cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;vector&gt;</span>
+<span class="ot">#include &lt;queue&gt;</span>
+<span class="ot">#include &lt;iostream&gt;</span>
+
+
+<span class="kw">template</span>&lt;<span class="kw">class</span> T,
+         <span class="kw">class</span> Container=std::vector&lt;T&gt;,
+         <span class="kw">class</span> Compare=std::less&lt;<span class="kw">typename</span> Container::value_type&gt;&gt;
+<span class="kw">struct</span> lens_queue : <span class="kw">public</span> std::priority_queue&lt;T,Container,Compare&gt;{
+    <span class="kw">typedef</span> std::priority_queue&lt;T,Container,Compare&gt; super;
+    lens_queue(<span class="dt">int</span> _cap)
+        : cap(_cap){
+    }
+    <span class="kw">inline</span> std::size_t capacity() <span class="dt">const</span> {<span class="kw">return</span> cap;}
+    <span class="dt">void</span> push(<span class="dt">const</span> T&amp; x){
+        <span class="kw">if</span>(should_push(x)){
+            super::push(x);erase_overflow();
+        }
+    }
+    <span class="dt">void</span> push(T&amp;&amp; x){
+        <span class="kw">if</span>(should_push(x)){
+            super::push(std::move(x));erase_overflow();
+        }
+    }
+    <span class="kw">template</span> &lt;<span class="kw">class</span>... Args&gt;
+    <span class="dt">void</span> emplace(Args&amp;&amp;... args){
+        <span class="kw">this</span>-&gt;c.emplace_back(std::forward&lt;Args&gt;(args)...);
+        <span class="kw">if</span>(should_push(<span class="kw">this</span>-&gt;c.back())){
+            std::push_heap(<span class="kw">this</span>-&gt;c.begin(),<span class="kw">this</span>-&gt;c.end(),<span class="kw">this</span>-&gt;comp);
+            erase_overflow();
+        }<span class="kw">else</span>{
+            <span class="kw">this</span>-&gt;c.pop_back();
+        }
+    }
+    <span class="co">// this crash lens_queue.</span>
+    Container&amp;&amp; take(){
+        <span class="kw">return</span> std::move(<span class="kw">this</span>-&gt;c);
+    }
+    <span class="kw">template</span>&lt;<span class="kw">class</span> T2,<span class="kw">class</span> Container2,<span class="kw">class</span> Compare2&gt;
+    <span class="kw">friend</span> std::ostream&amp; <span class="kw">operator</span>&lt;&lt;(std::ostream&amp;,
+                                    <span class="dt">const</span> lens_queue&lt;T2,Container2,Compare2&gt;&amp;);
+<span class="kw">private</span>:
+    std::size_t cap;
+    <span class="dt">void</span> erase_overflow(){
+        <span class="kw">while</span>(<span class="kw">this</span>-&gt;size() &gt; capacity()){
+            <span class="kw">this</span>-&gt;pop();
+        }
+    }
+    <span class="kw">inline</span> <span class="dt">bool</span> should_push(<span class="dt">const</span> T&amp; x){
+        <span class="kw">return</span> <span class="kw">this</span>-&gt;size()&lt;capacity() || !<span class="kw">this</span>-&gt;comp(<span class="kw">this</span>-&gt;top(),x);
+    }
+};
+
+<span class="kw">template</span>&lt;<span class="kw">class</span> T,<span class="kw">class</span> Container,<span class="kw">class</span> Compare&gt;
+std::ostream&amp; <span class="kw">operator</span>&lt;&lt;(std::ostream&amp; os,<span class="dt">const</span> lens_queue&lt;T,Container,Compare&gt;&amp; que){
+    os &lt;&lt; <span class="st">&quot;{&quot;</span>;
+    <span class="kw">for</span>(<span class="dt">const</span> <span class="kw">auto</span>&amp; v : que.c){
+        os &lt;&lt; v &lt;&lt; <span class="st">&quot;,&quot;</span>;
+    }
+    os &lt;&lt; <span class="st">&quot;}&quot;</span>;
+    <span class="kw">return</span> os;
 }
-</code></pre>
+
+
+
+<span class="dt">signed</span> main() {
+    <span class="dt">int</span> n,k;<span class="dt">char</span> c;
+    std::cin &gt;&gt; n &gt;&gt; k &gt;&gt; c;
+    <span class="kw">if</span>(c == <span class="st">&#39;g&#39;</span>){
+        <span class="co">// k = 3</span>
+        <span class="co">// 4 2 3 1 5 -&gt; 3 4 5</span>
+        lens_queue&lt;<span class="dt">int</span>,std::vector&lt;<span class="dt">int</span>&gt;,std::greater&lt;<span class="dt">int</span>&gt;&gt; que(k);
+        <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;n;i++){
+            <span class="dt">int</span> v;std::cin &gt;&gt; v;
+            que.push(v);
+            <span class="co">// que.emplace(v);</span>
+        }
+        vector&lt;<span class="dt">int</span>&gt; taken = que.take();
+        <span class="co">// while(not que.empty()){</span>
+        <span class="co">//     std::cout &lt;&lt; que.top() &lt;&lt; std::endl;</span>
+        <span class="co">//     que.pop();</span>
+        <span class="co">// }</span>
+    }<span class="kw">else</span> <span class="kw">if</span>(c == <span class="st">&#39;l&#39;</span>){
+        <span class="co">// k = 3</span>
+        <span class="co">// 4 2 3 1 5 -&gt; 3 2 1</span>
+        lens_queue&lt;<span class="dt">int</span>&gt; que(k);
+        <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;n;i++){
+            <span class="dt">int</span> v;std::cin &gt;&gt; v;
+            que.push(v);
+            <span class="co">// que.emplace(v);</span>
+        }
+        <span class="kw">while</span>(<span class="kw">not</span> que.empty()){
+            std::cout &lt;&lt; que.top() &lt;&lt; std::endl;
+            que.pop();
+        }
+    }
+    <span class="kw">return</span> <span class="dv">0</span>;
+}</code></pre>
 <h1 id="グラフ"><span class="header-section-number">11</span> グラフ</h1>
 <h2 id="構成要素"><span class="header-section-number">11.1</span> 構成要素</h2>
 <p>隣接行列を使うか、vector&lt;Edge&gt;みたいのを使うかの二択。場合によってはNode<br />みたいなのも使うかも。隣接行列を使うとメモリとか探すのとか重い。</p>
@@ -2800,7 +2903,7 @@ vector&lt;<span class="dt">int</span>&gt; levels(vector&lt;vector&lt;Edge&gt; &g
     }
     <span class="kw">return</span> <span class="dv">0</span>;</code></pre>
 <h2 id="強連結成分分解"><span class="header-section-number">11.9</span> 強連結成分分解</h2>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> Edge{
+<pre class="sourceCode cpp" include="cpp/scc.cpp"><code class="sourceCode cpp"><span class="kw">struct</span> Edge{
     <span class="dt">int</span> to,cost;
     Edge(<span class="dt">int</span> t,<span class="dt">int</span> c)
         :to(t),cost(c) {
@@ -2859,6 +2962,107 @@ vector&lt;vector&lt;<span class="dt">int</span>&gt;&gt; strongly_connected_compo
         }
     }
     <span class="kw">return</span> scc;
+}
+<span class="kw">namespace</span> SAT{
+    <span class="co">// variable is integer .</span>
+    <span class="kw">struct</span> Literal{
+        <span class="dt">bool</span> is_not;
+        <span class="dt">int</span> var;
+        Literal(<span class="dt">bool</span> _is_not,<span class="dt">int</span> _var)
+            : is_not(_is_not),var(_var){}
+        Literal not_() <span class="dt">const</span>{
+            <span class="kw">return</span> Literal(<span class="kw">not</span> is_not,var);
+        }
+    };
+    Literal make_yes(<span class="dt">int</span> var){
+        <span class="kw">return</span> Literal(<span class="kw">false</span>,var);
+    }
+    Literal make_no(<span class="dt">int</span> var){
+        <span class="kw">return</span> Literal(<span class="kw">true</span>,var);
+    }
+    <span class="kw">using</span> Clause = std::vector&lt;Literal&gt;;
+    <span class="dt">bool</span> solve_2SAT(<span class="dt">const</span> <span class="dt">int</span> number_of_variable,
+                    <span class="dt">const</span> vector&lt;Clause&gt;&amp; problem,
+                    vector&lt;<span class="dt">char</span>&gt;&amp; output){
+        <span class="co">// variable is [0..N).</span>
+        <span class="co">// &quot;not n&quot; will be assigned to (n+N).</span>
+        <span class="kw">auto</span> index = [number_of_variable](<span class="dt">const</span> <span class="dt">bool</span>&amp; is_not,<span class="dt">const</span> <span class="dt">int</span>&amp; var){
+            <span class="kw">return</span> number_of_variable*is_not+var;
+        };
+        <span class="kw">auto</span> to_int = [number_of_variable,&amp;index](<span class="dt">const</span> Literal&amp; lit){
+            <span class="kw">return</span> index(lit.is_not,lit.var);
+        };
+
+        vector&lt;vector&lt;Edge&gt;&gt; graph(number_of_variable*<span class="dv">2</span>);
+        <span class="kw">for</span>(<span class="dt">const</span> Clause&amp; clause : problem){
+            <span class="co">// clause = {Literal,Literal}</span>
+            <span class="co">// a \/ b -&gt; ~a -&gt; b /\ ~b -&gt; a</span>
+            <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;<span class="dv">2</span>;i++){
+                Literal c = clause[i].not_(),
+                        d = clause[<span class="kw">not</span> i];
+                graph[to_int(c)].push_back(Edge(to_int(d),<span class="dv">1</span>));
+            }
+        }
+        vector&lt;vector&lt;<span class="dt">int</span>&gt;&gt; scc = strongly_connected_components(graph);
+        <span class="co">// where[i] = which component holds i</span>
+        vector&lt;<span class="dt">int</span>&gt; where(number_of_variable*<span class="dv">2</span>);
+        <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;scc.size();i++){
+            <span class="kw">for</span>(<span class="dt">int</span> node : scc[i]){
+                where[node] = i;
+            }
+        }
+        <span class="kw">for</span>(<span class="dt">int</span> var=<span class="dv">0</span>;var&lt;number_of_variable;var++){
+            <span class="kw">if</span>(where[index(<span class="kw">false</span>,var)] == where[index(<span class="kw">true</span>,var)]){
+                <span class="kw">return</span> <span class="kw">false</span>;
+            }
+        }
+        <span class="kw">for</span>(<span class="dt">int</span> var=<span class="dv">0</span>;var&lt;number_of_variable;var++){
+            output[var] = where[index(<span class="kw">false</span>,var)] &lt; where[index(<span class="kw">true</span>,var)];
+        }
+        <span class="kw">return</span> <span class="kw">true</span>;
+    }
+}
+
+
+<span class="co">// Codeforces 228E</span>
+<span class="dt">signed</span> main() {
+    ios::sync_with_stdio(<span class="kw">false</span>);
+    cin.tie(<span class="dv">0</span>);
+    <span class="dt">int</span> n,m;
+    cin &gt;&gt; n &gt;&gt; m;
+    vector&lt;SAT::Clause&gt; problem;
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;m;i++){
+        <span class="dt">int</span> a,b,c;
+        cin &gt;&gt; a &gt;&gt; b &gt;&gt; c;
+        a--;b--;
+        <span class="kw">if</span>(c){
+            <span class="co">// already</span>
+            <span class="co">// ~(A/\~B) /\ ~(~A/\B)</span>
+            <span class="co">//  = (~A \/ B) /\ (A \/ ~B)</span>
+            problem.push_back({SAT::make_no(a),SAT::make_yes(b)});
+            problem.push_back({SAT::make_yes(a),SAT::make_no(b)});
+        }<span class="kw">else</span>{
+            <span class="co">// ~(A/\B) /\ ~(~A/\~B)</span>
+            <span class="co">//  = (~A \/ ~B) /\ (A \/ B)</span>
+            problem.push_back({SAT::make_no(a),SAT::make_no(b)});
+            problem.push_back({SAT::make_yes(a),SAT::make_yes(b)});
+        }
+    }
+    vector&lt;<span class="dt">char</span>&gt; output(n);
+    <span class="dt">bool</span> is_solvable = SAT::solve_2SAT(n,problem,output);
+    <span class="kw">if</span>(is_solvable){
+        cout &lt;&lt; count(all(output),<span class="kw">true</span>) &lt;&lt; endl;
+        <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;n;i++){
+            <span class="kw">if</span>(output[i]){
+                cout &lt;&lt; i<span class="dv">+1</span> &lt;&lt; <span class="st">&quot; &quot;</span>;
+            }
+        }
+        cout &lt;&lt; endl;
+    }<span class="kw">else</span>{
+        cout &lt;&lt; <span class="st">&quot;Impossible&quot;</span> &lt;&lt; endl;
+    }
+
+    <span class="kw">return</span> <span class="dv">0</span>;
 }</code></pre>
 <h2 id="橋の列挙"><span class="header-section-number">11.10</span> 橋の列挙</h2>
 <pre class="sourceCode cpp" include="cpp/bridge.cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;iostream&gt;</span>
@@ -3352,8 +3556,72 @@ vector&lt;point&gt; circles_point(point c1,<span class="dt">double</span> r1,poi
     <span class="kw">if</span>(xor_sum != <span class="dv">0</span>) cout &lt;&lt; <span class="st">&quot;First Player Win&quot;</span> &lt;&lt; endl;
     <span class="kw">else</span> cout &lt;&lt; <span class="st">&quot;Second Player Win&quot;</span> &lt;&lt; endl;
 }</code></pre>
-<h1 id="いろんなデータ"><span class="header-section-number">14</span> いろんなデータ</h1>
-<h2 id="階乗"><span class="header-section-number">14.1</span> 階乗</h2>
+<h1 id="なんか最適化とか"><span class="header-section-number">14</span> なんか最適化とか</h1>
+<h2 id="焼き鈍し"><span class="header-section-number">14.1</span> 焼き鈍し</h2>
+<p><a href="http://shindannin.hatenadiary.com/entry/20121224/1356364040">http://shindannin.hatenadiary.com/entry/20121224/1356364040</a></p>
+<pre class="sourceCode cpp" include="cpp/sa.cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;chrono&gt;</span>
+<span class="ot">#include &lt;iostream&gt;</span>
+<span class="ot">#include &lt;algorithm&gt;</span>
+<span class="kw">using</span> <span class="kw">namespace</span> std;
+<span class="ot">#define debug(x) #x &lt;&lt; &quot;=&quot; &lt;&lt; (x)</span>
+<span class="ot">#define dump(x) std::cerr &lt;&lt; debug(x) &lt;&lt; &quot; (L:&quot; &lt;&lt; __LINE__ &lt;&lt; &quot;)&quot; &lt;&lt; std::endl</span>
+
+<span class="dt">unsigned</span> <span class="dt">long</span> xor128(){
+    <span class="dt">static</span> <span class="dt">unsigned</span> <span class="dt">long</span> x=<span class="dv">123456789</span>,y=<span class="dv">362436069</span>,z=<span class="dv">521288629</span>,w=<span class="dv">88675123</span>;
+    <span class="dt">unsigned</span> <span class="dt">long</span> t;
+    t=(x^(x&lt;&lt;<span class="dv">11</span>));x=y;y=z;z=w; <span class="kw">return</span>( w=(w^(w&gt;&gt;<span class="dv">19</span>))^(t^(t&gt;&gt;<span class="dv">8</span>)) );
+}
+
+<span class="dt">signed</span> main() {
+    ios::sync_with_stdio(<span class="kw">false</span>);
+    cin.tie(<span class="dv">0</span>);
+
+    <span class="dt">const</span> chrono::milliseconds annealing_time(<span class="dv">2000</span>);
+    <span class="dt">const</span> <span class="kw">auto</span> start_time = chrono::system_clock::now();
+    <span class="dt">const</span> <span class="kw">auto</span> end_time = start_time + annealing_time;
+    <span class="dt">const</span> <span class="dt">int</span> precision_for_force_next = <span class="dv">1000000</span>;
+    <span class="kw">auto</span> current_time = start_time;
+
+    <span class="dt">const</span> <span class="kw">auto</span> score = [](<span class="dt">double</span> x){
+        <span class="kw">return</span> max(-pow(-x<span class="dv">+100</span>,<span class="dv">2</span>)<span class="dv">+100</span>,-pow(-x<span class="dv">+333</span>,<span class="dv">2</span>)<span class="dv">+333</span>);
+    };
+
+    <span class="kw">auto</span> current_state = <span class="fl">0.</span><span class="dv">0</span>;     <span class="co">// initial state</span>
+    <span class="kw">auto</span> current_score = score(current_state);
+    <span class="kw">auto</span> best_state = current_state;
+    <span class="kw">auto</span> best_score = current_score;
+
+    <span class="co">// chrono::system_clock should NOT be called many times...</span>
+    <span class="kw">while</span>((current_time=chrono::system_clock::now()) &lt; end_time){
+        <span class="dt">const</span> <span class="kw">auto</span> progress = <span class="fl">1.</span><span class="dv">0</span>*(current_time-start_time)/(end_time-start_time);
+        <span class="dt">const</span> <span class="dt">bool</span> force_next = progress*precision_for_force_next
+                              &lt; xor128()%precision_for_force_next;
+
+        <span class="co">// [0..100] -&gt; [-50..50] balance is IMPORTANT.</span>
+        <span class="dt">const</span> <span class="kw">auto</span> next_state = current_state + xor128()%<span class="dv">101-50</span>;
+        <span class="dt">const</span> <span class="kw">auto</span> next_score = score(next_state);
+        <span class="kw">if</span>(force_next <span class="kw">or</span> (next_score &gt; current_score)){
+            current_state = next_state;
+            current_score = next_score;
+            dump(current_state);
+            dump(current_score);
+        }<span class="kw">else</span>{
+            <span class="co">// undo change.</span>
+        }
+
+        <span class="kw">if</span>(current_score &gt; best_score){
+            best_score = current_score;
+            best_state = current_state;
+            dump(best_score);
+        }
+    }
+    dump(best_score);
+    dump(best_state);
+
+    <span class="kw">return</span> <span class="dv">0</span>;
+}</code></pre>
+<h1 id="いろんなデータ"><span class="header-section-number">15</span> いろんなデータ</h1>
+<h2 id="階乗"><span class="header-section-number">15.1</span> 階乗</h2>
 <table>
 <thead>
 <tr class="header">
@@ -3408,7 +3676,7 @@ vector&lt;point&gt; circles_point(point c1,<span class="dt">double</span> r1,poi
 </tr>
 </tbody>
 </table>
-<h2 id="数単位変換"><span class="header-section-number">14.2</span> 数単位変換</h2>
+<h2 id="数単位変換"><span class="header-section-number">15.2</span> 数単位変換</h2>
 <table>
 <thead>
 <tr class="header">
@@ -3480,7 +3748,7 @@ vector&lt;point&gt; circles_point(point c1,<span class="dt">double</span> r1,poi
 </tr>
 </tbody>
 </table>
-<h2 id="bit"><span class="header-section-number">14.3</span> bit</h2>
+<h2 id="bit"><span class="header-section-number">15.3</span> bit</h2>
 <table>
 <thead>
 <tr class="header">
@@ -3562,8 +3830,8 @@ vector&lt;point&gt; circles_point(point c1,<span class="dt">double</span> r1,poi
 </tr>
 </tbody>
 </table>
-<h2 id="最低限の設定ファイル"><span class="header-section-number">14.4</span> 最低限の設定ファイル</h2>
-<h3 id="vim用"><span class="header-section-number">14.4.1</span> vim用</h3>
+<h2 id="最低限の設定ファイル"><span class="header-section-number">15.4</span> 最低限の設定ファイル</h2>
+<h3 id="vim用"><span class="header-section-number">15.4.1</span> vim用</h3>
 <p>最低限のもの。ホームにおく。</p>
 <pre><code>set fileencoding=utf-8
 set nocompatible
