@@ -1,6 +1,7 @@
 このドキュメントをビルドするには以下のソフトウェアが必要です。
 
 - pandoc
+- Emacs (with yasnippet)
 
 ただし、automake.sh(ディレクトリの監視)を必要とする場合には、
 
