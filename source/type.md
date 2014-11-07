@@ -10,15 +10,6 @@
 ビットDPとかに使う。
 
 ~~~~~~{.cpp}
-// 立ってるbitの数を数える
-int popcount(ll x){
-    int ret = 0;
-    while(x){
-        x &= x-1;
-        ret++;
-    }
-    return ret;
-}
 // 下から2番目のビットを立てる。1llと書くことに注意
 x |= (1ll << 1);
 
@@ -46,6 +37,10 @@ for(int i=0;i<(1<<N);i++){
     }
 }
 
+~~~~~~
+
+#### popcount
+~~~~~~{include="tomoki-snippets/c++-mode/popcount.cpp" .yasnippet .cpp}
 ~~~~~~
 
 ## double

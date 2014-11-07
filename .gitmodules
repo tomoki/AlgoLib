@@ -1,0 +1,3 @@
+[submodule "source/tomoki-snippets"]
+	path = source/tomoki-snippets
+	url = https://github.com/tomoki/tomoki-snippets.git

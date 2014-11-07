@@ -17,11 +17,13 @@ genYasnippetExpandCommand s = "(progn (package-initialize) (require 'yasnippet) 
 doYasnippetExpand :: String -> IO String
 doYasnippetExpand s = P.readProcess "emacs" ["-batch","--eval",genYasnippetExpandCommand s] ""
 
+commentOutCPP :: String -> String
+commentOutCPP s = "// " ++ s
 skipYasnippetComment :: String -> IO String
 skipYasnippetComment s = let ls = lines s in
                            doYasnippetExpand $ 
                              case L.elemIndex yasnippetCommentEnd $ L.map (stripR ' ') ls of
-                               Just i -> L.intercalate "\n" $ L.drop (i+1) ls
+                               Just i -> L.intercalate "\n" $ (L.map commentOutCPP (L.take (i+1) ls)) ++ L.drop (i+1) ls
                                Nothing -> s
 
 
