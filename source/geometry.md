@@ -65,6 +65,30 @@ bool is_intersected_linesegment(point a1,point a2,point b1,point b2){
 
 }
 
+// 与えられた4点が正方形を成すかどうかを判定する
+// ただし，ほぼ同じ点が含まれたときにはfalseとする
+//  4辺および対角線が1:1:1:1:sqrt(2):sqrt(2)ならばyes
+bool is_square(vector<point> ps){
+    // assert ps.size() == 4
+    sort(ps.begin(),ps.end());
+    vector<double> dist;
+    for(int i=0;i<4;i++){
+        for(int j=i+1;j<4;j++){
+            // there is almost same point
+            if(abs(ps[i] - ps[j]) < EPS) return false;
+            dist.push_back(abs(ps[i]-ps[j]));
+        }
+    }
+    sort(dist.begin(),dist.end());
+    for(int i=0;i<4;i++){
+        if(abs(dist[0] - dist[i]) > EPS) return false;
+    }
+    for(int i=4;i<6;i++){
+        if(abs(sqrt(2)*dist[1]-dist[i]) > EPS) return false;
+    }
+    return true;
+}
+
 
 // a1,a2を端点とする線分(la)とb1,b2を端点とする線分(lb)の交点計算
 point intersection_point_linesegment(point a1,point a2,point b1,point b2) {

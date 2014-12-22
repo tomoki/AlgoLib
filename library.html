@@ -274,16 +274,7 @@ vector&lt;T&gt; input(<span class="dt">const</span> <span class="dt">int</span> 
 <p>大きい整数。<span class="math">\(10^{18}\)</span>?くらい。</p>
 <h3 id="ビット演算"><span class="header-section-number">2.2.1</span> ビット演算</h3>
 <p>ビットDPとかに使う。</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// 立ってるbitの数を数える</span>
-<span class="dt">int</span> popcount(ll x){
-    <span class="dt">int</span> ret = <span class="dv">0</span>;
-    <span class="kw">while</span>(x){
-        x &amp;= x<span class="dv">-1</span>;
-        ret++;
-    }
-    <span class="kw">return</span> ret;
-}
-<span class="co">// 下から2番目のビットを立てる。1llと書くことに注意</span>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// 下から2番目のビットを立てる。1llと書くことに注意</span>
 x |= (<span class="dv">1ll</span> &lt;&lt; <span class="dv">1</span>);
 
 <span class="co">// 集合演算</span>
@@ -308,6 +299,20 @@ dp[<span class="dv">0</span>][<span class="dv">0</span>] = <span class="dv">1</s
     <span class="kw">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>;j&lt;N;j++){
         <span class="co">//something.</span>
     }
+}</code></pre>
+<h4 id="popcount"><span class="header-section-number">2.2.1.1</span> popcount</h4>
+<pre class="sourceCode yasnippet cpp" include="tomoki-snippets/c++-mode/popcount.cpp"><code class="sourceCode cpp"><span class="co">// # name: popcount</span>
+<span class="co">// # key: popcount</span>
+<span class="co">// # 立っているビットの数を数える</span>
+<span class="co">// # --</span>
+<span class="kw">template</span>&lt;<span class="kw">typename</span> T&gt;
+<span class="dt">int</span> popcount(T x){
+    <span class="dt">int</span> ret = <span class="dv">0</span>;
+    <span class="kw">while</span>(x){
+        x &amp;= x<span class="dv">-1</span>;
+        ret++;
+    }
+    <span class="kw">return</span> ret;
 }</code></pre>
 <h2 id="double"><span class="header-section-number">2.3</span> double</h2>
 <p>floatは使ってはだめ。</p>
@@ -517,6 +522,15 @@ rotate(vec.begin(),vec.begin()<span class="dv">+1</span>),vec.end()); <span clas
 rotate(vec.begin(),vec.end()<span class="dv">-1</span>,vec.end()); <span class="co">//5,1,2,3,4</span></code></pre>
 <h2 id="next_permutation"><span class="header-section-number">4.5</span> next_permutation</h2>
 <p>順列をすべて列挙する。<span class="math">\(N!\)</span>個なので、それなりの勢いで大きくなる。章末の付録参照。</p>
+<pre class="sourceCode yasnippet yasnippet cpp" include="tomoki-snippets/c++-mode/next_permutation.cpp"><code class="sourceCode cpp"><span class="co">// # name: permutation</span>
+<span class="co">// # key: permutation</span>
+<span class="co">// # すべての組み合わせを試す</span>
+<span class="co">// # 最初にソートすること</span>
+<span class="co">// # --</span>
+sort(vec.begin(),vec.end());
+<span class="kw">do</span>{
+    
+}<span class="kw">while</span>(next_permutation(vec.begin(),vec.end()));</code></pre>
 <pre class="sourceCode cpp"><code class="sourceCode cpp">vector&lt;<span class="dt">int</span>&gt; V = {<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">4</span>};
 <span class="co">//ソートすること。</span>
 sort(all(V));

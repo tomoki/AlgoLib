@@ -80,6 +80,9 @@ rotate(vec.begin(),vec.end()-1,vec.end()); //5,1,2,3,4
 
 順列をすべて列挙する。$N!$個なので、それなりの勢いで大きくなる。章末の付録参照。
 
+~~~~~~{include="tomoki-snippets/c++-mode/next_permutation.cpp" .yasnippet .yasnippet .cpp}
+~~~~~~
+
 ~~~~~~{.cpp}
 vector<int> V = {3,2,1,4};
 //ソートすること。
