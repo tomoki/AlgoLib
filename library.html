@@ -3298,6 +3298,30 @@ pair&lt;point,point&gt; normal_vector(point a){
 
 }
 
+<span class="co">// 与えられた4点が正方形を成すかどうかを判定する</span>
+<span class="co">// ただし，ほぼ同じ点が含まれたときにはfalseとする</span>
+<span class="co">//  4辺および対角線が1:1:1:1:sqrt(2):sqrt(2)ならばyes</span>
+<span class="dt">bool</span> is_square(vector&lt;point&gt; ps){
+    <span class="co">// assert ps.size() == 4</span>
+    sort(ps.begin(),ps.end());
+    vector&lt;<span class="dt">double</span>&gt; dist;
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;<span class="dv">4</span>;i++){
+        <span class="kw">for</span>(<span class="dt">int</span> j=i<span class="dv">+1</span>;j&lt;<span class="dv">4</span>;j++){
+            <span class="co">// there is almost same point</span>
+            <span class="kw">if</span>(abs(ps[i] - ps[j]) &lt; EPS) <span class="kw">return</span> <span class="kw">false</span>;
+            dist.push_back(abs(ps[i]-ps[j]));
+        }
+    }
+    sort(dist.begin(),dist.end());
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>;i&lt;<span class="dv">4</span>;i++){
+        <span class="kw">if</span>(abs(dist[<span class="dv">0</span>] - dist[i]) &gt; EPS) <span class="kw">return</span> <span class="kw">false</span>;
+    }
+    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">4</span>;i&lt;<span class="dv">6</span>;i++){
+        <span class="kw">if</span>(abs(sqrt(<span class="dv">2</span>)*dist[<span class="dv">1</span>]-dist[i]) &gt; EPS) <span class="kw">return</span> <span class="kw">false</span>;
+    }
+    <span class="kw">return</span> <span class="kw">true</span>;
+}
+
 
 <span class="co">// a1,a2を端点とする線分(la)とb1,b2を端点とする線分(lb)の交点計算</span>
 point intersection_point_linesegment(point a1,point a2,point b1,point b2) {
