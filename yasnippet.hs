@@ -11,7 +11,7 @@ stripR :: Char -> String -> String
 stripR x = reverse . dropWhile (==x) . reverse
 
 genYasnippetExpandCommand :: String -> String
-genYasnippetExpandCommand s = "(progn (package-initialize) (require 'yasnippet) (setq yas/indent-line nil) (yas-expand-snippet \""
+genYasnippetExpandCommand s = "(progn (package-initialize) (require 'yasnippet) (yas-minor-mode 1) (setq yas/indent-line nil) (yas-expand-snippet \""
                               ++ s ++ "\") (princ (buffer-substring-no-properties (point-min) (point-max))))"
 
 doYasnippetExpand :: String -> IO String

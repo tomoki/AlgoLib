@@ -40,7 +40,7 @@ for(int i=0;i<(1<<N);i++){
 ~~~~~~
 
 #### popcount
-~~~~~~{include="tomoki-snippets/c++-mode/popcount.cpp" .yasnippet .cpp}
+~~~~~~{include="tomoki-snippets/c++-mode/popcount.cpp" .cpp .yasnippet}
 ~~~~~~
 
 ## double
