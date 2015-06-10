@@ -54,6 +54,56 @@ double cross(point a,point b){
     return imag(conj(a)*b);
 }
 
+// rotate by theta (-pi,+pi)
+// arg will return angle of point
+point rotate(point p,double theta){
+    double cos_theta = cos(theta),
+           sin_theta = sin(theta);
+    return point(p.real()*cos_theta - p.imag()*sin_theta,
+                 p.real()*sin_theta + p.imag()*cos_theta);
+}
+// 二つの円の共通接線 (たぶんおかしい)
+//  http://www.ftext.org/text/subsubsection/1427
+//  - 離れている → 4本
+//  - 外接している → 3本
+//  - 交わっている → 2本
+//  - 内接している → 1本
+//  - 含む → 0本
+vector<pair<point,point> > common_tangent_of_two_circles(point c1,double r1,point c2,double r2){
+    // shift c2 by c1.
+    point nc = c2 - c1;
+    // c.img == 0
+    double ar = arg(nc);
+    point c = rotate(nc,-ar);
+
+    vector<pair<point,point> > ret;
+    vector<double> xs;
+    for(int sign=-1;sign<=1;sign+=2){
+        xs.push_back((r1*r1 + sign*r1*r2)/c.real());
+    }
+    for(double x1 : xs){
+        double y2 = r1*r1 - x1*x1;
+        if(y2 < EPS) continue; // maybe two circle is crossed
+        for(int sign=-1;sign<=1;sign+=2){
+            double y1 = sign*sqrt(y2);
+            // x1*x + y1*y = r1*r1 is such line
+            point h = point(x1,y1);
+            point t = point(x1+1,(-x1*(x1+1)+r1*r1)/y1); // tekito
+            if(abs(y1) < EPS){
+                t = point(x1,y1);
+            }
+
+            ret.push_back(make_pair(h,t));
+        }
+    }
+    transform(ret.begin(),ret.end(),ret.begin(),[ar,c1](pair<point,point> p){
+            return make_pair(rotate(p.first,ar)+c1,
+                             rotate(p.second,ar)+c1);
+        });
+    return ret;
+}
+
+
 // a1,a2を端点とする線分(la)とb1,b2を端点(lb)とする線分の交差判定
 bool is_intersected_linesegment(point a1,point a2,point b1,point b2){
     if(max(a1.real(),a2.real()) + EPS < min(b1.real(),b2.real())) return false;
