@@ -3,7 +3,7 @@ using namespace std;
 
 struct SegmentTree{
     // edit this things! Range Sum Query
-    static const int INIT_VALUE = 0;
+    const int INIT_VALUE = 0;
     inline int calc(int a,int b){
         return a+b;
     }
