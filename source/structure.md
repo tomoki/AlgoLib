@@ -236,90 +236,116 @@ RMQ (POJ 3264)
 テスト中 参考: http://d.hatena.ne.jp/kyuridenamida/20121114/1352835261
 
 ~~~~~~{.cpp}
-typedef pair<int,int> pii;
-// update [l,r) v -> +v to all element in [l,r).
-// get [l,r) -> return sum of elements in [l,r).
-struct LazySegmentTree{
-    // also used for out of range value.
-    static const int DATA_INIT_VALUE = 0;
-    static const int LAZY_INIT_VALUE = 0;
-    vector<int> data;
-    vector<int> lazy;
-    int n;
-    LazySegmentTree(int _n){
+// T = 各要素および区間取得の結果の型
+// op = T(T, T), 区間取得を行う関数 (例えば RMQ なら min)
+// e = T(), op における単位元
+// F = "Lazy" 遅延している操作の型
+// mapping = T(F, T) 遅延している操作 F を区間取得の結果 T に対し行う関数
+// composition = F(F f, F g)、遅延している操作 g に対し、追加で f を行った時に生成する遅延操作を生成する
+//   f(g(x)) となるので g がさきに行われる処理
+// id = F(), composition の恒等写像 (遅延している操作の単位元)
+// F(op(x, y)) = op(F(x), F(y)) を満たす必要がある
+template<typename T, auto op, auto e, typename F, auto mapping, auto composition, auto id>
+class LazySegmentTree {
+    static_assert(std::is_convertible_v<decltype(op), std::function<T(T, T)>>, "op should be T(T, T)");
+    static_assert(std::is_convertible_v<decltype(e), std::function<T()>>, "e should be T()");
+    static_assert(std::is_convertible_v<decltype(mapping), std::function<T(F, T)>>, "mapping should be T(F, T)");
+    static_assert(std::is_convertible_v<decltype(composition), std::function<F(F, F)>>, "composition should be F(F, F)");
+    static_assert(std::is_convertible_v<decltype(id), std::function<F()>>, "id should be F()");
+
+public:
+    explicit LazySegmentTree(int _n)
+    {
         n = 1;
-        while(n < _n) n *= 2;
-        data = vector<int>(2*n-1,DATA_INIT_VALUE);
-        lazy = vector<int>(2*n-1,LAZY_INIT_VALUE);
+        while (n < _n) n *= 2;
+        data = vector<T>(2 * n - 1, e());
+        lazy = vector<F>(2 * n - 1, id());
+
+    }
+    template<class InputIterator>
+    explicit LazySegmentTree(InputIterator first, InputIterator last) : LazySegmentTree(distance(first, last))
+    {
+        size_t i = 0;
+        for (auto it = first; it != last; ++it, i++) {
+            update(i, *it);
+        }
+    }
+    void update(int i, T v)
+    {
+        int k = i + n - 1;
+        data[k] = v;
+        while (k > 0) {
+            k = get_parent_index(k);
+            auto left = data[get_left_index(k)];
+            auto righ = data[get_right_index(k)];
+            data[k] = op(left, righ);
+        }
+    }
+    // [a, b) に操作 f を行う
+    void apply(int a, int b, F f)
+    {
+        assert(0 <= a && a <= b && b <= n);
+        return apply(a, b, f, 0, 0, n);
     }
 
-    int get(int a,int b){
-        return get(a,b,0,0,n);
+    // [a, b) 半開区間の値を取得する
+    [[nodiscard]] T get(int a, int b)
+    {
+        assert(0 <= a && a < b && b <= n); // FIXME: should check the original n?
+        // ノード 0 の管理区間は [0, n)
+        return get(a, b, 0, 0, n);
     }
-    void update(int a,int b,int v){
-        return update(a,b,v,0,0,n);
-    }
-
-
+    [[nodiscard]] size_t size() const { return n; }
 private:
-    // edit update_lazy and update_data.
-    inline void update_lazy(int k,int l,int r){
-        data[k] += lazy[k]*(r-l);
-        if(k < n-1){ // node k has children
-            lazy[get_left(k)] += lazy[k];
-            lazy[get_right(k)] += lazy[k];
+    static int get_left_index(int k) { return 2 * k + 1; }
+    static int get_right_index(int k) { return 2 * k + 2; };
+    static int get_parent_index(int k) { return (k - 1) / 2; }
+    // k 番目のノードの遅延操作を反映する
+    void apply_lazy(int k, int l, int r)
+    {
+        if (lazy[k] == id()) return;
+        data[k] = mapping(lazy[k], data[k]);
+        // 子供に遅延評価を伝搬する
+        if (r - l > 1) {
+            const int left_index = get_left_index(k);
+            const int right_index = get_right_index(k);
+            lazy[left_index] = composition(lazy[k], lazy[left_index]);
+            lazy[right_index] = composition(lazy[k], lazy[right_index]);
         }
-        lazy[k] = 0;
-        return;
-    }
-    inline void update_data(int k){
-        data[k] = data[get_left(k)] + data[get_right(k)];
+        lazy[k] = id();
     }
 
-    // l,r is segment of node k.
-    int get(int a,int b,int k,int l,int r){
-        update_lazy(k,l,r);
-        // [a,b) and [l,r) are not crossed
-        if(r <= a or b <= l) return DATA_INIT_VALUE;
-        // [a,b) contains [l,r)
-        if(a <= l and r <= b) return data[k];
-        int vl = get(a,b,get_left(k),l,(l+r)/2);
-        int vr = get(a,b,get_right(k),(l+r)/2,r);
-        update_data(k);
-        return vl+vr;
+    // l, r はノード k の管理する区間
+    [[nodiscard]] T get(int a, int b, int k, int l, int r)
+    {
+        if (r <= a || b <= l) return e();
+        apply_lazy(k, l, r);
+        if (a <= l && r <= b) return data[k];
+        const int left_index = get_left_index(k);
+        const int right_index = get_right_index(k);
+        const auto left = get(a, b, left_index, l, (l+r)/2);
+        const auto right = get(a, b, right_index, (l+r)/2, r);
+        return op(left, right);
     }
-    void update(int a,int b,int v,int k,int l,int r){
-        update_lazy(k,l,r);
-        // [a,b) and [l,r) are not crossed
-        if(r <= a or b <= l) return;
-        // [a,b) contains [l,r)
-        if(a <= l and r <= b) {
-            lazy[k] += v;
-            update_lazy(k,l,r);
-            return;
+    void apply(int a, int b, F f, int k, int l, int r)
+    {
+        apply_lazy(k, l, r);
+        if (r <= a || b <= l) return;
+        if (a <= l && r <= b) {
+            lazy[k] = composition(f, lazy[k]);
+            apply_lazy(k, l, r);
+        } else {
+            apply(a, b, f, get_left_index(k), l, (l+r)/2);
+            apply(a, b, f, get_right_index(k), (l+r)/2, r);
+            data[k] = op(data[get_left_index(k)], data[get_right_index(k)]);
         }
-        update(a,b,v,get_left(k),l,(l+r)/2);
-        update(a,b,v,get_right(k),(l+r)/2,r);
-        update_data(k);
-        return;
     }
 
-    inline int get_left(int x){
-        return 2*x+1;
-    }
-    inline int get_right(int x){
-        return 2*x+2;
-    }
-    // parent node is (n-1)/2.
-    inline int parent(int x){
-        return (x-1)/2;
-    }
+    int n = 0;
+    vector<T> data;
+    vector<F> lazy;
 };
 
-ostream& operator<<(ostream& os,const LazySegmentTree& seg){
-    os << seg.data << endl << seg.lazy;
-    return os;
-}
 ~~~~~~
 
 ## 定数個のみを保持するpriority_queue
