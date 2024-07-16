@@ -215,13 +215,13 @@ struct SuffixArray {
         : m_string(std::move(s)),
           m_size(m_string.size()),
           m_rank(m_size+1),
-          m_suffix_array(m_size+1)
+          m_prefix_index(m_size+1)
     {
         const int n = static_cast<int>(m_size);
         m_rank[n] = -1; // n のケースは空文字列扱いで一番早いことにする
-        m_suffix_array[n] = n;
+        m_prefix_index[n] = n;
         for (int i = 0; i < n; i++) {
-            m_suffix_array[i] = i;
+            m_prefix_index[i] = i;
             m_rank[i] = static_cast<int>(m_string[i]); // 文字コードをランクにする
         }
         // k 文字のランクが計算されていたとして、　k*2 文字のランクを計算する
@@ -235,14 +235,14 @@ struct SuffixArray {
                 const int rj = (j+k) <= n ? m_rank[j+k] : -1;
                 return ri < rj;
             };
-            std::sort(m_suffix_array.begin(), m_suffix_array.end(), compare);
+            std::sort(m_prefix_index.begin(), m_prefix_index.end(), compare);
             std::vector<int> tmp_rank(n+1);
             // 空文字列のランクは 0 にして
-            tmp_rank[m_suffix_array[0]] = 0;
+            tmp_rank[m_prefix_index[0]] = 0;
             // それを基準に一致していたら +0、文字列が一致していなかったら +1 していく。
             // suffix_array はソート済みのため、 compare が false を返すケースは一致しているケース
             for (int i = 1; i <= n; i++) {
-                tmp_rank[m_suffix_array[i]] = tmp_rank[m_suffix_array[i-1]] + (compare(m_suffix_array[i-1], m_suffix_array[i]) ? 1 : 0);
+                tmp_rank[m_prefix_index[i]] = tmp_rank[m_prefix_index[i-1]] + (compare(m_prefix_index[i-1], m_prefix_index[i]) ? 1 : 0);
             }
             swap(m_rank, tmp_rank); // m_rank に中身を移す
         }
@@ -285,9 +285,9 @@ struct SuffixArray {
         return succ;
     }
     [[nodiscard]] size_t size() const { return m_size+1; }
-    size_t operator[](int i) const { return m_suffix_array[i]; }
-    [[nodiscard]] std::string_view suffix(int i) const { return std::string_view(m_string).substr(m_suffix_array[i]); }
-    std::vector<int>& ref() { return m_suffix_array; }
+    size_t operator[](int i) const { return m_prefix_index[i]; }
+    [[nodiscard]] std::string_view suffix(int i) const { return std::string_view(m_string).substr(m_prefix_index[i]); }
+    std::vector<int>& ref() { return m_prefix_index; }
 
 private:
     // 念の為コピーしておく
@@ -295,6 +295,6 @@ private:
     size_t m_size;
     std::vector<int> m_rank;
     // その文字列が何文字目から始まっているか
-    std::vector<int> m_suffix_array;
+    std::vector<int> m_prefix_index;
 };
 ~~~~~~
