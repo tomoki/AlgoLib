@@ -129,6 +129,45 @@ int main(){
 }
 ~~~~~~
 
+## 直径
+
+木の直径 (最も遠い２点の距離) を求める O(n)
+
+~~~~~~{.cpp}
+struct DiameterAnswer {
+    int s, t; // 直径になる２点
+    ll distance; // 直径
+};
+DiameterAnswer tree_diameter(const vector<vector<Edge>>& graph)
+{
+    ll INF = 1ll << 60;
+    assert(graph.size() >= 1);
+    // 適当なノードからスタートし、一番遠い点 s を求める
+    // その後その点から一番遠い点 t を求める。
+    // s -- t が木の直径
+
+    // ノード番号、距離
+    std::function<pair<int, ll>(int, int)> find_farthest_node = [&](int c, int from) {
+        auto ret = make_pair(c, 0ll);
+        for (const Edge& e : graph[c]) {
+            if (e.to == from) continue;
+            auto p = find_farthest_node(e.to, c);
+            p.second += e.cost;
+            if (p.second > ret.second) {
+                ret = p;
+            }
+        }
+        dump(ret);
+        return ret;
+    };
+    int s = find_farthest_node(0, -1).first;
+    auto p = find_farthest_node(s, -1);
+    int t = p.first;
+    auto dist = p.second;
+
+    return {s, t, dist};
+}
+~~~~~~
 
 ## ワーシャルフロイド
 
