@@ -353,3 +353,124 @@ private:
 
 ~~~~~~{.cpp include="cpp/lens_queue.cpp"}
 ~~~~~~
+
+## Set で区間を管理するテクニック
+
+~~~~~~
+// 「区間を set で管理するテクニック」
+// 半開区間 [a, b) を pair(a, b) として set にいれる。
+// ただし set の中の区間は重複を持たないよう管理する
+// https://codeforces.com/contest/915/problem/E
+struct RangeSet {
+    using T = int64_t;
+    RangeSet()
+    {
+        // 番兵
+        segs.emplace(std::numeric_limits<T>::min(), std::numeric_limits<T>::min());
+        segs.emplace(std::numeric_limits<T>::max(), std::numeric_limits<T>::max());
+    }
+    // [l, r) を完全に含む区間が存在するならその区間を返す
+    std::optional<std::pair<T, T>> containedBy(T l, T r)
+    {
+        // assert(l <= r);
+        // [l, r) が含まれているとしたら一つ前のもの
+        auto it = std::upper_bound(segs.begin(), segs.end(), make_pair(l, r));
+        --it;
+        if (it->first <= l && r <= it->second) return *it;
+        return std::nullopt;
+    }
+    // 区間の数を返す
+    size_t size()
+    {
+        return segs.size() - 2; // 番兵のぶんをひく
+    }
+    // 区間 [l, r) を追加する。区間のうち、新規に追加された要素を返す
+    T insert(T l, T r)
+    {
+        // assert(l <= r);
+        auto it = segs.upper_bound(make_pair(l, r));
+        --it;
+        // カバーされているので 0
+        if (it->first <= l && r <= it->second) return 0;
+        // 以下では l, r を書き換えていくが、この時既存の要素でカバーされていたものを "erased" とする
+        // そして最後に追加された要素を (l-r) - erased で計算。
+        T erased = 0;
+        // 左の区間と一部被っている場合は合体する
+        if (it->first <= l && l <= it->second) {
+            erased += it->second - it->first;
+            l = it->first;
+            it = segs.erase(it);
+        } else {
+            ++it; // 左の区間とは被っていないので次へ
+        }
+        // 右の区間と共通部分があれば合体していく (it = upper_bound 相当)
+        while (it->first <= r) {
+            if (it->second <= r) {
+                // 新しくできた要素で完全にカバーされている
+                erased += it->second - it->first;
+                it = segs.erase(it);
+            } else {
+                // l <= it->first <= r < it->second
+                erased += it->second - it->first;
+                r = it->second;
+                segs.erase(it);
+                // 既存の要素の方が r が長いのであればそれ以上に長い要素は存在しない
+                break;
+            }
+        }
+        segs.emplace(l, r);
+        return (r - l) - erased;
+    }
+    // 区間 [l, r) を削除する。区間のうち、削除された要素を返す
+    T erase(T l, T r)
+    {
+        auto it = segs.upper_bound(make_pair(l, r));
+        --it;
+        // 完全にカバーされている場合はその区間を分割する
+        if (it->first <= l && r <= it->second) {
+            if (it->first != l)
+                segs.emplace(it->first, l);
+            if (r != it->second)
+                segs.emplace(r, it->second);
+            segs.erase(it);
+            return r - l;
+        }
+        T erased = 0;
+        // 左の区間と一部被っている場合は左の区間の削除を行う
+        if (it->first <= l && l < it->second) {
+            erased += it->second - l;
+            if (it->first != l) {
+                segs.emplace(it->first, l);
+            }
+            it = segs.erase(it);
+        } else {
+            ++it;
+        }
+        // 右の区間と共通部分があれば削除していく (it = upper_bound 相当)
+        while (it->first < r) {
+            if (it->second <= r) {
+                // 完全に削除される
+                erased += it->second - it->first;
+                it = segs.erase(it);
+            } else {
+                // l <= it->first <= r < it->second
+                erased += r - it->first;
+                segs.emplace(r, it->second);
+                segs.erase(it);
+                break;
+            }
+        }
+        return erased;
+    }
+    // x 以上のカバーされていない最小の値を返す
+    T mex(T x)
+    {
+        auto it = segs.lower_bound(make_pair(x, x+1));
+        if (it->first <= x && x <= it->second) return it->second;
+        return x;
+    }
+private:
+    std::set<std::pair<T, T>> segs;
+    friend ostream& operator<<(ostream&, const RangeSet&);
+};
+~~~~~~
