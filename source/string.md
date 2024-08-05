@@ -298,3 +298,70 @@ private:
     std::vector<int> m_prefix_index;
 };
 ~~~~~~
+
+
+# ST = TS の条件
+
+文字列 S と t が与えられる。長さ t の文字列 T であって、 ST = TS を満たすものを出力せよ。
+ただし T がない可能性もある。 参考: https://atcoder.jp/contests/arc181/tasks/arc181_b
+
+|S| >= 1 かつ |T| >= 1 の時、 ST = TS ならば g = gcd(|S|, |T|) として S および T は g の長さのパターンで構成される。
+
+例
+- |S| = 2, |T| = 3 なら gcd(2, 3) = 1 なので |S| および |T| は 1 文字の繰り返しで構成される。 S = aa T = a など。
+- |S| = 4, |T| = 2 なら gcd(2, 4) = 2 なので |S| および |T| は 2 文字の繰り返しで構成される。 S = abab, T = ab など。
+
+~~~~~~
+// 長さ t の文字列 T であり、 ST = TS を満たす文字列を返す。
+// なかったら nullopt
+// 例:
+// "A", 1 -> "A",
+// "A", 4 -> "AAAA"
+// "ab", 1 -> nullopt
+// "ab", 2 -> "ab"
+// "ab", 3 -> nullopt
+// "ab", 4 -> "abab"
+// "abcabc", 3 -> "abc"
+// "abcabc", 2 -> nullopt
+std::optional<std::string> solve_ST_eq_TS(const std::string& s, size_t t)
+{
+    // ST = TS なる S および T は必ず gcd(|S|, |T|) の長さのパターンの繰り返しである
+    int g = std::gcd(s.size(), t);
+    // もしパターンの条件を S が満たさないなら nullopt
+    for (int i = 0; i + g < s.size(); i++) {
+        if (s[i] != s[i+g]) return std::nullopt;
+    }
+    const std::string pattern = s.substr(0, g);
+    std::string ret;
+    while (ret.size() < t) ret += pattern;
+    return ret;
+}
+~~~~~~
+
+
+説明:
+|S| <= |T| とする。この時 T の先頭 |S| 文字は S と一致するので、 T = S + A 書くことができる。
+- ST = SSA
+- TS = SAS
+
+以上で SA = AS なる似た問題が出てくる。 もし |A| >= |S| なら同様に A = S + B とかくことができる。
+- ST = SSA = SSSB
+- TS = SAS = SSBS
+
+この手続きを |S| > |C| となるまで繰り返す。
+- ST = SSSSSSC
+- TS = SSSSSCS
+
+さらに SC = CS という似た問題で S = C + D とかく、ことを繰り返す。
+
+以上の変形を数式で表すことにすると T = q * S + C であった。 q は |T| / |S|、 |C| は　|T| % |S| である。
+この時 |S| と |T| の最大公約数を g とし |X| と |Y| が互いに素な文字列 X, Y, Z があると
+- T = g * X
+- S = g * Y
+- C = g * Z (※)
+と表すことができる。 つまり T および S は長さ g = gcd(|S|, |T|) のパターンの繰り返しである。
+
+(※) |T| - |S| = g|X| - g|Y| = g(|X| - |Y|) となるが、 この時 (|X| - |Y|) と |X| は互いに素であるため |T| および |S| と、 |T| - |S| は最大公約数 g を持つ。
+これを繰り返すと　|T| - |S| - |S| = g (x - y - y) は |T| - |S| と最大公約数 g を持つので、結局 |T| - q |S| = |C| は |S| および |T| と最大公約数　g を持つ。
+
+以上の計算はユークリッドの互除法と同じことをしている。
