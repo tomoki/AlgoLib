@@ -1,118 +1,121 @@
 # 行列
 
-## 基本要素
-正方行列用 //いつかなおす。
-
-~~~~~~{.cpp}
-// 適宜intにしたりすること。
-typedef vector<vector<ll> > ll_mat;
 ~~~~~~
-
-## 基本演算
-
-かけ算とmod。たしざんはcoming soon.
-
-~~~~~~{.cpp}
-namespace std{
-    ll_mat operator*(const ll_mat& lhs,const ll_mat& rhs){
-        int N = lhs.size();
-        ll_mat ret(N,vector<ll>(N));
-        for(int row=0;row<N;row++){
-            for(int col=0;col<N;col++){
-                for(int k=0;k<N;k++){
-                    ret[row][col] += rhs[row][k] * lhs[k][col];
-                }
+// T 型を要素とする行列型
+// Matrix<int> m = {{1, 2}, {3, 4}}
+template<typename T>
+struct Matrix {
+    Matrix(size_t height, size_t width) : m_height(height), m_width(width), m_value(height, vector<T>(width)) { }
+    Matrix(const vector<vector<T>>& v) :  m_height(v.size()), m_width(v[0].size()), m_value(v) { } // NOLINT
+    Matrix(initializer_list<initializer_list<T>> init) : m_height(init.size()), m_width(init.begin()->size()), m_value(m_height, vector<T>(m_width))
+    {
+        size_t r = 0;
+        for (const auto& row : init) {
+            size_t c = 0;
+            for (const auto& col : row) {
+                m_value[r][c] = col;
+                c++;
+            }
+            assert(c == m_width);
+            r++;
+        }
+    }
+    // i 行目を取り出す
+    vector<T>& operator[](size_t i) { return m_value[i]; }
+    Matrix& operator+=(const Matrix& rhs)
+    {
+        assert(m_width == rhs.m_width);
+        assert(m_height == rhs.m_height);
+        for (size_t i = 0; i < m_height; i++)
+            for (size_t j = 0; j < m_width; j++)
+                m_value[i][j] += rhs.m_value[i][j];
+        return *this;
+    }
+    Matrix& operator-=(const Matrix& rhs)
+    {
+        assert(m_width == rhs.m_width);
+        assert(m_height == rhs.m_height);
+        for (size_t i = 0; i < m_height; i++)
+            for (size_t j = 0; j < m_width; j++)
+                m_value[i][j] -= rhs.m_value[i][j];
+        return *this;
+    }
+    friend Matrix operator+(Matrix lhs, const Matrix& rhs) { lhs += rhs; return lhs;}
+    friend Matrix operator-(Matrix lhs, const Matrix& rhs) { lhs -= rhs; return lhs;}
+    friend Matrix operator*(T lhs, Matrix rhs)
+    {
+        for (size_t i = 0; i < rhs.m_height; i++)
+            for (size_t j = 0; j < rhs.m_width; j++)
+                rhs.m_value[i][j] *= lhs;
+        return rhs;
+    }
+    // AxB の行列と BxC の行列を受け取って、 AxC の行列を返す
+    friend Matrix operator*(Matrix lhs, const Matrix& rhs)
+    {
+        assert(lhs.m_width == rhs.m_height);
+        // TODO: 最適化する。 r -> k -> c の方が早いはず？？
+        Matrix ret(lhs.m_height, rhs.m_width);
+        for (size_t r = 0; r < lhs.m_height; r++)
+            for (size_t c = 0; c < rhs.m_width; c++)
+                for (size_t k = 0; k < lhs.m_width; k++)
+                    ret.m_value[r][c] += lhs.m_value[r][k] * rhs.m_value[k][c];
+        return ret;
+    }
+    // 一次元ベクトルとの掛け算
+    friend vector<T> operator*(Matrix lhs, const vector<T>& rhs)
+    {
+        assert(lhs.m_width == rhs.size());
+        vector<T> ret(lhs.m_height);
+        for (size_t r = 0; r < lhs.m_height; r++) {
+            for (size_t c = 0; c < lhs.m_width; c++) {
+                ret[r] += lhs[r][c] * rhs[c];
             }
         }
         return ret;
     }
-
-    ll_mat operator%(ll_mat lhs,ll rhs){
-        int N = lhs.size();
-        ll_mat ret = lhs;
-        for(int i=0;i<N;i++){
-            for(int j=0;j<N;j++){
-                ret[i][j] = ret[i][j] % rhs;
-            }
+    // 行列を n 乗
+    Matrix pow(uint64_t n)
+    {
+        assert(m_height == m_width);
+        if (n == 0) {
+            Matrix E(m_height, m_width);
+            for (size_t i = 0; i < m_height; i++) E[i][i] = 1;
+            return E;
         }
+        Matrix ret = (*this * *this).pow(n/2);
+        if (n % 2 == 1) ret = ret * *this;
         return ret;
     }
+    friend ostream& operator<<(ostream& os, const Matrix& rhs)
+    {
+        for (size_t i = 0; i < rhs.m_height; i++) {
+            for (size_t j = 0; j < rhs.m_width; j++) {
+                if (j != 0) os << " ";
+                os << rhs.m_value[i][j];
+            }
+            if (i != rhs.m_height - 1) os << endl;
+        }
+        return os;
+    }
+private:
+    size_t m_height;
+    size_t m_width;
+    vector<vector<T>> m_value;
 };
 ~~~~~~
 
-## 基本操作
-
-### 累乗
-
-~~~~~~{.cpp}
-vector<vector<ll> >  mod_pow(vector<vector<ll> > x,ll n,ll mod){
-    if(n==0){
-        vector<vector<ll> > E(x.size(),vector<ll>(x.size()));
-        for(int i=0;i<x.size();i++){
-            E[i][i] = 1;
-        }
-        return E;
-    }
-    vector<vector<ll> > ret = mod_pow(x * x % mod,n/2,mod);
-    if(n%2 == 1)  ret = ret * x % mod;
-    return ret;
-}
-~~~~~~
-
-### 表示
-
-~~~~~~{.cpp}
-void display_matrix(vector<vector<ll> > mat){
-    for(int i=0;i<mat.size();i++){
-        for(int j=0;j<mat[0].size();j++){
-            cerr << mat[i][j] << " ";
-        }
-        cerr << endl;
-    }
-}
-~~~~~~
-
-### ベクトルとのかけ算
-一次元列ベクトルとのかけ算
-
-~~~~~~{.cpp}
-vector<ll> mat_multi(vector<vector<ll> > lhs,vector<ll> rhs,int mod){
-    vector<ll> ret(rhs.size());
-    int N = lhs.size();
-    for(int i=0;i<N;i++){
-        for(int j=0;j<N;j++){
-            ret[i] = (ret[i] + lhs[i][j] * rhs[j]) % mod;;
-        }
-    }
-    return ret;
-}
-~~~~~~
-
 ## Gauss-Jordan
+
 GF上で連立方程式を解く
 
-~~~~~~{.cpp}
-// Gauss-Jordan. Solve equation on GF.
-int invert(int x){
-    int ret[2] = {0,1};
-    return ret[x];
-}
-
-int modulo(int x){
-    x %= 2;
-    while(x < 0){
-        x += 2;
-    }
-    return x;
-}
-
+~~~~~~
 const int none = 0; // if no answer
 const int one = 1;  // if there is exactly one answer
 const int many = 2; // many answer.
 // answer will be inserted in b.
-int gauss(matrix A,vector<int>& b){
-    int n = A.size();
-    int m = A[0].size();
+int gauss(Matrix<int> A,vector<int>& b){
+    int n = A.height();
+    int m = A.width();
     int pi = 0,pj = 0;
     while(pi < n and pj < m){
         for(int i=pi+1;i<n;i++){ // pivot
