@@ -97,6 +97,8 @@ struct Matrix {
         }
         return os;
     }
+    [[nodiscard]] size_t width() const { return m_width; }
+    [[nodiscard]] size_t height() const { return m_height; }
 private:
     size_t m_height;
     size_t m_width;
