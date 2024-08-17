@@ -494,6 +494,14 @@ struct ZobristHash {
         for (size_t i = 0; i < arr.size(); i++) {
             hashes[i] = myhash(arr[i]);
         }
+#if DEBUG
+        {
+            // MULTISET ではないなら hash は (できるだけ) 全て違う必要がある。
+            if (!MULTISET) {
+                assert(std::set(all(hashes)).size() == arr.size());
+            }
+        }
+#endif
         hashes_acc[0] = zero();
         for (size_t i = 1; i <= hashes.size(); i++) {
             hashes_acc[i] = op(hashes_acc[i-1], hashes[i-1]);
