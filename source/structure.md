@@ -482,6 +482,9 @@ private:
 
 - https://atcoder.jp/contests/abc250/tasks/abc250_e
 - https://atcoder.jp/contests/abc367/tasks/abc367_f
+
+なお、アップデートが必要であったりする場合は vector に関する問題なら SegmentTree を使うこともできる。 (コード参照)
+
 ~~~~~
 // 集合の一致判定を確率的に行う
 // ローリングハッシュのように vector を受け取って、その一部分の集合のハッシュを計算する
@@ -551,5 +554,20 @@ int main(int argc, char **argv) {
     MultiZobristHash<int> bh(b, myhash);
 
     bool probably_same = ah.hash(la, ra+1) == bh.hash(lb, rb+1);
+
+    // セグメントツリーを使う版。重複を許さない場合は + ではなく xor を使う。
+    auto op = [](uint64_t left, uint64_t right) { return left + right; };
+    auto e = []() -> uint64_t { return 0;};
+    SegmentTree<uint64_t, op, e> seg_a(n);
+    for (int i = 0; i < n; i++) {
+        seg_a.update(i, myhash(a[i]));
+    }
+    SegmentTree<uint64_t, op, e> seg_b(n);
+    for (int i = 0; i < n; i++) {
+        seg_b.update(i, myhash(b[i]));
+    }
+    bool probably_same = seg_a.get(la, ra+1) == seg_b.get(lb, rb+1);
+    // セグメントツリー使う版ここまで。
+
 }
 ~~~~~
