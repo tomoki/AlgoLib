@@ -474,3 +474,74 @@ private:
     friend ostream& operator<<(ostream&, const RangeSet&);
 };
 ~~~~~~
+
+## ZobristHash
+
+集合をハッシュで管理する構造。 要素を hash 化して集合をその hash の xor で扱う。
+(xor で扱う場合は集合に重複する要素を許さない。許したい場合は演算を + で行う)
+
+- https://atcoder.jp/contests/abc250/tasks/abc250_e
+- https://atcoder.jp/contests/abc367/tasks/abc367_f
+~~~~~
+// 集合の一致判定を確率的に行う
+// ローリングハッシュのように vector を受け取って、その一部分の集合のハッシュを計算する
+// ハッシュに xor を使う場合は多重集合が扱えないため、 関数を + にする必要がある。
+// 指定するハッシュ関数は T によって変わる。 T が文字列などの場合は std::hash も使えるが、 long long などの場合は自分で定義する必要がある (乱数を割り当てれば良い)
+template<typename T, bool MULTISET=false>
+struct ZobristHash {
+    explicit ZobristHash(const std::vector<T>& arr, const std::function<uint64_t(T)>& myhash) : hashes(arr.size()), hashes_acc(arr.size() + 1)
+    {
+        for (size_t i = 0; i < arr.size(); i++) {
+            hashes[i] = myhash(arr[i]);
+        }
+        hashes_acc[0] = zero();
+        for (size_t i = 1; i <= hashes.size(); i++) {
+            hashes_acc[i] = op(hashes_acc[i-1], hashes[i-1]);
+        }
+    }
+    // [l, r) のハッシュ値を返す
+    [[nodiscard]] uint64_t hash(const size_t l, const size_t r) const
+    {
+        assert(l <= r);
+        return op2(hashes_acc[r], hashes_acc[l]);
+    }
+    static uint64_t op(const uint64_t l, const uint64_t r)
+    {
+        if (MULTISET) return l + r;
+        else          return l ^ r;
+    }
+    static uint64_t op2(const uint64_t l, const uint64_t r)
+    {
+        if (MULTISET) return l - r;
+        else return l ^ r;
+    }
+    static uint64_t zero()
+    {
+        return 0;
+    }
+    std::vector<uint64_t> hashes;
+    // i 番目の要素は 集合 [0, i) のハッシュ
+    std::vector<uint64_t> hashes_acc;
+};
+template<typename T>
+using MultiZobristHash = ZobristHash<T, true>;
+
+int main(int argc, char **argv) {
+    auto a = input_vector<int>(n);
+    auto b = input_vector<int>(n);
+
+    // 対応表になる unordered_map を作り乱数を入れておく
+    std::random_device seed_gen;
+    std::mt19937_64 engine(seed_gen());
+    std::uniform_int_distribution<uint64_t> distribution;
+    std::unordered_map<int, uint64_t> hash_map;
+    auto myhash = [&hash_map, &distribution, &engine](int x) -> uint64_t {
+        if (hash_map.contains(x)) return hash_map[x];
+        return hash_map[x] = distribution(engine);
+    };
+    MultiZobristHash<int> ah(a, myhash);
+    MultiZobristHash<int> bh(b, myhash);
+
+    bool probably_same = ah.hash(la, ra+1) == bh.hash(lb, rb+1);
+}
+~~~~~
