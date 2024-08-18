@@ -1,6 +1,7 @@
 # Algolib by Tomoki Imai
 
 このドキュメントは競技プログラミング用に作成したアルゴリズム群をまとめたものです。
+http://pushl.net/algolib/ のソースコードです。
 
 # ビルドの方法
 
