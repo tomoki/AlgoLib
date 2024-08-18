@@ -6,7 +6,7 @@
 最大公約数,最小公倍数
 ****************************************
 
-ユークリッドの互除法を使う。intをlong longに置換してもいい。 $O(\log n)$
+ユークリッドの互除法を使う。intをlong longに置換してもいい。 O(logn)
 
 最大公約数
 ====================
@@ -29,35 +29,38 @@
 mod
 ****************************************
 
-long longに入らないような答えのときにmodが登場する。
+long long に入らないような答えのときに mod が登場する。
 
 modの計算式について
 ====================
 
-$$\begin{aligned}
-a \equiv c & \pmod m \\
-b \equiv d & \pmod m\end{aligned}$$
+.. math::
+    \begin{aligned}
+    a \equiv c & \pmod m \\
+    b \equiv d & \pmod m\end{aligned}
 
 の条件下では以下の式が成り立つ。
 
-$$\begin{aligned}
-a+b \equiv c+d  & \pmod m \\
-a-b \equiv c-d  & \pmod m \\
-a \times b \equiv c \times d  & \pmod m\end{aligned}$$
+.. math::
+    \begin{aligned}
+    a+b \equiv c+d  & \pmod m \\
+    a-b \equiv c-d  & \pmod m \\
+    a \times b \equiv c \times d  & \pmod m\end{aligned}
 
 さらに、mが素数の場合、以下の関係が成り立つ。
 
-$$\begin{aligned}
-a ^ m \equiv a \pmod m \\
-a ^ {m-1} \equiv 1 \pmod m \\
-a ^ {m-2} \equiv \frac{1}{a} \pmod m\end{aligned}$$
+.. math::
+    \begin{aligned}
+    a ^ m \equiv a \pmod m \\
+    a ^ {m-1} \equiv 1 \pmod m \\
+    a ^ {m-2} \equiv \frac{1}{a} \pmod m\end{aligned}
 
-つまり、$a$で割ることと、$a^{m-2}$を掛けることは同じである。\
-これは、$C(10000,5000) \pmod p$といった式を計算する際、次の冪乗の演算と組みあわせて用いる。
+つまり、 :math:`a` で割ることと、:math:`a^{m-2}` を掛けることは同じである。
+これは、 :math:`C(10000,5000) \pmod p` といった式を計算する際、次の冪乗の演算と組みあわせて用いる。
 
 冪乗のmod
 ====================
-いわゆるmod\_pow。計算量は$O(\log n)$。
+いわゆるmod\_pow。計算量は :math:`O(\log n)`。
 
 .. literalinclude:: cpp/mod_pow.cpp
 
@@ -77,7 +80,7 @@ double,double->doubleな関数であるから。
 .. literalinclude:: python/sieve.py
 
 素数のリストが欲しかったら、適当に突っ込むこと。
-実際には$O(n \log \log n)$だけれど、大体$O(n)$だと思っていい。
+実際には :math:`O(n \log \log n)` だけれど、大体 :math:`O(n)` だと思っていい。
 
 素因数分解
 ====================
