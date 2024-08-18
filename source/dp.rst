@@ -3,9 +3,9 @@
 ###################################################
 
 ****************************************
-LCS
+Longest Common Sequence (LCS)
 ****************************************
-Longest common sequence.O(NM)
+O(NM)
 
 .. code-block:: cpp
 
@@ -44,11 +44,10 @@ Longest common sequence.O(NM)
     }
 
 ****************************************
-LIS
+Longest Increasing Subsequence (LIS)
 ****************************************
 
-O(NlogN)
-====================
+O(NlogN)、TODO: 整理する
 
 .. code-block:: cpp
 
@@ -68,6 +67,48 @@ O(NlogN)
             if(id[i] == m) b[m--] = a[i];
         }
         return b;
+    }
+
+    // 以下別バージョン
+    // 長さだけを計算する版
+    // https://atcoder.jp/contests/abc354/editorial/10027
+    int lis(const vector<ll>& v) {
+        int n = v.size();
+        const ll INF = 1ll << 50;
+
+        // dp[i] = 長さ i を実現する場合の最後の要素の大きさ。必ず増加列になる。
+        vector<ll> dp(n+1, INF);
+        dp[0] = -INF;
+        for (int i = 0; i < n; i++) {
+            // 最後の要素が v[i] 以上の箇所を更新する
+            auto it = lower_bound(all(dp), v[i]);
+            *it = min(v[i], *it);
+        }
+
+        dump(dp);
+        int length = lower_bound(all(dp), INF) - dp.begin() - 1;
+
+        return length;
+    }
+
+    // https://atcoder.jp/contests/abc354/editorial/10027
+    vector<int> lis_hukugen(const vector<ll>& v) {
+        int n = v.size();
+        const ll INF = 1ll << 50;
+
+        // 長さの計算と一緒に、その要素がどの長さの場合を更新したかを覚えていく
+        vector<int> updated_index(n, INF);
+        {
+            vector<ll> dp(n+1, INF);
+            dp[0] = -INF;
+            for (int i = 0; i < n; i++) {
+                auto it = lower_bound(all(dp), v[i]);
+                *it = min(v[i], *it);
+                updated_index[i] = it - dp.begin();
+            }
+        }
+        int length = lower_bound(all(dp), INF) - dp.begin() - 1;
+        return updated_index;
     }
 
 ****************************************
