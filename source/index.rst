@@ -17,6 +17,7 @@ Algorithm library by Tomoki Imai documentation
    dp.rst
    graph.rst
    geometry.rst
+   game.rst
 
 .. number.md
 .. marathon.md
