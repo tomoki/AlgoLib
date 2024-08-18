@@ -9,9 +9,12 @@ ICPC などオンラインドキュメントにアクセスできない環境用
 ## Docker
 
 ```
-docker run --rm -v ./:/docs sphinxdoc/sphinx sphinx-build -M html source build
+docker build ./ -t my-sphinx
+docker run --rm -v ./:/docs my-sphinx sphinx-build -M html source build
 
 ```
+
+https://hub.docker.com/r/sphinxdoc/sphinx
 
 # メモ
 
