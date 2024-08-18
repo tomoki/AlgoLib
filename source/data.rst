@@ -1,42 +1,55 @@
-# いろんなデータ
+######################
+いろんなデータ
+######################
 
-## 階乗
+****************************************
+階乗
+****************************************
 
-$N$       $N!$
--------   ------
-0         1
-1         1
-2         2
-3         6
-4         24
-5         120
-6         720
-7         5040
-8         40320
-9         362880
-10        3628800
+===========   ================
+:math:`N`     :math:`N!`
+===========   ================
+0             1
+1             1
+2             2
+3             6
+4             24
+5             120
+6             720
+7             5040
+8             40320
+9             362880
+10            3628800
+===========   ================
 
-## 数単位変換
+****************************************
+数単位変換
+****************************************
 
-N          日本語   英語
-------     ------  ------
-$10^{0}$    一      one
-$10^{1}$    十      ten
-$10^{2}$    百      hundred
-$10^{3}$    千      thousand
-$10^{4}$    万      ten thousand
-$10^{5}$    十万    hundred thousand
-$10^{6}$    百万    million
-$10^{7}$    千万    ten million
-$10^{8}$    億      hundred million
-$10^{9}$    十億    billion
-$10^{10}$   百億    ten billion
-$10^{11}$   千億    hundred billion
+===============   =========  ===================
+N                  日本語       英語
+===============   =========  ===================
+:math:`10^{0}`    一         one
+:math:`10^{1}`    十         ten
+:math:`10^{2}`    百         hundred
+:math:`10^{3}`    千         thousand
+:math:`10^{4}`    万         ten thousand
+:math:`10^{5}`    十万        hundred thousand
+:math:`10^{6}`    百万        million
+:math:`10^{7}`    千万        ten million
+:math:`10^{8}`    億          hundred million
+:math:`10^{9}`    十億        billion
+:math:`10^{10}`   百億        ten billion
+:math:`10^{11}`   千億        hundred billion
+===============   =========  ===================
 
-## bit
+****************************************
+bit
+****************************************
 
-N      $2^N$                            備考
------- ----------------------------     --------------------------------------------
+====== ============================    =============================================
+N      :math:`2^N`                       備考
+====== ============================    =============================================
 0      1
 1      2                                boolの大きさ
 2      4
@@ -51,52 +64,57 @@ N      $2^N$                            備考
 52     4,503,599,627,370,496            doubleのprecision
 63     9,223,372,036,854,775,808        long longの最大値+1
 64     18,446,744,073,709,551,616       unsigned long longの最大値+1(about 10^19)
+====== ============================    =============================================
 
-## 最低限の設定ファイル
+****************************************
+最低限の設定ファイル
+****************************************
 
-### vim用
+vim用
+====================
 最低限のもの。ホームにおく。
 
-~~~~~~
-set fileencoding=utf-8
-set nocompatible
-set t_Co=256
-set ambiwidth=double
+.. code-block::
 
-syntax on
-filetype plugin indent on
+    set fileencoding=utf-8
+    set nocompatible
+    set t_Co=256
+    set ambiwidth=double
 
-set nobackup
-set noswapfile
+    syntax on
+    filetype plugin indent on
 
-set completeopt=menuone
-set wildmode=list:longest
+    set nobackup
+    set noswapfile
 
-set smartindent
-set autoindent
-set tabstop=4
-set softtabstop=4
-set shiftwidth=4
+    set completeopt=menuone
+    set wildmode=list:longest
 
-set smarttab
-set expandtab
+    set smartindent
+    set autoindent
+    set tabstop=4
+    set softtabstop=4
+    set shiftwidth=4
 
-set incsearch ignorecase hlsearch
-set showmatch
-set wildmenu
+    set smarttab
+    set expandtab
 
-set listchars=tab:>-,trail:-
-set list
+    set incsearch ignorecase hlsearch
+    set showmatch
+    set wildmenu
 
-set backspace=indent,eol,start
-~~~~~~
+    set listchars=tab:>-,trail:-
+    set list
 
-<!-- 
-## アスキーコード
+    set backspace=indent,eol,start
 
+****************************************
+アスキーコード
+****************************************
 
+====== ====== ====== ======
 Char   Dec    Oct    Hex
------- ------ ------ ------
+====== ====== ====== ======
 (nul)    0     0000   0x00
 (soh)    1     0001   0x01
 (stx)    2     0002   0x02
@@ -225,4 +243,4 @@ z      122     0172   0x7a
 }      125     0175   0x7d
 ~      126     0176   0x7e
 (del)  127     0177   0x7f
--->
+====== ====== ====== ======

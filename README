@@ -1,13 +1,21 @@
-このドキュメントをビルドするには以下のソフトウェアが必要です。
+# Algolib by Tomoki Imai
 
-- pandoc
-- Emacs (with yasnippet)
+このドキュメントは競技プログラミング用に作成したアルゴリズム群をまとめたものです。
 
-ただし、automake.sh(ディレクトリの監視)を必要とする場合には、
+# ビルドの方法
 
-- inotify-tools
+ICPC などオンラインドキュメントにアクセスできない環境用に一枚の HTML にすることができるようデザインしています。
 
-が必要になり、firefoxのauto-reloadを使うと楽です。
-https://addons.mozilla.org/ja/firefox/addon/auto-reload/
+## Docker
 
-PDF化については検討中です.
+```
+docker build ./ -t my-sphinx
+docker run --rm -v ./:/docs my-sphinx sphinx-build -M html source build
+
+```
+
+https://hub.docker.com/r/sphinxdoc/sphinx
+
+# メモ
+
+元々このドキュメントは Markdown + Pandoc で記載されていました。しかしビルドに必要な pandoc が扱いづらい、 Markdown で外部のファイルを include することが標準的な方法ではできないという問題があったため Sphinx に移行しました。
