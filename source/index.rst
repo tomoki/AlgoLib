@@ -17,6 +17,7 @@ documentation for details.
 
    template.rst
    type.rst
+   io.rst
 
 .. io.md
 .. vector.md
