@@ -16,9 +16,8 @@ Algorithm library by Tomoki Imai documentation
    structure.rst
    dp.rst
    graph.rst
+   geometry.rst
 
 .. number.md
-.. geometry.md
-.. game.md
 .. marathon.md
 .. data.md
