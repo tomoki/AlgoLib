@@ -229,6 +229,57 @@ vector<vector<Edge>> minimum_spanning_tree(const vector<vector<Edge>> &graph){
 }
 ~~~~~~
 
+## 閉路の検出
+
+~~~~~~
+// グラフにある閉路を返す。 ({0, 1, 2, 3, 0}) のように最初と最後の値が同じものを返す
+// https://drken1215.hatenablog.com/entry/2023/05/20/200517
+optional<vector<int>> find_cycle(const vector<vector<int>>& graph)
+{
+    vector<bool> seen(graph.size()); // dfs を呼び出したか
+    vector<bool> finished(graph.size()); // dfs を最後まで完了したか
+    vector<int> history;
+    std::function<int(int, int)> dfs = [&](int k, int p) -> int {
+        seen[k] = true;
+        history.push_back(k);
+        for (int v : graph[k]) {
+            if (v == p) continue; // 逆戻りはスキップ
+            if (finished[v]) continue; // 操作済み
+            if (seen[v] && !finished[v]) {
+                // この呼び出しは v の中で発生しているので v を始点終点とするループがある
+                history.push_back(v);
+                return v;
+            }
+            int pos = dfs(v, k);
+            if (pos >= 0) return pos;
+        }
+        finished[k] = true;
+        history.pop_back();
+        return -1;
+    };
+
+    for (int c = 0; c < graph.size(); c++) {
+        if (seen[c]) continue;
+        history.clear();
+        int pos = dfs(c, -1);
+        if (pos >= 0) {
+            vector<int> ret;
+            assert(history.size() >= 2);
+            // history の最後はループの最初・最後の値。ループ開始前の値をここで削除する
+            while (!history.empty()) {
+                ret.push_back(history.back());
+                history.pop_back();
+                if (ret.size() >= 2 && ret.back() == pos) break; // ループの先頭までたどり着いた
+            }
+            // 逆順に追加したので戻す
+            reverse(ret.begin(), ret.end());
+            return ret;
+        }
+    }
+    return nullopt;
+}
+~~~~~~
+
 ## 最大流
 
 Dinic法による。また、最大流最小カット定理より、最大流と最小カットは一致する。
