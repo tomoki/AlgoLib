@@ -19,25 +19,31 @@
 *********************
 二分探索
 *********************
-ある条件を満たす最小のものを探す。ただし単調増加な物にしかつかえない。
-叙述関数をPとすると、
+
+単調なものに関してある条件を満たす点を探す。
 
 .. code-block:: cpp
 
-    double lower = 0,upper = 1000000;
-    for(int i=0;i<200;i++){
-        double m = (lower+upper) / 2;
-        if(P(m)){
-            upper = m;
-        }else{
-            lower = m;
+    template<typename T>
+    T binary_method(const std::function<bool(T)>& pred, T ok, T fail)
+    {
+        static_assert(std::is_integral_v<T> || std::is_floating_point_v<T>);
+        assert(pred(ok) == true);
+        assert(pred(fail) == false);
+        T EPS;
+        if constexpr (std::is_integral_v<T>) EPS = 1;
+        else if (std::is_floating_point_v<T>) EPS = 1e-9;
+
+        while (abs(ok - fail) > EPS) {
+            T mid = std::midpoint(ok, fail);
+            if (pred(mid)) ok = mid;
+            else fail = mid;
         }
-        cout << upper << endl;
+
+        return ok;
     }
 
-とすると、upperに求めたい値がはいる。もしみつからなかった場合には、値は
-変わらない。なので、lower,upperには極端な値を設定すること。200という回数
-は、すこし多め。100で十分。対象がvectorの場合は以下のように書ける。
+対象がvectorの場合は以下のように書ける。 lower_bound, upper_bound を使える。
 
 .. code-block:: cpp
 
