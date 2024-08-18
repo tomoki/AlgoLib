@@ -4,7 +4,7 @@ std::vector
 
 ここでは、配列のSTL版である、vectorの使いかたについて書く。
 ここに書かれている関数は、string等にも用いることができるものが多い。
-ちなみに、vector\<bool\>は使ってはいけない。bitsetや、vector\<char\>をつかうこと。
+vector\<bool\>は特殊化されているため注意が必要。
 また、all(vector)は、vector.begin(),vector.end()とdefineしている。
 
 *********************
@@ -26,7 +26,7 @@ std::vector
 sort
 ====================
 
-C++のsortは、$O(n \log n)$で、introsort。何も指定しない場合には昇順にソートされる。
+C++のsortは、 :math:`O(n \log n)` で、introsort。何も指定しない場合には昇順にソートされる。
 注意すべきなのは、C++11では、最悪ケースで$O(n \log n)$となること。C++03では特に何も制限はないが、g++ならば$O(n \log n)$である。
 
 .. code-block:: cpp
