@@ -13,10 +13,10 @@ Algorithm library by Tomoki Imai documentation
    search2.rst
    string.rst
    matrix.rst
+   structure.rst
+   .. dp.rst
 
 .. number.md
-.. dp.md
-.. structure.md
 .. graph.md
 .. geometry.md
 .. game.md
