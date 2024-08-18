@@ -1,6 +1,10 @@
-# いろんなデータ
+######################
+いろんなデータ
+######################
 
-## 階乗
+****************************************
+階乗
+****************************************
 
 $N$       $N!$
 -------   ------
@@ -16,7 +20,9 @@ $N$       $N!$
 9         362880
 10        3628800
 
-## 数単位変換
+****************************************
+数単位変換
+****************************************
 
 N          日本語   英語
 ------     ------  ------
@@ -33,7 +39,9 @@ $10^{9}$    十億    billion
 $10^{10}$   百億    ten billion
 $10^{11}$   千億    hundred billion
 
-## bit
+****************************************
+bit
+****************************************
 
 N      $2^N$                            備考
 ------ ----------------------------     --------------------------------------------
@@ -52,47 +60,52 @@ N      $2^N$                            備考
 63     9,223,372,036,854,775,808        long longの最大値+1
 64     18,446,744,073,709,551,616       unsigned long longの最大値+1(about 10^19)
 
-## 最低限の設定ファイル
+****************************************
+最低限の設定ファイル
+****************************************
 
-### vim用
+vim用
+====================
 最低限のもの。ホームにおく。
 
-~~~~~~
-set fileencoding=utf-8
-set nocompatible
-set t_Co=256
-set ambiwidth=double
+.. code-block:: cpp
 
-syntax on
-filetype plugin indent on
+    set fileencoding=utf-8
+    set nocompatible
+    set t_Co=256
+    set ambiwidth=double
 
-set nobackup
-set noswapfile
+    syntax on
+    filetype plugin indent on
 
-set completeopt=menuone
-set wildmode=list:longest
+    set nobackup
+    set noswapfile
 
-set smartindent
-set autoindent
-set tabstop=4
-set softtabstop=4
-set shiftwidth=4
+    set completeopt=menuone
+    set wildmode=list:longest
 
-set smarttab
-set expandtab
+    set smartindent
+    set autoindent
+    set tabstop=4
+    set softtabstop=4
+    set shiftwidth=4
 
-set incsearch ignorecase hlsearch
-set showmatch
-set wildmenu
+    set smarttab
+    set expandtab
 
-set listchars=tab:>-,trail:-
-set list
+    set incsearch ignorecase hlsearch
+    set showmatch
+    set wildmenu
 
-set backspace=indent,eol,start
-~~~~~~
+    set listchars=tab:>-,trail:-
+    set list
 
-<!-- 
-## アスキーコード
+    set backspace=indent,eol,start
+
+<!--
+****************************************
+アスキーコード
+****************************************
 
 
 Char   Dec    Oct    Hex
@@ -132,7 +145,9 @@ Char   Dec    Oct    Hex
 (sp)    32     0040   0x20
 !       33     0041   0x21
 "       34     0042   0x22
-#       35     0043   0x23
+######################
+35     0043   0x23
+######################
 $       36     0044   0x24
 %       37     0045   0x25
 &       38     0046   0x26

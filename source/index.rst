@@ -20,4 +20,4 @@ Algorithm library by Tomoki Imai documentation
    geometry.rst
    game.rst
    marathon.rst
-.. data.md
+   data.rst
