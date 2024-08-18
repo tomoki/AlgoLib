@@ -14,7 +14,7 @@ Algorithm library by Tomoki Imai documentation
    string.rst
    matrix.rst
    structure.rst
-   .. dp.rst
+   dp.rst
 
 .. number.md
 .. graph.md
