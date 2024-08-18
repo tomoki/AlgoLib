@@ -14,18 +14,20 @@ documentation for details.
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+
    template.rst
-   .. type.md
-   .. io.md
-   .. vector.md
-   .. search.md
-   .. string.md
-   .. number.md
-   .. matrix.md
-   .. dp.md
-   .. structure.md
-   .. graph.md
-   .. geometry.md
-   .. game.md
-   .. marathon.md
-   .. data.md
+   type.rst
+
+.. io.md
+.. vector.md
+.. search.md
+.. string.md
+.. number.md
+.. matrix.md
+.. dp.md
+.. structure.md
+.. graph.md
+.. geometry.md
+.. game.md
+.. marathon.md
+.. data.md
