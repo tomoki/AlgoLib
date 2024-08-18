@@ -11,17 +11,17 @@ Add your content using ``reStructuredText`` syntax. See the
 documentation for details.
 
 
+.. template.rst, search.rst は使ってはいけないみたい。
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   template.rst
+   template2.rst
    type.rst
    io.rst
+   vector.rst
+   search2.rst
 
-.. io.md
-.. vector.md
-.. search.md
 .. string.md
 .. number.md
 .. matrix.md
