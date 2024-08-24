@@ -489,6 +489,20 @@ Set で区間を管理するテクニック
         std::set<std::pair<T, T>> segs;
         friend ostream& operator<<(ostream&, const RangeSet&);
     };
+    ostream& operator<<(ostream& os, const RangeSet& v) {
+        bool first = true;
+        os << "{";
+        for (auto it = v.segs.begin(); it != v.segs.end(); ++it) {
+            // 最初と最後は番兵なので skip
+            if (it == v.segs.begin() || it == (std::prev(v.segs.end()))) continue;
+            if (!first) {
+                os << ", ";
+            }
+            os << *it;
+            first = false;
+        }
+        return os << "}";
+    }
 
 ****************************************
 ZobristHash
