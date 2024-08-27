@@ -113,8 +113,10 @@ next_permutation
 
 .. code-block:: cpp
 
+    // 一次元の座標圧縮を行う、 vector<T> をとって圧縮後の vector と元の値への　map (vector<T>) を返す
+    // O(N log N)
     template<typename T>
-    std::pair<std::vector<size_t>, std::unordered_map<size_t, T>> compress_vector(const std::vector<T>& v)
+    std::pair<std::vector<size_t>, std::vector<T>> compress_vector(const std::vector<T>& v)
     {
         // ソートし、重複を削除した配列の中で二分探索を行うことで何番目の大きさの要素かを求める
         std::vector<T> sorted_v = v;
@@ -122,7 +124,7 @@ next_permutation
         sorted_v.erase(unique(sorted_v.begin(), sorted_v.end()), sorted_v.end());
 
         std::vector<size_t> compressed(v.size());
-        std::unordered_map<size_t, T> compress_to_original;
+        std::vector<T> compress_to_original(sorted_v.size());
 
         for (size_t i = 0; i < v.size(); i++) {
             compressed[i] = std::lower_bound(sorted_v.begin(), sorted_v.end(), v[i]) - sorted_v.begin();
