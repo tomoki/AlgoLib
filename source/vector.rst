@@ -112,6 +112,7 @@ next_permutation
 *********************
 
 .. code-block:: cpp
+
     template<typename T>
     std::pair<std::vector<size_t>, std::unordered_map<size_t, T>> compress_vector(const std::vector<T>& v)
     {
