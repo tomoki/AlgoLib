@@ -111,4 +111,35 @@ next_permutation
 座標圧縮
 *********************
 
+.. code-block:: cpp
+    template<typename T>
+    std::pair<std::vector<size_t>, std::unordered_map<size_t, T>> compress_vector(const std::vector<T>& v)
+    {
+        // ソートし、重複を削除した配列の中で二分探索を行うことで何番目の大きさの要素かを求める
+        std::vector<T> sorted_v = v;
+        std::sort(sorted_v.begin(), sorted_v.end());
+        sorted_v.erase(unique(sorted_v.begin(), sorted_v.end()), sorted_v.end());
+
+        std::vector<size_t> compressed(v.size());
+        std::unordered_map<size_t, T> compress_to_original;
+
+        for (size_t i = 0; i < v.size(); i++) {
+            compressed[i] = std::lower_bound(sorted_v.begin(), sorted_v.end(), v[i]) - sorted_v.begin();
+            compress_to_original[compressed[i]] = v[i];
+        }
+        return { std::move(compressed), std::move(compress_to_original) };
+    }
+
+    int my_main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
+    {
+        vector<int> a = {8, 100, 33, 33, 33, 12, 6, 1211};
+        auto [compressed, to_original] = compress_vector(a);
+
+        // 圧縮後の結果と元の値を出力
+        for(const auto& c : compressed) {
+            std::cout << c << " => " << to_original[c] << std::endl;
+        }
+        return 0;
+    }
+
 .. literalinclude:: cpp/zip.cpp
