@@ -1,3 +1,4 @@
+
 template<typename T, auto op, auto e>
 class SegmentTree {
     static_assert(std::is_convertible_v<decltype(op), std::function<T(T, T)>>,
@@ -5,7 +6,7 @@ class SegmentTree {
     static_assert(std::is_convertible_v<decltype(e), std::function<T()>>,
               "e should be T()");
 public:
-    explicit SegmentTree(int _n) : original_n(n)
+    explicit SegmentTree(int _n) : original_n(_n)
     {
         n = 1;
         while (n < _n) n *= 2;
@@ -65,6 +66,7 @@ private:
     int original_n = 0;
     vector<T> data;
 };
+
 
 int main(int argc, char** argv) {
     // RMQ.
