@@ -359,6 +359,58 @@ Lazy
         vector<F> lazy;
     };
 
+****************************************
+Binary-Indexed Tree (FenwickTree)
+****************************************
+
+オペレーションとしては SegmentTree の下位互換だが、高速な構造。
+
+.. code-block:: cpp
+
+    // SegmentTree はモノイドであれば良かったが、それに加えて可換であることと逆元 inv が必要になる。
+    // 例: 値への加算と部分集合の和を計算する
+    // const auto op = [](int a, int b) {return a+b; };
+    // const auto e = []() { return 0; };
+    // const auto inv = [](int a) { return -a;};
+    // FenwickTree<int, op, e, inv> ft(5);
+    template<typename T, auto op, auto e, auto inv>
+    class FenwickTree {
+        static_assert(std::is_convertible_v<decltype(op), std::function<T(T, T)>>, "op must work as T(T, T)");
+        static_assert(std::is_convertible_v<decltype(e), std::function<T()>>, "e should be T()");
+        static_assert(std::is_convertible_v<decltype(inv), std::function<T(T)>>, "inv must work as T(T)");
+    public:
+        explicit FenwickTree(int _n) : original_n(_n) { data = vector<T>(_n + 1); }
+
+        // a[i] に　v を加算 (op) する。 (a[i] = op(a[i], v)
+        void add(int i, T v)
+        {
+            assert(0 <= i && i < original_n);
+            i++; // 1-indexed に変換
+            for (size_t j = i; j < data.size(); j += (j & -j)) {
+                data[j] = op(data[j], v);
+            }
+        }
+        // [a, b) 半開区間の値を取得する、 a == b なら e() を返す
+        [[nodiscard]] T get(int a, int b) const
+        {
+            assert(0 <= a && a <= b && b <= original_n);
+            return op(get(b), inv(get(a)));
+        }
+        // [0, b) 半開区間の値を取得する、 b == original_n なら　e() を返す
+        [[nodiscard]] T get(int b) const
+        {
+            assert(b <= original_n);
+            int a = 1; // a を 1-indexed に。
+            // b++, b--; b を 1-indexed に、 さらに閉区間に。
+            T ret = e();
+            for (int j = b; j > 0; j -= (j & -j)) {
+                ret = op(ret, data[j]);
+            }
+            return ret;
+        }
+        vector<T> data;
+        size_t original_n;
+    };
 
 ****************************************
 定数個のみを保持する priority_queue
