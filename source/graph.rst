@@ -19,36 +19,56 @@
 ****************************************
 ベルマンフォード
 ****************************************
-O(N\|E\|)
+
+ある点から他の点への最短経路を計算する。負の閉路があっても対応可能で、負の閉路の検出も可能 O(N |E|)
 
 .. code-block:: cpp
 
-    const int INF = 1 << 30;
-    // s:始点,dist:距離,prev:最短経路木
-    bool bellman(const vector<vector<Edge> >& graph,int s,vector<int> &dist,vector<int> &prev){
-        int n = graph.size();
-        for(int i=0;i<n;i++) dist[i] = INF;
-        dist[s] = 0;
-        for(int i=0;i<n;i++) prev[i] = -1;
+    template<typename T>
+    struct Edge {
+        int to;
+        T value;
+        Edge(int to, const T& v) : to(to), value(v) {}
+    };
 
-        bool neg_cycle = false;
-        for(int i=0;i<n;i++){
-            for(int j=0;j<n;j++){
-                for(size_t k=0;k<graph[j].size();k++){
-                    const Edge &e = graph[j][k];
-                    if(dist[e.to] > dist[j] + e.cost){
-                        dist[e.to] = dist[j] + e.cost;
-                        prev[e.to] = j;
-                        if(i == n-1){
-                            dist[e.to] = -INF;
-                            neg_cycle = true;
+    template<typename T>
+    struct BellmanFordResult {
+        bool has_negative_cycle;
+        vector<T> dist;
+        vector<int> prev;
+        const T INF = std::numeric_limits<T>::max() / 2;
+    };
+
+    // 始点 s からの全てのノードへの最短距離を計算する
+    // result.has_negative_cycle: 負の閉路が存在するかどうか
+    // result.dist: それぞれのノードへの最短距離、ただし到達不可能な時は result.INF, 負の閉路の影響で無限に負になるときは -result.INF
+    // result.prev: 最短経路を実現するための経路木
+    template<typename T>
+    BellmanFordResult<T> bellman_ford(const vector<vector<Edge<T>>>& graph, int s) {
+        BellmanFordResult<T> result;
+        result.has_negative_cycle = false;
+        result.dist = vector<T>(graph.size(), result.INF);
+        result.dist[0] = 0;
+        result.prev = vector<int>(graph.size(), -1);
+
+        for (size_t i = 0; i < graph.size(); i++) {
+            for(size_t j = 0; j < graph.size(); j++) {
+                for(size_t k = 0; k < graph[j].size(); k++) {
+                    const auto& e = graph[j][k];
+                    if(result.dist[e.to] > result.dist[j] + e.value){
+                        result.dist[e.to] = result.dist[j] + e.value;
+                        result.prev[e.to] = j;
+                        if(i == graph.size()-1){
+                            result.dist[e.to] = -result.INF;
+                            result.has_negative_cycle = true;
                         }
                     }
                 }
             }
         }
-        return !neg_cycle;
+        return result;
     }
+
 ****************************************
 ダイクストラ
 ****************************************
