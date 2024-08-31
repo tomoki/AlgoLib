@@ -203,22 +203,33 @@
 ワーシャルフロイド
 ****************************************
 
-負の経路があってもOK。すべてのノードに対してすべてのノードへの距離を求め
-る。もし負の閉路があったらiからiはマイナスになる。 :math:`O(|V|^{3})`
+すべてのノードに対してすべてのノードへの距離を求める。
+負の経路があってもOK。もし負の閉路があったらiからiはマイナスになる。 :math:`O(|V|^{3})`
 
 .. code-block:: cpp
 
-    // m はノードの個数。NOはでかい数
-    vector<vector<int> > V(m,vector<int>(m,NO));
-    // i->iは0にする。
-    rep(i,m){
-        V[i][i] = 0;
-    }
-
-    for(int k=0;k<m;k++){
-        for(int i=0;i<m;i++){
-            for(int j=0;j<m;j++){
-                V[i][j] = min(V[i][j],V[i][k]+V[k][j]);
+    // 隣接行列の形でグラフを受け取って、 全点間距離を計算する。 O(頂点の数 ^3)
+    // 渡す際に graph[0][0] = 0 としなければならず、また多重辺があるなら最小の辺を行列の値としておく。
+    // 負の辺があっても良く、負の閉路があった場合は graph[i][i] < 0 になる。
+    template<typename T>
+    void warshall_floyd(std::vector<std::vector<T>>& graph)
+    {
+    #ifdef DEBUG
+        // N x N の行列でなければならない
+        for (size_t i = 0; i < graph.size(); i++) {
+            assert(graph[i].size() == graph.size());
+        }
+        // graph[x][x] = 0 でなければならない
+        for (size_t i = 0; i < graph.size(); i++) {
+            assert(graph[i][i] == 0);
+        }
+    #endif
+        const size_t n = graph.size();
+        for(int k = 0; k < n; k++){
+            for(int i = 0; i < n; i++){
+                for(int j = 0;j < n; j++){
+                    graph[i][j] = std::min(graph[i][j], graph[i][k] + graph[k][j]);
+                }
             }
         }
     }
