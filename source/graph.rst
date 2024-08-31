@@ -225,9 +225,9 @@
         }
     #endif
         const size_t n = graph.size();
-        for(int k = 0; k < n; k++){
-            for(int i = 0; i < n; i++){
-                for(int j = 0;j < n; j++){
+        for(size_t k = 0; k < n; k++){
+            for(size_t i = 0; i < n; i++){
+                for(size_t j = 0; j < n; j++){
                     graph[i][j] = std::min(graph[i][j], graph[i][k] + graph[k][j]);
                 }
             }
