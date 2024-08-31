@@ -47,68 +47,49 @@ O(NM)
 Longest Increasing Subsequence (LIS)
 ****************************************
 
-O(NlogN)、TODO: 整理する
+与えられた数列の最長増加増加部分列 (部分列であって、その要素が単調に増加するもの) を計算する。
 
 .. code-block:: cpp
 
-    // O(Nlog(N))
-    //  Sphagetthi source より.
-    vector<int> longest_increasing_subsequence(const vector<int>& a){
-        const int n = a.size();
-        vector<int> A(n,1<<30);
-        vector<int> id(n);
-        for(int i=0;i<n;i++){
-            id[i] = distance(A.begin(),lower_bound(A.begin(),A.end(),a[i]));
-            A[id[i]] = a[i];
-        }
-        int m = *max_element(id.begin(),id.end());
-        vector<int> b(m+1);
-        for(int i=n-1;i>=0;i--){
-            if(id[i] == m) b[m--] = a[i];
-        }
-        return b;
-    }
-
-    // 以下別バージョン
-    // 長さだけを計算する版
     // https://atcoder.jp/contests/abc354/editorial/10027
-    int lis(const vector<ll>& v) {
-        int n = v.size();
-        const ll INF = 1ll << 50;
-
-        // dp[i] = 長さ i を実現する場合の最後の要素の大きさ。必ず増加列になる。
-        vector<ll> dp(n+1, INF);
-        dp[0] = -INF;
-        for (int i = 0; i < n; i++) {
-            // 最後の要素が v[i] 以上の箇所を更新する
-            auto it = lower_bound(all(dp), v[i]);
-            *it = min(v[i], *it);
-        }
-
-        dump(dp);
-        int length = lower_bound(all(dp), INF) - dp.begin() - 1;
-
-        return length;
-    }
-
-    // https://atcoder.jp/contests/abc354/editorial/10027
-    vector<int> lis_hukugen(const vector<ll>& v) {
-        int n = v.size();
-        const ll INF = 1ll << 50;
+    // O(n log n) で最長増加部分列を求める。 strict = true なら同じ値は許さない、 false なら同じ値も許す
+    template<typename T>
+    std::pair<size_t, std::vector<size_t>> longest_increasing_sequence(const std::vector<T>& v, const bool strict=true) {
+        static_assert(std::is_signed_v<T> , "T should be signed value"); // 符号付きだと dp 表の番兵と被る可能性があるので許さないことにしておく
+    #ifdef DEBUG
+        for (const auto& t : v) assert(t != std::numeric_limits<T>::min());
+    #endif
 
         // 長さの計算と一緒に、その要素がどの長さの場合を更新したかを覚えていく
-        vector<int> updated_index(n, INF);
-        {
-            vector<ll> dp(n+1, INF);
-            dp[0] = -INF;
-            for (int i = 0; i < n; i++) {
-                auto it = lower_bound(all(dp), v[i]);
-                *it = min(v[i], *it);
-                updated_index[i] = it - dp.begin();
-            }
+        std::vector<size_t> updated_index(v.size());
+        // dp[x] = x の長さを実現した際の数列の最後尾の値
+        std::vector<T> dp(v.size()+1, std::numeric_limits<T>::max());
+        dp[0] = std::numeric_limits<T>::min();
+        for (int i = 0; i < v.size(); i++) {
+            auto it = strict ? std::lower_bound(all(dp), v[i]) : std::upper_bound(all(dp), v[i]);
+            *it = std::min(v[i], *it);
+            updated_index[i] = it - dp.begin();
         }
-        int length = lower_bound(all(dp), INF) - dp.begin() - 1;
-        return updated_index;
+        size_t length = std::lower_bound(all(dp), std::numeric_limits<T>::max()) - dp.begin() - 1;
+        return {length, updated_index };
+    }
+
+    void lis_example()
+    {
+        std::vector<int> v = {1, 3, 4, 2, 1, 5};
+        auto [length, updated_index] = longest_increasing_sequence(v, false);
+        // 最長増加部分列を実現する index
+        vector<int> lis_index;
+        {
+            int cur_len = length;
+            for (int i = static_cast<int>(updated_index.size()) -1; i >= 0; i--) {
+                if (cur_len == updated_index[i]) {
+                    lis_index.push_back(i);
+                    cur_len--;
+                }
+            }
+            reverse(all(lis_index));
+        }
     }
 
 ****************************************
