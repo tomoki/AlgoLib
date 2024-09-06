@@ -6,44 +6,48 @@
 Union-Find
 ****************************************
 
+グループを管理するデータ構造、グループの統合や同じグループにいるかの判定が高速に可能
+
 .. code-block:: cpp
 
-    struct UnionFind{
-        const int is_root = -1;
-        vector<int> data;
-        UnionFind(int n){
-            data = vector<int>(n,-1);
-        }
+    struct UnionFind {
+        explicit UnionFind(int n)
+        : data(n, -1)
+        , number_of_group_var(n) { }
         // 親を探す
-        int root(int x){
-            if(data[x] < 0){
-                return x;
-            }else{
-                return data[x] = root(data[x]);
-            }
+        int root(int x) {
+            if (data[x] < 0) return x;
+            return data[x] = root(data[x]);
         }
-        // x,yの含まれる集合を併合
-        bool unite(int x,int y){
+        // x,yの含まれる集合を併合する
+        // 併合が発生したら true, しなかったら false
+        bool unite(int x,int y) {
             x = root(x);
             y = root(y);
-            if(x != y){
-                // 大きいほうに追加する。
-                if(data[y] < data[x]) swap(x,y);
-                data[x] += data[y];
-                data[y] = x;
-                return true;
-            }else{
-                return false;
-            }
+            if (x == y) return false; // すでに同じところにいる
+            // 大きいほうに追加する。
+            if(data[y] < data[x]) swap(x,y);
+            data[x] += data[y];
+            data[y] = x;
+            number_of_group_var--;
+            return true;
         }
         // 同じ集合にいるかどうか
-        bool same(int x,int y){
+        bool is_same_group(int x, int y) {
             return root(x) == root(y);
         }
-        int size(int x){
+        [[nodiscard]] int number_of_group() const {
+            return number_of_group_var;
+        }
+        int group_size(int x) {
             return -data[root(x)];
         }
+    private:
+        // data は親ならはそのグループのサイズに -1 をかけたもの、子なら親の値
+        vector<int> data;
+        int number_of_group_var;
     };
+
 
 ****************************************
 ヒープ
