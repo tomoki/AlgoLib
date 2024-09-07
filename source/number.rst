@@ -58,15 +58,54 @@ modの計算式について
 つまり、 :math:`a` で割ることと、:math:`a^{m-2}` を掛けることは同じである。
 これは、 :math:`C(10000,5000) \pmod p` といった式を計算する際、次の冪乗の演算と組みあわせて用いる。
 
-冪乗のmod
-====================
-いわゆるmod\_pow。計算量は :math:`O(\log n)`。
+Mod を扱うクラス
+==================
 
-.. literalinclude:: cpp/mod_pow.cpp
+.. code-block:: cpp
 
-ちなみにC++のpowを使うときに、引数が整数で、返り値も整数であることを期待
-するときには、上記のpowを使うべき。なぜならC++のpowは
-double,double->doubleな関数であるから。
+    template<typename T, typename R>
+    constexpr T powi(T x, R n, T one = 1) {
+        if (n == 0) return one;
+        T ret = powi(x * x, n / 2, one);
+        if (n % 2 == 1) ret *= x;
+        return ret;
+    }
+
+    template <uint_fast64_t MOD>
+    struct mod_int {
+        mod_int() noexcept : m_value(0) { }
+        constexpr mod_int(uint_fast64_t x) noexcept : m_value((x + MOD) % MOD)  { } // NOLINT
+        constexpr mod_int(long long x) noexcept : m_value((x + MOD) % MOD) { } // NOLINT
+        constexpr mod_int(int x) noexcept : m_value((x + MOD) % MOD) { }  // NOLINT
+        friend constexpr mod_int operator+(mod_int lhs, const mod_int& rhs) noexcept { lhs += rhs; return lhs; }
+        friend constexpr mod_int operator-(mod_int lhs, const mod_int& rhs) noexcept { lhs -= rhs; return lhs; }
+        friend constexpr mod_int operator*(mod_int lhs, const mod_int& rhs) noexcept { lhs *= rhs; return lhs; }
+        friend constexpr mod_int operator/(mod_int lhs, const mod_int& rhs) noexcept { lhs /= rhs; return lhs; }
+        friend constexpr bool operator==(const mod_int& lhs, const mod_int& rhs) noexcept { return lhs.m_value == rhs.m_value; }
+        friend constexpr bool operator!=(const mod_int& lhs, const mod_int& rhs) noexcept { return lhs.m_value != rhs.m_value; }
+        constexpr mod_int& operator+=(const mod_int& rhs) noexcept { m_value += rhs.m_value; m_value %= MOD; return *this; }
+        constexpr mod_int& operator*=(const mod_int& rhs) noexcept { m_value *= rhs.m_value; m_value %= MOD; return *this; }
+        constexpr mod_int& operator-=(const mod_int& rhs) noexcept { m_value += (MOD - rhs.m_value); m_value %= MOD; return *this; }
+        constexpr mod_int& operator/=(mod_int rhs) noexcept {
+            uint_fast64_t exp = MOD - 2;
+            while (exp > 0) {
+                if (exp % 2 == 1)
+                    *this *= rhs;
+                rhs *= rhs;
+                exp /= 2;
+            }
+            return *this;
+        }
+        [[nodiscard]] mod_int inv() const noexcept { return mod_int(1) /= *this; }
+        [[nodiscard]] uint_fast64_t value() const { return m_value; }
+    private:
+        uint_fast64_t m_value;
+    };
+    template <uint_fast64_t MOD> std::ostream& operator<<(std::ostream& os, const mod_int<MOD>& v) { return os << v.value(); }
+    template <uint_fast64_t MOD> std::istream& operator>>(std::istream& is, mod_int<MOD>& v) { return is >> v.value(); }
+
+    constexpr ll MOD = 1000000007;
+    using md = mod_int<MOD>;
 
 ****************************************
 素数
