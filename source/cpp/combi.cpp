@@ -160,14 +160,15 @@ int main(){
 }
 
 // mod 上の　nCr が大量に必要になるときは n!, 1/r!, 1/(n-r)! を先に求めておく
+// https://atcoder.jp/contests/abc042/submissions/57187098
 int main() {
-    vector<md> exp(h + w + 1);
+    vector<md> exp(n+1);
     exp[0] = 1;
-    for (int i = 1; i <= h+w; i++) {
+    for (int i = 1; i < static_cast<int>(exp.size()); i++) {
         exp[i] = exp[i-1] * i;
     }
     vector<md> dexp(exp.size());
-    for (int i = 0; i < dexp.size(); i++) {
+    for (int i = 0; i < static_cast<int>(exp.size()); i++) {
         dexp[i] = 1 / exp[i];
     }
     auto nCr = [&exp, &dexp](ll n, ll r) -> md {
