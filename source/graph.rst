@@ -331,7 +331,7 @@
 最大流
 ****************************************
 
-Dinic 法と FordFulKerson 法がある、 FordFulKerson は計算量がフローの総量に依存する。 Dinic 法はノードの数とエッジの数に依存する。
+Dinic 法と FordFulkerson 法がある、 FordFulkerson は計算量がフローの総量に依存する。 Dinic 法はノードの数とエッジの数に依存する。
 また、最大流最小カット定理より、最大流と最小カットは一致する。
 
 .. code-block:: cpp
@@ -346,10 +346,10 @@ Dinic 法と FordFulKerson 法がある、 FordFulKerson は計算量がフロ�
 
     // フローを流す処理は O(FM) (F = フローの総量、 M = エッジの数)
     template<typename Capacity>
-    struct FordFulKerson : public MaxFlow<Capacity> {
+    struct FordFulkerson : public MaxFlow<Capacity> {
         static_assert(std::is_integral_v<Capacity>, "Capacity must be integral");
 
-        explicit FordFulKerson(size_t number_of_node)
+        explicit FordFulkerson(size_t number_of_node)
         : graph(number_of_node)
         {
 
