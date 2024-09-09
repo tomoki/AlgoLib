@@ -331,102 +331,244 @@
 最大流
 ****************************************
 
-Dinic法による。また、最大流最小カット定理より、最大流と最小カットは一致する。
+Dinic 法と FordFulKerson 法がある、 FordFulKerson は計算量がフローの総量に依存する。 Dinic 法はノードの数とエッジの数に依存する。
+また、最大流最小カット定理より、最大流と最小カットは一致する。
 
 .. code-block:: cpp
 
-    struct Edge{
-        int to,cap,rev;
-        Edge(int _to,int _cap,int _rev) : to(_to),cap(_cap),rev(_rev) {};
+    template<typename Capacity>
+    class MaxFlow {
+    public:
+        virtual ~MaxFlow() = default;
+        virtual int add_edge(int from, int to, Capacity cap) = 0;
+        virtual Capacity flow(int from, int to) = 0;
     };
 
-    void add_edge(vector<vector<Edge> >& E,int from,int to,int cap){
-        E[from].push_back(Edge(to,cap,E[to].size()));
-        E[to].push_back(Edge(from,0,E[from].size()-1));
-    }
+    // フローを流す処理は O(FM) (F = フローの総量、 M = エッジの数)
+    template<typename Capacity>
+    struct FordFulKerson : public MaxFlow<Capacity> {
+        static_assert(std::is_integral_v<Capacity>, "Capacity must be integral");
 
-    vector<int> levels(vector<vector<Edge> > &E,int s){
-        vector<int> level(E.size(),-1);
-        level[s] = 0;
-        queue<int> Q;
-        Q.push(s);
-        while(!Q.empty()){
-            int v = Q.front();
-            Q.pop();
-            for(size_t i=0;i<E[v].size();i++){
-                Edge &e = E[v][i];
-                if(e.cap > 0 and level[e.to] == -1){
-                    level[e.to] = level[v]+1;
-                    Q.push(e.to);
+        explicit FordFulKerson(size_t number_of_node)
+        : graph(number_of_node)
+        {
+
+        }
+
+        struct Edge {
+            int to; // エッジの行き先
+            int rev; // graph[to][rev] が残余エッジ
+            Capacity flow; // 現在流れている量
+            Capacity cap; // 辺の容量
+            bool is_rev_edge; // 残余グラフ用に追加したエッジかどうか、フィルター用
+        };
+
+        friend ostream& operator<<(ostream& os, const Edge& e) noexcept
+        {
+            return os << "{" << e.to << ", " << e.flow << "/" << e.cap << "}";
+        }
+
+        // エッジを追加し、そのインデックスを返す。残余グラフがあるため返り値が連続とは限らない
+        int add_edge(int from, int to, Capacity cap) override
+        {
+            assert(from < static_cast<int>(graph.size()));
+            assert(to < static_cast<int>(graph.size()));
+            graph[from].push_back(Edge { to, static_cast<int>(graph[to].size()), 0, cap, false });
+            graph[to].push_back(Edge { from, static_cast<int>(graph[from].size())-1, cap, cap, true });
+
+            return graph[from].size() - 1;
+        }
+
+        // from から to まで最大までフローを流し、流量を返す
+        Capacity flow(int from, int to) override
+        {
+            assert(from < static_cast<int>(graph.size()));
+            assert(to < static_cast<int>(graph.size()));
+            Capacity total_flow = 0;
+
+            // フォードフルカーソンアルゴリズムは繰り返し dfs を行い、残余グラフ含めたグラフにフローを流す
+            // 最悪ケースは 1 ずつ流量が増えていく、 dfs は O(エッジの数) であり、この dfs を総量分行うことになる。
+            while (true) {
+                std::vector<bool> visited(graph.size(), false);
+                Capacity f = dfs(from, to, std::numeric_limits<Capacity>::max(), visited);
+                if (f == 0) break; // 新しくフローが流せなかった
+                total_flow += f;
+            }
+
+            return total_flow;
+        }
+
+        // from から伸びているエッジを返す、デフォルトで残余グラフはフィルターアウトする
+        std::vector<Edge> get_edges(int from, bool filter_rev_edge = true)
+        {
+            assert(from < static_cast<int>(graph.size()));
+
+            std::vector<Edge> ret;
+            for (const auto& e : graph[from]) {
+                if (!filter_rev_edge || !e.is_rev_edge)
+                    ret.push_back(e);
+            }
+            return ret;
+        }
+
+        // from から伸びているエッジを返す、index は add_edge が返した値
+        Edge get_edge(int from, int index)
+        {
+            return graph[from][index];
+        }
+
+    private:
+        // from から to まで dfs を行い、その途中の最小の容量を f として保存する
+        int dfs(int from, int to, Capacity flow, vector<bool>& visited)
+        {
+            if (from == to) return flow;
+            visited[from] = true;
+            for (auto& v : graph[from]) {
+                if (v.flow == v.cap) continue; // すでにマックスまで流している
+                if (visited[v.to]) continue; // 訪問済み、ループ
+                Capacity nf = dfs(v.to, to, min(flow, v.cap - v.flow), visited);
+                if (nf >= 1) {
+                    // 残余グラフの flow を増やしつつ、 通常グラフの flow は減らす
+                    v.flow += nf;
+                    graph[v.to][v.rev].flow -= nf;
+                    return nf;
                 }
             }
+            return 0; // どの辺にも流せなかった
         }
-        return level;
-    }
+        std::vector<std::vector<Edge>> graph;
+    };
 
-    int good_path(vector<vector<Edge> > &E,
-            vector<int> &iter,
-            vector<int> &level,
-            int v,int t,int f){
-        if(v == t) return f;
-        for(int &i=iter[v];i<(int)E[v].size();i++){
-            Edge &e = E[v][i];
-            if(e.cap > 0 and level[v] < level[e.to]){
-                int d = good_path(E,iter,level,e.to,t,min(f,e.cap));
-                if(d > 0){
-                    e.cap -= d;
-                    E[e.to][e.rev].cap += d;
-                    return d;
+    // フローを流す処理は ...
+    template<typename Capacity>
+    struct Dinic : public MaxFlow<Capacity> {
+        static_assert(std::is_integral_v<Capacity>, "Capacity must be integral");
+
+        explicit Dinic(size_t number_of_node)
+        : graph(number_of_node)
+        {
+
+        }
+
+        struct Edge {
+            int to; // エッジの行き先
+            int rev; // graph[to][rev] が残余エッジ
+            Capacity flow; // 現在流れている量
+            Capacity cap; // 辺の容量
+            bool is_rev_edge; // 残余グラフ用に追加したエッジかどうか、フィルター用
+        };
+
+        friend ostream& operator<<(ostream& os, const Edge& e) noexcept
+        {
+            return os << "{" << e.to << ", " << e.flow << "/" << e.cap << "}";
+        }
+
+        // エッジを追加し、そのインデックスを返す。残余グラフがあるため返り値が連続とは限らない
+        int add_edge(int from, int to, Capacity cap) override
+        {
+            assert(from < static_cast<int>(graph.size()));
+            assert(to < static_cast<int>(graph.size()));
+            graph[from].push_back(Edge { to, static_cast<int>(graph[to].size()), 0, cap, false });
+            graph[to].push_back(Edge { from, static_cast<int>(graph[from].size())-1, cap, cap, true });
+
+            return graph[from].size() - 1;
+        }
+
+        // from から to まで最大までフローを流し、流量を返す
+        Capacity flow(int from, int to) override
+        {
+            assert(from < static_cast<int>(graph.size()));
+            assert(to < static_cast<int>(graph.size()));
+            Capacity total_flow = 0;
+
+            // Dinic 法では from から to の最短経路 DAG (閉路のない有向グラフ) を BFS で作成し、
+            // DFS でその上の増加パスに流せるだけ流す、を繰り返す
+            while (true) {
+                auto level = levels(from);
+                if (level[to] < 0) break; // そもそも to まで到達不可能なら終了する
+                vector<int> iter(graph.size());
+                // DAG 上で流せるだけ流す
+                while (true) {
+                    Capacity f = good_path(from, to, std::numeric_limits<Capacity>::max(), iter, level);
+                    if (f == 0) break;
+                    total_flow += f;
                 }
             }
+            return total_flow;
         }
-        return 0;
-    }
 
-    int max_flow(vector<vector<Edge> > E,int s,int t){
-        int flow = 0;
-        const int INF = 1 << 30;
-        while(true){
-            vector<int> level = levels(E,s);
-            if(level[t] < 0) return flow;
-            vector<int> iter(E.size());
-            int f;
-            while((f=good_path(E,iter,level,s,t,INF)) > 0){
-                flow += f;
+        // from から伸びているエッジを返す、デフォルトで残余グラフはフィルターアウトする
+        std::vector<Edge> get_edges(int from, bool filter_rev_edge = true)
+        {
+            assert(from < static_cast<int>(graph.size()));
+
+            std::vector<Edge> ret;
+            for (const auto& e : graph[from]) {
+                if (!filter_rev_edge || !e.is_rev_edge)
+                    ret.push_back(e);
             }
+            return ret;
         }
-    }
+
+        // from から伸びているエッジを返す、index は add_edge が返した値
+        Edge get_edge(int from, int index)
+        {
+            return graph[from][index];
+        }
+
+    private:
+        // from から始まる BFS により DAG を生成する。
+        // 戻り値は v[i] = from から到達可能なら from からの距離、そうでないなら -1
+        vector<int> levels(int from) {
+            vector<int> level(graph.size(),-1);
+            level[from] = 0;
+            queue<int> que; que.push(from);
+            while(!que.empty()){
+                int v = que.front(); que.pop();
+                for (auto& e : graph[v]) {
+                    // まだフローが流せて、かつまだ行っていないノードを追加
+                    if(e.cap - e.flow > 0 and level[e.to] == -1){
+                        level[e.to] = level[v]+1;
+                        que.push(e.to);
+                    }
+                }
+            }
+            return level;
+        }
+
+        // levels で生成された DAG 上を DFS してフローを流す
+        Capacity good_path(int from, int to, Capacity flow, vector<int>& iter, const vector<int>& level){
+            if(from == to) return flow;
+            for(int &i = iter[from]; i < static_cast<int>(graph[from].size()); i++){
+                auto& e = graph[from][i];
+                if(e.cap - e.flow > 0 && level[from] < level[e.to]){
+                    Capacity nf = good_path(e.to, to, min(flow, e.cap - e.flow), iter, level);
+                    if(nf > 0){
+                        e.flow += nf;
+                        graph[e.to][e.rev].flow -= nf;
+                        return nf;
+                    }
+                }
+            }
+            return 0;
+        }
+        std::vector<std::vector<Edge>> graph;
+    };
 
     int main(){
-        int N,M;
-        while(cin >> N >> M){
-            // [0,N) is cow,[N,N+M) is barn.
-            vector<vector<Edge> > E(N+M+2);
-            int s = N+M;
-            int t = N+M+1;
-            for(int i=0;i<N;i++){
-                add_edge(E,s,i,1);
-            }
-            for(int i=0;i<M;i++){
-                add_edge(E,N+i,t,1);
-            }
+        // https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=GRL_6_A&lang=ja
+        int v, e; cin >> v >> e;
+        int source = 0;
+        int sink = v-1;
 
-            for(int i=0;i<N;i++){
-                int S;
-                cin >> S;
-                for(int j=0;j<S;j++){
-                    int k;
-                    cin >> k;
-                    k--;
-                    add_edge(E,i,N+k,1);
-                }
-            }
-
-            cout << max_flow(E,s,t) << endl;
+        Dinic<int> maxflow(v);
+        for (int i = 0; i < e; i++) {
+            int u, v, c; cin >> u >> v >> c;
+            maxflow.add_edge(u, v, c);
         }
+        cout << maxflow.flow(source, sink) << endl;
         return 0;
     }
-
 
 ****************************************
 最小費用流
