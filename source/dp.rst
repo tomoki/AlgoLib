@@ -266,3 +266,61 @@ bit演算をする。bitのループを先に回すこと。$O(N^2\times2^{N})$
         assert(ty >= fy);
         return v[ty][tx] - v[fy][tx] - v[ty][fx] + v[fy][fx];
     }
+
+ダブリング
+==================
+
+.. code-block:: cpp
+    // one に対し、 x で表される binary_op を n 回適用する
+    template<typename T>
+    T apply_doubling(const T& x, const uint64_t n, const std::function<T(T, T)>& binary_op, const T& one)
+    {
+        if (n == 0) return one;
+        T ret = apply_doubling(binary_op(x, x), n/2, binary_op, one);
+        if (n % 2 == 1) ret = binary_op(ret, x);
+        return ret;
+    }
+
+    // trans で表されるような遷移を n 回適用する
+    // https://atcoder.jp/contests/abc167/tasks/abc167_d
+    std::vector<int> apply_trans_vector(const uint64_t n, const std::vector<int>& trans)
+    {
+        std::vector<int> init(trans.size());
+        iota(init.begin(), init.end(), 0);
+        return apply_doubling<vector<int>>(trans, n, [n = trans.size()](auto x, auto y) {
+            vector<int> ret(n);
+            for (size_t i = 0; i < n; i++)
+                ret[i] = x[y[i]];
+            return ret;
+        }, init);
+    }
+
+    // n 回 trans で遷移した時の場所とコストを計算する
+    // trans[0].first = 行き先、 trans[0].second = コスト
+    // https://atcoder.jp/contests/abc370/tasks/abc370_f
+    template<typename Cost>
+    std::vector<pair<int, Cost>> apply_trans_vector2(const uint64_t n, std::vector<pair<int, Cost>> trans)
+    {
+        std::vector<pair<int, Cost>> init(trans.size());
+        for (size_t i = 0; i < init.size(); i++) {
+            init[i].first = i;
+            init[i].second = 0;
+        }
+
+        return apply_doubling<std::vector<pair<int, Cost>>>(trans, n, [n = trans.size()](const auto& f, const auto& x) {
+            std::vector<pair<int, Cost>> ret(n);
+            for (size_t i = 0; i < n; i++) {
+                ret[i].first = f[x[i].first].first;
+                // ここの式がややこしいが、 現在の値 x を f で移すイメージがわかりやすい
+                // 現在値 x[i].first から生えているエッジが f[x[i].first] なのでそのコストを現在の値に追加する
+                ret[i].second = x[i].second + f[x[i].first].second;
+            }
+            return ret;
+        }, init);
+    }
+
+    // x を n 乗する
+    template<typename T, typename R>
+    constexpr T powi2(T x, R n, T one = 1) {
+        return apply_doubling(x, n, std::multiplies<T>(), one);
+    }

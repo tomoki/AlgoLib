@@ -331,7 +331,7 @@
 最大流
 ****************************************
 
-Dinic 法と FordFulkerson 法がある、 FordFulkerson は計算量がフローの総量に依存する。 Dinic 法はノードの数とエッジの数に依存する。
+Dinic 法と FordFulkerson 法がある、 FordFulkerson は計算量がフローの総量に依存する。 Dinic 法はノードの数とエッジの数に依存する。 特に二部マッチングの時、 FordFulkerson は O(n^2)、 Dinic 法は O(n^(3/2)) になる。
 また、最大流最小カット定理より、最大流と最小カットは一致する。
 
 .. code-block:: cpp
