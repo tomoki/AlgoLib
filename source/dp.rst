@@ -139,6 +139,7 @@ bit で集合を表すことにしたとき、 その空集合を除く部分集
 これを利用して、部分集合の部分集合を列挙して行って bit DP を行うことがある。 以下は全体を k 個の部分集合に分割するDP。 O(k*3^n)。
 
 .. code-block:: cpp
+
     vector<vector<ll>> dp(k + 1, vector<ll>(1 << n, 1ll << 62));
     dp[0][0] = 0;
 
@@ -313,6 +314,7 @@ bit で集合を表すことにしたとき、 その空集合を除く部分集
 ==================
 
 .. code-block:: cpp
+
     // one に対し、 x で表される binary_op を n 回適用する
     template<typename T>
     T apply_doubling(const T& x, const uint64_t n, const std::function<T(T, T)>& binary_op, const T& one)
