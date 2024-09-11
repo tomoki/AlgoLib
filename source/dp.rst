@@ -95,16 +95,58 @@ Longest Increasing Subsequence (LIS)
 ****************************************
 巡回セールスマン問題
 ****************************************
-bit演算をする。bitのループを先に回すこと。$O(N^2\times2^{N})$
+
+https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=DPL_2_A
+
+ある点からスタートして、全ての点を辿って最初の点に戻る時の最短距離を計算する。
 
 .. code-block:: cpp
 
-    ll dp[1 << N][N];
-    dp[0][0] = 1;
-    // Bitのほうが先!
-    for(int i=0;i<(1<<N);i++){
-        for(int j=0;j<N;j++){
-            //something.
+    // dp[a][b] = 現在 b にいて、 集合 a をすでに辿っている時の最短距離
+    vector<vector<int>> dp(1 << v, vector<int>(v, INF));
+    // スタート地点にいて、かつ辿った集合なしの状態を距離 0 にする。
+    // この時辿った集合に s を入れないことによって最後に s に戻ってくるようにする。
+    dp[0][s] = 0;
+    for (uint32_t g = 0; g < (1 << v); g++) {
+        // dp[g][p] から配る DP で遷移
+        for (int p = 0; p < v; p++) {
+            for (const auto& e : graph[p]) {
+                if (g & (1 << e.to)) continue; // すでに遷移済みならスキップ
+                dp[g | (1 << e.to)][e.to] = min(dp[g | (1 << e.to)][e.to], dp[g][p] + e.value);
+            }
+        }
+    }
+    int ret = dp[(1 << v)-1][s];
+
+****************************************
+部分集合の列挙
+****************************************
+
+https://atcoder.jp/contests/typical90/tasks/typical90_as より。
+
+bit で集合を表すことにしたとき、 その空集合を除く部分集合の列挙は以下のような for 文で行うことができる。
+
+.. code-block:: cpp
+
+    uint32_t g = 0b0110111;
+    for (uint32_t a = g; a != 0; a = (a - 1) & g) {
+        for (int i = 0; i < 32; i++) {
+            cout << ((a & (1 << i)) ? 1 : 0);
+        }
+        cout << endl;
+    }
+
+これを利用して、部分集合の部分集合を列挙して行って bit DP を行うことがある。 以下は全体を k 個の部分集合に分割するDP。 O(k*3^n)。
+
+.. code-block:: cpp
+    vector<vector<ll>> dp(k + 1, vector<ll>(1 << n, 1ll << 62));
+    dp[0][0] = 0;
+
+    for (int cnt = 1; cnt <= k; cnt++) {
+        for (int g = 1; g < (1 << n); g++) {
+            for (int a = g; a != 0; a = (a - 1) & g) {
+                chmin(dp[cnt][g], max(dp[cnt-1][g-a], max_dist[a]));
+            }
         }
     }
 
