@@ -168,7 +168,7 @@
 Gauss-Jordan
 *********************
 
-掃き出し法によって連立一次方程式を解く
+掃き出し法によって連立一次方程式を解く (https://drken1215.hatenablog.com/entry/2019/03/20/202800)
 
 .. code-block:: cpp
 
