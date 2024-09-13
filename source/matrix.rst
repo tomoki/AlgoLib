@@ -235,3 +235,42 @@ Gauss-Jordan
         }
         return result;
     }
+
+.. code-block:: cpp
+
+    // https://atcoder.jp/contests/typical90/tasks/typical90_be
+    int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
+    {
+        int n, m; cin >> n >> m;
+
+        Matrix<mod_int<2>> mat(m, n);
+        for (int i = 0; i < n; i++) {
+            int t; cin >> t;
+            for (int j = 0; j < t; j++) {
+                int a; cin >> a;
+                a--;
+                mat[a][i] = 1;
+            }
+        }
+
+        vector<mod_int<2>> v(m);
+        for (int i = 0; i < m; i++) {
+            int s; cin >> s;
+            v[i] = s;
+        }
+
+        auto r = solve_linear_equations(mat, v);
+
+        if (r.type == GaussJordanResult<mod_int<2>>::SolutionType::one) {
+            cout << 1 << endl;
+            return 0;
+        } else if (r.type == GaussJordanResult<mod_int<2>>::SolutionType::some) {
+            mod_int<998244353> ret = 2;
+            ret = powi(ret, n - r.rank);
+            cout << ret << endl;
+        } else {
+            cout << 0 << endl;
+        }
+
+        return 0;
+    }
