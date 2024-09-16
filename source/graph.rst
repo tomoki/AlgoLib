@@ -238,7 +238,82 @@
 最小全域木
 ****************************************
 
-プリム法による。 :math:`O(N^2log(N))` だと思う。最小コストを求めるコードが以下。
+クラスカル法
+====================
+
+クラスカル法によって最小全域木を構築する、大体 O(MlogM) (M = グラフの辺の数)
+辺をコストによってソートしておいて、もしその辺を追加したら連結成分が更新される時だけ追加する
+プリム法より早めかもしれない。
+
+.. code-block:: cpp
+
+    template<typename T>
+    struct MinimumSpanningTreeResult {
+        bool success; // そもそも全域木が構築できたかどうか
+        vector<vector<Edge<T>>> graph; // 最小全域木
+        T total_cost; // 最小全域木全体のコスト
+    };
+
+    // クラスカル法によって最小全域木を構築する、大体 O(MlogM) (M = グラフの辺の数)
+    // 辺をコストによってソートしておいて、もしその辺を追加したら連結成分が更新される時だけ追加する
+    // プリム法より早めかもしれない。
+    // Ref: https://atcoder.jp/contests/typical90/tasks/typical90_aw
+    template<typename T>
+    MinimumSpanningTreeResult<T> minimum_spanning_tree(const vector<vector<Edge<T>>>& graph)
+    {
+        // UnionFind を使う、ありものを使ってもいいがライブラリ間の依存を減らすために内部で定義することにする
+        vector<int> uf(graph.size(), -1); // uf の値は負ならその集合のサイズに -1 をかけたもの、非負なら親のインデックス
+        // 親のインデックスを返す
+        function<int(int)> root = [&uf, &root](int x) {
+            if (uf[x] < 0) return x;
+            return uf[x] = root(uf[x]);
+        };
+        // x と y を併合
+        auto unite = [&uf, &root](int x, int y) {
+            x = root(x);
+            y = root(y);
+            if (x == y) return;
+            // 集合 x に 集合 y を併合する、 もし y の方が大きいなら x, y を入れ替え
+            if (uf[y] < uf[x]) swap(x, y);
+            uf[x] += uf[y];
+            uf[y] = x;
+        };
+
+        // Edge 構造体に辺の元の情報がないので追加しておく
+        vector<pair<int, Edge<T>>> sorted_edges;
+        for (int i = 0; i < static_cast<int>(graph.size()); i++) {
+            for (const auto& e : graph[i]) {
+                sorted_edges.push_back({i, e});
+            }
+        }
+        // コストでソート
+        std::sort(sorted_edges.begin(), sorted_edges.end(), [](const auto& e1, const auto& e2) {
+            return e1.second.value < e2.second.value;
+        });
+        T total_cost = 0;
+        vector<vector<Edge<T>>> minimum_spanning_tree(graph.size());
+        for (const auto& e : sorted_edges) {
+            int from = e.first;
+            int to = e.second.to;
+            const auto& cost = e.second.value;
+            if (root(from) == root(to)) continue; // すでに同じ連結成分に存在
+            unite(from, to);
+            total_cost += cost;
+            minimum_spanning_tree[from].push_back(e.second);
+        }
+
+        int largest_group_size = -*min_element(uf.begin(), uf.end());
+        if (largest_group_size != static_cast<int>(graph.size())) {
+            // 全域木が構築できていない
+            return MinimumSpanningTreeResult<T>{ false, {}, 0 };
+        }
+        return MinimumSpanningTreeResult<T> { true, minimum_spanning_tree, total_cost };
+    }
+
+プリム法
+=====================
+
+:math:`O(N^2log(N))` だと思う。最小コストを求めるコードが以下。
 
 .. code-block:: cpp
 
