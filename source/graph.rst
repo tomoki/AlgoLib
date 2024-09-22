@@ -419,100 +419,6 @@ Dinic 法と FordFulkerson 法がある、 FordFulkerson は計算量がフロ�
         virtual Capacity flow(int from, int to) = 0;
     };
 
-    // フローを流す処理は O(FM) (F = フローの総量、 M = エッジの数)
-    template<typename Capacity>
-    struct FordFulkerson : public MaxFlow<Capacity> {
-        static_assert(std::is_integral_v<Capacity>, "Capacity must be integral");
-
-        explicit FordFulkerson(size_t number_of_node)
-        : graph(number_of_node)
-        {
-
-        }
-
-        struct Edge {
-            int to; // エッジの行き先
-            int rev; // graph[to][rev] が残余エッジ
-            Capacity flow; // 現在流れている量
-            Capacity cap; // 辺の容量
-            bool is_rev_edge; // 残余グラフ用に追加したエッジかどうか、フィルター用
-        };
-
-        friend ostream& operator<<(ostream& os, const Edge& e) noexcept
-        {
-            return os << "{" << e.to << ", " << e.flow << "/" << e.cap << "}";
-        }
-
-        // エッジを追加し、そのインデックスを返す。残余グラフがあるため返り値が連続とは限らない
-        int add_edge(int from, int to, Capacity cap) override
-        {
-            assert(from < static_cast<int>(graph.size()));
-            assert(to < static_cast<int>(graph.size()));
-            graph[from].push_back(Edge { to, static_cast<int>(graph[to].size()), 0, cap, false });
-            graph[to].push_back(Edge { from, static_cast<int>(graph[from].size())-1, cap, cap, true });
-
-            return graph[from].size() - 1;
-        }
-
-        // from から to まで最大までフローを流し、流量を返す
-        Capacity flow(int from, int to) override
-        {
-            assert(from < static_cast<int>(graph.size()));
-            assert(to < static_cast<int>(graph.size()));
-            Capacity total_flow = 0;
-
-            // フォードフルカーソンアルゴリズムは繰り返し dfs を行い、残余グラフ含めたグラフにフローを流す
-            // 最悪ケースは 1 ずつ流量が増えていく、 dfs は O(エッジの数) であり、この dfs を総量分行うことになる。
-            while (true) {
-                std::vector<bool> visited(graph.size(), false);
-                Capacity f = dfs(from, to, std::numeric_limits<Capacity>::max(), visited);
-                if (f == 0) break; // 新しくフローが流せなかった
-                total_flow += f;
-            }
-
-            return total_flow;
-        }
-
-        // from から伸びているエッジを返す、デフォルトで残余グラフはフィルターアウトする
-        std::vector<Edge> get_edges(int from, bool filter_rev_edge = true)
-        {
-            assert(from < static_cast<int>(graph.size()));
-
-            std::vector<Edge> ret;
-            for (const auto& e : graph[from]) {
-                if (!filter_rev_edge || !e.is_rev_edge)
-                    ret.push_back(e);
-            }
-            return ret;
-        }
-
-        // from から伸びているエッジを返す、index は add_edge が返した値
-        Edge get_edge(int from, int index)
-        {
-            return graph[from][index];
-        }
-
-    private:
-        // from から to まで dfs を行い、その途中の最小の容量を f として保存する
-        int dfs(int from, int to, Capacity flow, vector<bool>& visited)
-        {
-            if (from == to) return flow;
-            visited[from] = true;
-            for (auto& v : graph[from]) {
-                if (v.flow == v.cap) continue; // すでにマックスまで流している
-                if (visited[v.to]) continue; // 訪問済み、ループ
-                Capacity nf = dfs(v.to, to, min(flow, v.cap - v.flow), visited);
-                if (nf >= 1) {
-                    // 残余グラフの flow を増やしつつ、 通常グラフの flow は減らす
-                    v.flow += nf;
-                    graph[v.to][v.rev].flow -= nf;
-                    return nf;
-                }
-            }
-            return 0; // どの辺にも流せなかった
-        }
-        std::vector<std::vector<Edge>> graph;
-    };
 
     // フローを流す処理は ...
     template<typename Capacity>
@@ -630,6 +536,109 @@ Dinic 法と FordFulkerson 法がある、 FordFulkerson は計算量がフロ�
         std::vector<std::vector<Edge>> graph;
     };
 
+FordFulkerson は以下。あまり使わないかも。
+
+.. code-block:: cpp
+
+    // フローを流す処理は O(FM) (F = フローの総量、 M = エッジの数)
+    template<typename Capacity>
+    struct FordFulkerson : public MaxFlow<Capacity> {
+        static_assert(std::is_integral_v<Capacity>, "Capacity must be integral");
+
+        explicit FordFulkerson(size_t number_of_node)
+        : graph(number_of_node)
+        {
+
+        }
+
+        struct Edge {
+            int to; // エッジの行き先
+            int rev; // graph[to][rev] が残余エッジ
+            Capacity flow; // 現在流れている量
+            Capacity cap; // 辺の容量
+            bool is_rev_edge; // 残余グラフ用に追加したエッジかどうか、フィルター用
+        };
+
+        friend ostream& operator<<(ostream& os, const Edge& e) noexcept
+        {
+            return os << "{" << e.to << ", " << e.flow << "/" << e.cap << "}";
+        }
+
+        // エッジを追加し、そのインデックスを返す。残余グラフがあるため返り値が連続とは限らない
+        int add_edge(int from, int to, Capacity cap) override
+        {
+            assert(from < static_cast<int>(graph.size()));
+            assert(to < static_cast<int>(graph.size()));
+            graph[from].push_back(Edge { to, static_cast<int>(graph[to].size()), 0, cap, false });
+            graph[to].push_back(Edge { from, static_cast<int>(graph[from].size())-1, cap, cap, true });
+
+            return graph[from].size() - 1;
+        }
+
+        // from から to まで最大までフローを流し、流量を返す
+        Capacity flow(int from, int to) override
+        {
+            assert(from < static_cast<int>(graph.size()));
+            assert(to < static_cast<int>(graph.size()));
+            Capacity total_flow = 0;
+
+            // フォードフルカーソンアルゴリズムは繰り返し dfs を行い、残余グラフ含めたグラフにフローを流す
+            // 最悪ケースは 1 ずつ流量が増えていく、 dfs は O(エッジの数) であり、この dfs を総量分行うことになる。
+            while (true) {
+                std::vector<bool> visited(graph.size(), false);
+                Capacity f = dfs(from, to, std::numeric_limits<Capacity>::max(), visited);
+                if (f == 0) break; // 新しくフローが流せなかった
+                total_flow += f;
+            }
+
+            return total_flow;
+        }
+
+        // from から伸びているエッジを返す、デフォルトで残余グラフはフィルターアウトする
+        std::vector<Edge> get_edges(int from, bool filter_rev_edge = true)
+        {
+            assert(from < static_cast<int>(graph.size()));
+
+            std::vector<Edge> ret;
+            for (const auto& e : graph[from]) {
+                if (!filter_rev_edge || !e.is_rev_edge)
+                    ret.push_back(e);
+            }
+            return ret;
+        }
+
+        // from から伸びているエッジを返す、index は add_edge が返した値
+        Edge get_edge(int from, int index)
+        {
+            return graph[from][index];
+        }
+
+    private:
+        // from から to まで dfs を行い、その途中の最小の容量を f として保存する
+        int dfs(int from, int to, Capacity flow, vector<bool>& visited)
+        {
+            if (from == to) return flow;
+            visited[from] = true;
+            for (auto& v : graph[from]) {
+                if (v.flow == v.cap) continue; // すでにマックスまで流している
+                if (visited[v.to]) continue; // 訪問済み、ループ
+                Capacity nf = dfs(v.to, to, min(flow, v.cap - v.flow), visited);
+                if (nf >= 1) {
+                    // 残余グラフの flow を増やしつつ、 通常グラフの flow は減らす
+                    v.flow += nf;
+                    graph[v.to][v.rev].flow -= nf;
+                    return nf;
+                }
+            }
+            return 0; // どの辺にも流せなかった
+        }
+        std::vector<std::vector<Edge>> graph;
+    };
+
+例
+
+.. code-block:: cpp
+
     int main(){
         // https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=GRL_6_A&lang=ja
         int v, e; cin >> v >> e;
@@ -642,6 +651,210 @@ Dinic 法と FordFulkerson 法がある、 FordFulkerson は計算量がフロ�
             maxflow.add_edge(u, v, c);
         }
         cout << maxflow.flow(source, sink) << endl;
+        return 0;
+    }
+
+燃やす埋める (Project Selection)
+=======================================
+
+変数 x1, x2 ... xn があり、それぞれ 0 か 1 のどちらかを選択できる。
+xi を 0 にしたときのコストを Fi, 1 にしたときのコストを Ti とする。
+さらに xi = 1 かつ xj = 0 の時追加のコスト Cij がかかる。
+(俗に 0/1 を燃やす・埋めるにした問題になぞらえて燃やす・埋めると呼ばれているらしい)
+https://drken1215.hatenablog.com/entry/2023/11/24/034300
+
+上記の問題を最小カット (グラフの頂点を S 側、 T 側にわけ、 S -> T の辺の重さの最小を求める問題) に帰着する。
+
+.. code-block:: cpp
+
+    // Ref:
+    // - https://github.com/drken1215/algorithm/blob/master/GraphNetworkFlow/two_variable_submodular_optimization.cpp
+    // - https://drken1215.hatenablog.com/entry/2023/11/24/034300
+    // 最小カットに帰着するため以下のようにグラフを構築する。
+    // - source を含むカットに含まれる => 選択する (true, 1)
+    // - destination を含むカットに含まれる => 選択しない (false, 0)
+    // 内部で　Dinic 法を使うため、 O(N^2*ルールの数) になる。
+    // TODO: 最小カットの値を求めるだけではなく、カット (どのノードがどちらのグループに含まれるのか) を計算する方法を検討する
+    template<typename Cost>
+    struct ProjectSelection {
+        explicit ProjectSelection(size_t number_of_node, Cost infinity = std::numeric_limits<Cost>::max() / 1000)
+        :
+        source(static_cast<int>(number_of_node)),
+        destination((static_cast<int>(number_of_node) + 1)),
+        flow(number_of_node + 2),
+        offset(0),
+        infinity(infinity)
+        {
+        }
+        // i 番目の要素を選択したときのコストを true_cost, しない時を false_cost
+        // ※ 問題が「利得を得る」であった場合は利得に -1 をかけたものを入力し、最後の答えを *-1 する。
+        // この関数は選択したときの「損失」であるため
+        void add_single_cost(const int i, const Cost true_cost, const Cost false_cost)
+        {
+            // アイデアとして、
+            // - source 側にノードを含める = true にするならば true_cost がカットに含まれる
+            // - destination 側にノードを含める = false にするならば false_cost がカットに含まれる
+            // ようにグラフを構築する
+            assert(0 <= i && i < static_cast<int>(flow.size()));
+            if (true_cost >= 0 && false_cost >= 0) {
+                // source から i に false_cost を生やすことで、 もし i を true にした場合は false_cost の辺は含まれず、
+                // 逆に true_cost の辺がカットに含まれるようになる。
+                // (source は true 側であるが、 false_cost の辺を生やすので直感とは逆になるかもしれない)
+                flow.add_edge(source, i, false_cost);
+                flow.add_edge(i, destination, true_cost);
+            } else if (false_cost >= true_cost) {
+                // フローを流す際にグラフに負の辺があると困るので、
+                // 最終的な答えに +true_cost し、 false にした場合は (false_cost - true_cost) が増えることにする
+                flow.add_edge(source, i, false_cost - true_cost);
+                offset += true_cost;
+            } else {
+                // 上に同じ
+                flow.add_edge(i, destination, true_cost - false_cost);
+                offset += false_cost;
+            }
+        }
+        // どちらかが true, もう片方が false の時のコストを追加する (いわゆる埋める・燃やす)
+        void add_true_false_cost(const int true_i, const int false_i, const Cost cost)
+        {
+            assert(0 <= true_i && true_i < static_cast<int>(flow.size()));
+            assert(0 <= false_i && false_i < static_cast<int>(flow.size()));
+            assert(cost >= 0);
+            // true となるノードから false となるノードに辺を張ることで、カットにその辺が含まれるようになる
+            flow.add_edge(true_i, false_i, cost);
+        }
+        // true_i を選択し、 false_i を選択しないことを許さないようにする
+        void ban_true_false(const int true_i, const int false_i)
+        {
+            // 無限のコストを追加する
+            return add_true_false_cost(true_i, false_i, infinity);
+        }
+        // 両方が true の時の利得を追加する
+        // TODO: 未検証
+        void add_true_true_profit(const int true_i, const int true_j, const Cost profit)
+        {
+            // source から i に、 i から j にそれぞれ profit の辺をはり、オフセットに -profit する
+            // true, true => 辺はどちらも source 側にあるので -profit
+            // true, false => source から i の辺はカウントされないが、 i から j の辺はカット間のあるので、 0
+            // false, true => source から i の辺はカウントされ、 i から j の辺はカウントされない (destination 側から source 側への辺なので) 合計 0
+            // false, false => source から i の辺はカウントされ、 i から j の辺は両方 destination 側なのでカウントされない、合計 0
+            assert(profit >= 0);
+            assert(0 <= true_i && true_i < static_cast<int>(flow.size()));
+            assert(0 <= true_j && true_j < static_cast<int>(flow.size()));
+
+            flow.add_edge(source, true_i, profit);
+            flow.add_edge(true_i, true_j, profit);
+            offset += (-profit);
+        }
+        // 両方が false の時の利得を追加する
+        // TODO: 未検証
+        void add_false_false_profit(const int false_i, const int false_j, const Cost profit)
+        {
+            // i から destination に、 j から i にそれぞれ profit の辺をはり、オフセットに -profit する
+            // true, true => i から destination の辺はカウントされ、 j から i はカウントされない。合計 0
+            // true, false => i から destination の辺はカウントされ、 j から i はカウントされない (destination 側から source 側の辺なので)。合計 0
+            // false, true => i から destination の辺はカウントされず、 j から i はカウントされる。 合計 0
+            // false, false => i から destination の辺も j から i の辺もカウントされない -profit
+            assert(profit >= 0);
+            assert(0 <= false_i && false_i < static_cast<int>(flow.size()));
+            assert(0 <= false_j && false_j < static_cast<int>(flow.size()));
+            flow.add_edge(false_i, destination, profit);
+            flow.add_edge(false_j, false_i, profit);
+            offset += (-profit);
+        }
+        // true_is に含まれるものがすべて true の時の利得を追加する
+        // TODO: 未検証
+        void add_all_true_profit(const vector<int>& true_is, const Cost profit)
+        {
+            assert(profit >= 0);
+            assert(all_of(all(true_is), [&](int i){ 0 <= i && i < static_cast<int>(flow.size());}));
+            // 補助頂点 y を追加し、 source から y に profit の辺を張り、
+            // y から true になるノード全てに♾️の辺をはる。またオフセットに -profit を設定
+            // => y が source 側に存在する時のみ全体のコストが -profit になるが、一方で true_is の一つでも false だと無限のコストが発生する
+            const int y = flow.size();
+            flow.resize(flow.size() + 1);
+            flow.add_edge(source, y, profit);
+            for (int i : true_is) {
+                flow.add_edge(y, i, infinity);
+            }
+            offset += (-profit);
+        }
+        // false_is に含まれるものがすべて false の時の利得を追加する
+        // TODO: 未検証
+        void add_all_false_profit(const vector<int>& false_is, const Cost profit)
+        {
+            assert(profit >= 0);
+            assert(all_of(all(false_is), [&](int i){ 0 <= i && i < static_cast<int>(flow.size());}));
+            // 補助頂点 y を追加し、 y から destination に profit の辺を張り、
+            // false になるノード全てから y に♾️の辺をはる。またオフセットに -profit を設定
+            // => y が destination 側に存在する時のみ全体のコストが -profit になるが、一方で false_is の一つでも true だと無限のコストが発生する
+            const int y = flow.size();
+            flow.resize(flow.size() + 1);
+            flow.add_edge(y, destination, profit);
+            for (int i : false_is) {
+                flow.add_edge(i, y, infinity);
+            }
+            offset += (-profit);
+        }
+        // より一般的な関係コストの追加
+        // TODO: 未検証
+        void add_cost_general(int i, int j, Cost true_true_cost, Cost true_false_cost, Cost false_true_cost, Cost false_false_cost)
+        {
+            assert(0 <= i && i < static_cast<int>(flow.size()));
+            assert(0 <= j && j < static_cast<int>(flow.size()));
+            assert(false_true_cost + true_false_cost >= true_true_cost + false_false_cost);
+            offset += true_true_cost;
+            add_single_cost(i, false_false_cost - false_true_cost, 0);
+            add_single_cost(j, false_true_cost - true_true_cost, 0);
+            add_true_false_cost(i, j, false_false_cost + true_false_cost - true_true_cost - false_false_cost);
+        }
+        Cost solve()
+        {
+            return flow.flow(source, destination) + offset;
+        }
+    private:
+        size_t number_of_node;
+        int source;
+        int destination;
+        Dinic<Cost> flow;
+        Cost offset;
+        Cost infinity;
+    };
+
+以下例
+
+.. code-block:: cpp
+
+    // https://atcoder.jp/contests/typical90/tasks/typical90_an
+    int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
+    {
+        // 小数点以下10桁表示にする場合は以下をコメントアウト
+        // cout << fixed << setprecision(10);
+        int n; ll w; cin >> n >> w;
+        ProjectSelection<ll> project_selection(n);
+        auto a = input_vector<ll>(n);
+
+        // 選択する = 入る
+        // 選択しない = 入らない
+        vector<vector<int>> keys(n);
+        for (int i = 0; i < n; i++) {
+            int k; cin >> k;
+            for (int j = 0; j < k; j++) {
+                int c; cin >> c;
+                c--;
+                keys[i].push_back(c);
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            project_selection.add_single_cost(i, w - a[i], 0);
+            // i を選択しない場合、 その家にある鍵を取れないので入れなくなる
+            for (int k : keys[i]) {
+                project_selection.ban_true_false(k, i);
+            }
+        }
+
+        auto ret = -project_selection.solve();
+        cout << ret << endl;
         return 0;
     }
 
