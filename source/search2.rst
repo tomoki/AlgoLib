@@ -75,18 +75,35 @@
 .. code-block:: cpp
 
     // 凸関数の極大な点をもとめる
-    template<typename F,typename T>
-    T ternary_search(F f,T left,T right){
-        for(int i=0;i<1000;i++){
+    template<typename T, typename F>
+    T ternary_search(function<F(T)> f, T left, T right)
+    {
+        static_assert(std::is_integral_v<T> || std::is_floating_point_v<T>);
+        assert(left <= right);
+        // 整数の場合は候補を 3 つまでに絞る
+        constexpr T EPS = (std::is_integral_v<T>) ? 2 : 1e-9;
+        while (abs(left - right) > EPS) {
             T l = (2*left + right) / 3;
             T r = (left + 2*right) / 3;
-            if(f(l) < f(r)){
+            if (f(l) < f(r))
                 left = l;
-            }else{
+            else
                 right = r;
-            }
         }
-        return (left+right)/2;
+        if constexpr (std::is_integral_v<T>) {
+            // 3 つの候補のうち一番大きいものを返す
+            auto max_index = left;
+            auto max_value = f(left);
+            for (auto i = left + 1; i <= right; i++) {
+                auto iv = f(i);
+                if (iv > max_value) {
+                    max_value = iv;
+                    max_index = i;
+                }
+            }
+            return max_index;
+        } else
+            return (left + right) / 2;
     }
 
     // 凹関数の極小な・を求める
