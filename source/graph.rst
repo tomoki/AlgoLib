@@ -419,7 +419,6 @@ Dinic 法と FordFulkerson 法がある、 FordFulkerson は計算量がフロ�
         virtual Capacity flow(int from, int to) = 0;
     };
 
-
     // フローを流す処理は ...
     template<typename Capacity>
     struct Dinic : public MaxFlow<Capacity> {
@@ -428,7 +427,6 @@ Dinic 法と FordFulkerson 法がある、 FordFulkerson は計算量がフロ�
         explicit Dinic(size_t number_of_node)
         : graph(number_of_node)
         {
-
         }
 
         struct Edge {
@@ -497,6 +495,12 @@ Dinic 法と FordFulkerson 法がある、 FordFulkerson は計算量がフロ�
             return graph[from][index];
         }
 
+        size_t size() { return graph.size(); }
+        bool resize(size_t n)
+        {
+            assert(n >= graph.size());
+            graph.resize(n);
+        }
     private:
         // from から始まる BFS により DAG を生成する。
         // 戻り値は v[i] = from から到達可能なら from からの距離、そうでないなら -1
