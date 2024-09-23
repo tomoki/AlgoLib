@@ -11,8 +11,8 @@
     typedef complex<double> point;
     typedef vector<point> vertex;
 
-    namespace std{
-        bool operator < (const point &lhs,const point &rhs){
+    namespace std {
+        bool operator<(const point &lhs, const point &rhs){
             if(real(lhs) == real(rhs)){
                 return imag(lhs) < imag(rhs);
             }else{
@@ -217,7 +217,6 @@
                  (r < abs(c-a1) + EPS or r < abs(c-a2) + EPS));
     }
 
-
     // 点の進行方向
     int ccw(point a,point b,point c){
         b -= a;c -= a;
@@ -247,7 +246,6 @@
         }
         return is_inner_point_vertex(ps,a);
     }
-
 
     // 凸包 (UVA 109)
     vector<point> convex_hull(vector<point> ps){
@@ -322,6 +320,55 @@
             ret += triangle_area(v[0],v[i],v[i+1]);
         }
         return ret;
+    }
+
+    // 線分上の格子点をカウントする (端点も含む)
+    // ※ ただし端点も格子点であることを仮定
+    long long count_grid_point_on_line(const point& a, const point& b)
+    {
+        assert(abs(a.imag() - round(a.imag())) < EPS && abs(a.real() - round(a.real())) < EPS);
+        assert(abs(b.imag() - round(b.imag())) < EPS && abs(b.real() - round(b.real())) < EPS);
+        return gcd(
+            abs(static_cast<long long>(a.real()) - static_cast<long long>(b.real())),
+            abs(static_cast<long long>(a.imag()) - static_cast<long long>(b.imag()))) + 1;
+    }
+
+    // エリアの中にある格子点 (x, y が両方とも整数である) を数える
+    // ピックの定理より、 面積 = *内部*の格子点の数 + 1/2 * 辺上の格子点 - 1 が成り立つ
+    // Ref: https://atcoder.jp/contests/typical90/tasks/typical90_ao
+    // この関数は 「内部の点 (端点や辺上の点を含まない)」と「端点を含む辺上の点」をペアにして返す
+    pair<long long, long long> count_grid_points_in_area(const vector<point>& ps)
+    {
+        // ps の点は全て格子点である必要がある
+        // assert(ps.size() >= 3);
+        assert(all_of(ps.begin(), ps.end(), [](const point& p) {
+            return abs(p.imag() - round(p.imag())) < EPS &&
+                abs(p.real() - round(p.real())) < EPS;
+        }));
+        // FIXME: ここで単に point を使って面積を求めると誤差で死ぬケースが存在する
+        // なので整数型で以降の計算を行う
+        // 1. 面積を求める
+        long long area2 = 0; // 面積の二倍を保持
+        for (size_t i = 0; i < ps.size(); i++) {
+            long long ax = ps[(i + 0) % ps.size()].real(), ay = ps[(i + 0) % ps.size()].imag();
+            long long bx = ps[(i + 1) % ps.size()].real(), by = ps[(i + 1) % ps.size()].imag();
+            area2 += (bx - ax) * (by + ay);
+        }
+        area2 = abs(area2); // 見る順番によってはマイナスになる可能性がある
+        // 2. 辺上の点を求める
+        long long grid_point_on_lines = 0;
+        for (size_t i = 0; i < ps.size(); i++) {
+            const auto& a = ps[i];
+            const auto& b = ps[(i+1)%ps.size()];
+            grid_point_on_lines += static_cast<long long>(count_grid_point_on_line(a, b));
+        }
+        // 重複してカウントされている端点分マイナスしておく
+        grid_point_on_lines -= ps.size();
+
+        // 面積の二倍を使って計算する場合
+        // 2 * 面積 = 2 * 内部の格子点の数 + 辺上の格子点 - 2
+        // => 内部の格子点の数 = (2 * 面積 - 辺上の格子点 + 2) / 2
+        return { (area2 - grid_point_on_lines + 2) / 2, grid_point_on_lines };
     }
 
 
