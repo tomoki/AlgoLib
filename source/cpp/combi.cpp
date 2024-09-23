@@ -152,6 +152,8 @@ int main() {
     // n 個から r 個を選ぶ組み合わせ数、 r の方が大きい時は 0
     auto nCr = [&exp, &dexp](ll n, ll r) -> md {
         if (n < r) return 0;
+        assert(0 <= n && n < static_cast<ll>(exp.size()));
+        assert(0 <= r && r < static_cast<ll>(exp.size()));
         return exp[n] * dexp[r] * dexp[n-r];
     };
     // 区別するn 個のものから，繰り返し用いることを許して，r 個取り出して作った組
