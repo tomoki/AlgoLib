@@ -105,21 +105,28 @@ Rolling Hash
 
 .. code-block:: cpp
 
-
+    // TODO: string 以外にも対応する
     struct RollingHash {
-        // TODO: string 以外にも対応する
-        explicit RollingHash(std::string s)
-            : array(std::move(s)),
-              length(array.size()),
-              exp_r(decide_exp_r())
+        // ハッシュを外から与えるコンストラクタ、複数の文字列でハッシュを共有したい時はこちら
+        // RollingHash(t, other_rollinghash.r()) のように使う
+        RollingHash(std::string s, const uint64_t exp_r)
+        : array(std::move(s)),
+        length(array.size()),
+        exp_r(exp_r)
         {
             calc_pows();
             calc_hash();
         }
+        // ハッシュを自動的に決定するコンストラクタ、一つの文字列内で部分文字列のハッシュを比較する場合はこちら
+        explicit RollingHash(std::string s)
+            : RollingHash(std::move(s), decide_exp_r()) {}
+
         // 半開区間 [l, r) のハッシュ値を求める
         uint64_t hash(int l, int r)
         {
             assert(l <= r);
+            assert(0 <= l && l <= static_cast<int>(length));
+            assert(0 <= r && r <= static_cast<int>(length));
             // return pre_hash[r] - pre_hash[l];
             uint64_t sub = (pows[r-l] * pre_hash[l]) % MOD;
             if (pre_hash[r] >= sub) {
@@ -148,6 +155,7 @@ Rolling Hash
             }
             return true;
         }
+        uint64_t r() { return exp_r; }
     private:
         void calc_pows()
         {
@@ -188,6 +196,8 @@ Rolling Hash
         size_t length;
         uint64_t exp_r;
     };
+
+.. code-block:: cpp
 
     // https://atcoder.jp/contests/tessoku-book/tasks/tessoku_book_bd
     int my_main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
