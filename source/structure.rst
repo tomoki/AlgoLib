@@ -385,6 +385,7 @@ Lazy Segment Tree
     };
     auto e = []() { return T {0, 0}; };
     using F = optional<long long>;
+
     auto mapping = [](const F& f, const T& g) {
         if (!f.has_value()) return g;
         // ノードに対するアップデートであるため、その範囲の合計値計算にサイズが必要
@@ -393,11 +394,47 @@ Lazy Segment Tree
     auto composition = [](const F& f, const F& g) {
         return f;
     };
+
     auto id = []() -> F { return std::nullopt; };
     LazySegmentTree<T, op, e, F, mapping, composition, id> lst(n);
 
     // 初期化はサイズ 1 の要素アップデートとして行う
     for (int i = 0; i < n; i++) lst.update(i, Group {x[i], 1});
+
+
+範囲への足し算、範囲の和の計算をするセグメント木
+----------------------------------------------------
+.. code-block:: cpp
+
+    // https://atcoder.jp/contests/abc371/tasks/abc371_f
+    struct Group {
+        long long value; // ノードの合計値
+        long long size; // ノードに含まれる要素の数
+    };
+
+    using T = Group;
+    auto op = [](const T& a, const T& b) {
+        return T {a.value + b.value, a.size + b.size};
+    };
+    auto e = []() { return T {0, 0}; };
+    using F = optional<long long>;
+
+    auto mapping = [](const F& f, const T& g) {
+        if (!f.has_value()) return g;
+        // ノードに対するアップデートであるため、その範囲の合計値計算にサイズが必要
+        return T {f.value() * g.size + g.value, g.size };
+    };
+    auto composition = [](const F& f, const F& g) {
+        if (g.has_value())
+            return f.value() + g.value();
+        return f.value();
+    };
+    auto id = []() -> F { return std::nullopt; };
+    LazySegmentTree<T, op, e, F, mapping, composition, id> lst(n);
+
+    // 初期化はサイズ 1 の要素アップデートとして行う
+    for (int i = 0; i < n; i++) lst.update(i, Group {x[i], 1});
+
 
 ****************************************
 Binary-Indexed Tree (FenwickTree)
