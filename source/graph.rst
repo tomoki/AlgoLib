@@ -20,7 +20,7 @@
 ベルマンフォード
 ****************************************
 
-ある点から他の点への最短経路を計算する。負の閉路があっても対応可能で、負の閉路の検出も可能 O(N |E|)
+ある点から他の点への最短経路を計算する。負の閉路があっても対応可能で、負の閉路の検出も可能 O(NE)
 
 .. code-block:: cpp
 
@@ -1064,4 +1064,90 @@ Lowest Common Ancestor
 ****************************************
 木において、根から最も遠い、u,vの共通の祖先をLCAと呼ぶ。
 
-.. literalinclude:: cpp/lca.cpp
+.. code-block:: cpp
+
+    // 木上で共通の祖先を高速に求める
+    struct LowestCommonAncestor
+    {
+        // ノードごとの子供を vector で渡す、循環が存在しないこと
+        LowestCommonAncestor(const std::vector<std::vector<int>> &children, const int root) :
+            children(children), root(root) {
+    #ifdef DEBUG
+            // 循環が存在しないこと、 ルートを子供に持つ要素がないことをチェックする
+            for (int p = 0; p < static_cast<int>(children.size()); p++) {
+                for (int child : children[p]) {
+                    assert(0 <= child && child < static_cast<int>(children.size()));
+                    assert(child != root);
+                    assert(find(children[child].begin(), children[child].end(), p) == children[child].end());
+                }
+            }
+    #endif
+            assert(0 <= root && root < static_cast<int>(children.size()));
+            calc_parent_and_depth();
+            calc_parent_pow2();
+        };
+
+        // u, v の共通の祖先を求める
+        int solve(int u, int v) {
+            // make sure depth(u) > depth(v).
+            if (depth[u] < depth[v]) swap(u,v);
+            for (size_t k = 0; k < parent_pow2.size(); k++){
+                if(((depth[u] - depth[v]) >> k) & 1){
+                    u = parent_pow2[k][u];
+                }
+            }
+
+            if (u == v) return u;
+            for (int k = static_cast<int>(parent_pow2.size()) - 1; k >=0; k--) {
+                if (parent_pow2[k][u] != parent_pow2[k][v]) {
+                    u = parent_pow2[k][u];
+                    v = parent_pow2[k][v];
+                }
+            }
+            return parent_pow2[0][u];
+        }
+
+        // u, v の距離を求める
+        int distance(int u, int v)
+        {
+            int lca = solve(u, v);
+            // root から u の距離　+ root から v の距離 - 2 * 共通祖先への距離
+            return depth[u] + depth[v] - 2 * depth[lca];
+        }
+
+    private:
+        void calc_parent_and_depth() {
+            parent = vector<int>(children.size(), -1);
+            depth = vector<int>(children.size(), -1);
+            sub_calc_parent_and_depth(root, -1, 0);
+        }
+        void sub_calc_parent_and_depth(int cur, int par, int dep){
+            parent[cur] = par;
+            depth[cur] = dep;
+            for (int child : children[cur]) {
+                if (child != par) {
+                    sub_calc_parent_and_depth(child,cur,dep+1);
+                }
+            }
+        }
+        void calc_parent_pow2() {
+            // parent_pow2[k][i] = 2^k parent of node i.
+            parent_pow2 = vector<vector<int>>(ceil(log(children.size())/log(2)),
+                                            vector<int>(children.size(),-1));
+            parent_pow2[0] = parent;
+            for (size_t k = 0; k + 1 < parent_pow2.size(); k++) {
+                for (size_t v = 0; v < children.size(); v++) {
+                    if (parent_pow2[k][v] >= 0) {
+                        parent_pow2[k+1][v] = parent_pow2[k][parent_pow2[k][v]];
+                    }
+                }
+            }
+        }
+        std::vector<std::vector<int>> children;
+        int root;
+        // if root,parent is -1.
+        vector<int> parent;
+        vector<int> depth;
+        vector<vector<int>> parent_pow2;
+    };
+
