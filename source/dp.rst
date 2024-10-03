@@ -215,6 +215,70 @@ bit で集合を表すことにしたとき、 その空集合を除く部分集
     }
 
 ****************************************
+桁 DP
+****************************************
+
+N 以下の整数で、かつ桁ごとや bit ごとに処理していけば良いような DP を考える。
+
+- 例: 桁の合計が 3 の倍数である数
+- 例: 立っている bit が n 個である数
+
+例えば 10 進数で計算しているとき、とある桁が動く範囲は 0 ~ 9 もしくは 0 ~ N の ある桁の数になる (N を超えないようにするため)
+なので一般に以下のような DP を考える。
+
+DP[何桁目まで決めた][すでに絶対 N より小さいか] = 通り数
+
+- DP[i+1][true] <- dp[i][1] から i 桁目を自由に決める
+- DP[i+1][false] <- dp[i][false] から i 桁目を N と同じ
+- DP[i+1][true] <- dp[i][false] から i 桁目を 0 ~ (N の i 桁目 - 1)
+
+https://drken1215.hatenablog.com/entry/2019/02/04/013700
+
+以下が上から bit を決めていく DP
+
+.. code-block:: cpp
+
+    // https://atcoder.jp/contests/abc117/tasks/abc117_d
+    ll n, k; cin >> n >> k;
+    auto a = input_vector<ll>(n);
+
+    int MAX_BIT = 62;
+    // dp[i][smaller]
+    vector<vector<ll>> dp(MAX_BIT+1, vector<ll>(2, -1));
+    dp[0][0] = 0;
+    for (int i = 0; i < MAX_BIT; i++) {
+        ll fil = 1ll << (MAX_BIT - i - 1);
+        int select0 = 0, select1 =  0;
+        for (ll ia : a) {
+            if (ia & fil) {
+                select0++;
+            } else {
+                select1++;
+            }
+        }
+        // smaller -> smaller
+        if (dp[i][1] != -1) {
+            chmax(dp[i+1][1], dp[i][1] + fil * select0);
+            chmax(dp[i+1][1], dp[i][1] + fil * select1);
+        }
+        if (dp[i][0] != -1) {
+            // !smaller -> !smaller
+            if (k & fil) {
+                chmax(dp[i+1][0], dp[i][0] + fil * select1);
+            } else {
+                chmax(dp[i+1][0], dp[i][0] + fil * select0);
+            }
+            // !smaller -> smaller
+            if (k & fil) {
+                chmax(dp[i+1][1], dp[i][0] + fil * select0);
+            }
+        }
+    }
+
+    cout << *max_element(all(dp.back())) << endl;
+
+
+****************************************
 ヒストグラム内の最大長方形のサイズ
 ****************************************
 
