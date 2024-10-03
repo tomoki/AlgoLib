@@ -355,9 +355,11 @@
 
 .. code-block:: cpp
 
-    // グラフにある閉路を返す。 ({0, 1, 2, 3, 0}) のように最初と最後の値が同じものを返す
+    // グラフにある閉路 (cycle, loop) を返す。 ({0, 1, 2, 3, 0}) のように最初と最後の値が同じものを返す
+    // DAG (Directed acyclic graph) かどうかの判定にも利用できる
     // https://drken1215.hatenablog.com/entry/2023/05/20/200517
-    optional<vector<int>> find_cycle(const vector<vector<int>>& graph)
+    template<typename T>
+    optional<vector<int>> find_cycle(const vector<vector<Edge<T>>>& graph)
     {
         vector<bool> seen(graph.size()); // dfs を呼び出したか
         vector<bool> finished(graph.size()); // dfs を最後まで完了したか
@@ -365,7 +367,8 @@
         std::function<int(int, int)> dfs = [&](int k, int p) -> int {
             seen[k] = true;
             history.push_back(k);
-            for (int v : graph[k]) {
+            for (const auto& e : graph[k]) {
+                int v = e.to;
                 if (v == p) continue; // 逆戻りはスキップ
                 if (finished[v]) continue; // 操作済み
                 if (seen[v] && !finished[v]) {
@@ -381,7 +384,7 @@
             return -1;
         };
 
-        for (int c = 0; c < graph.size(); c++) {
+        for (int c = 0; c < static_cast<int>(graph.size()); c++) {
             if (seen[c]) continue;
             history.clear();
             int pos = dfs(c, -1);
@@ -1062,6 +1065,7 @@ Nagamochi-Ibaraki/Storer-Wagnerの方法によってO(V^3)で計算できる。
 ****************************************
 Lowest Common Ancestor
 ****************************************
+
 木において、根から最も遠い、u,vの共通の祖先をLCAと呼ぶ。
 
 .. code-block:: cpp
@@ -1085,7 +1089,14 @@ Lowest Common Ancestor
             assert(0 <= root && root < static_cast<int>(children.size()));
             calc_parent_and_depth();
             calc_parent_pow2();
-        };
+        }
+
+        template<typename T>
+        LowestCommonAncestor(const std::vector<std::vector<Edge<T>>> &tree, const int root)
+        : LowestCommonAncestor(generate_children_from_edge_list(tree, root), root)
+        {
+        }
+
 
         // u, v の共通の祖先を求める
         int solve(int u, int v) {
@@ -1108,6 +1119,8 @@ Lowest Common Ancestor
         }
 
         // u, v の距離を求める
+        // 3 点の合計の距離は (distance(a[0], a[1] + distance(a[1], a[2]) + distance(a[2], a[0])) / 2
+        // https://atcoder.jp/contests/typical90/tasks/typical90_ai
         int distance(int u, int v)
         {
             int lca = solve(u, v);
@@ -1143,6 +1156,22 @@ Lowest Common Ancestor
                 }
             }
         }
+
+        template<typename T>
+        static std::vector<std::vector<int>> generate_children_from_edge_list(const std::vector<std::vector<Edge<T>>> &tree, const int root)
+        {
+            vector<vector<int>> children(tree.size());
+            function<void(int, int)> dfs = [&](int c, int p) {
+                for (int child : tree[c]) {
+                    if (child == p) continue;
+                    children[c].push_back(child);
+                    dfs(child, c);
+                }
+            };
+            dfs(root, -1);
+            return children;
+        }
+
         std::vector<std::vector<int>> children;
         int root;
         // if root,parent is -1.
@@ -1151,3 +1180,72 @@ Lowest Common Ancestor
         vector<vector<int>> parent_pow2;
     };
 
+
+****************************************
+Auxiliary Tree
+****************************************
+
+.. code-block:: cpp
+
+    // 木のいくつかの頂点を選んでそれらを含む最小の部分木を作成する
+    template<typename T>
+    struct AuxiliaryTree {
+        explicit AuxiliaryTree(const vector<vector<Edge<T>>>& tree, int root = 0)
+            : lca(tree, root), node_index_to_dfs_order(tree.size())
+        {
+            // グラフの頂点を全て巡回するような DFS の行き掛け順をメモする
+            vector<int> dfs_order;
+            function<void(int, int)> dfs = [&](int c, int p) {
+                dfs_order.push_back(c);
+                for (auto [child, _] : tree[c]) {
+                    if (child == p) continue;
+                    dfs(child, c);
+                }
+            };
+            dfs(root, -1);
+            assert(dfs_order.size() == tree.size());
+
+            for (int i = 0; i < dfs_order.size(); i++) {
+                node_index_to_dfs_order[dfs_order[i]] = i;
+            }
+        }
+
+        // DFS の行き掛け順で与えられたインデックスをソートする
+        vector<int> sort_by_dfs_order(std::vector<int> node_index)
+        {
+            std::sort(node_index.begin(), node_index.end(), [&](int x, int y) {
+                return node_index_to_dfs_order[x] < node_index_to_dfs_order[y];
+            });
+            return node_index;
+        }
+
+        // 与えられたノードをつなげるのに必要なエッジの数を計算
+        // https://atcoder.jp/contests/typical90/tasks/typical90_ai
+        int number_of_edges_to_connect_nodes(const std::vector<int>& node_index)
+        {
+            auto sorted = sort_by_dfs_order(node_index);
+            int ret = 0;
+            for (size_t i = 0; i < sorted.size(); i++) {
+                ret += lca.distance(sorted[i], sorted[(i + 1) % sorted.size()]);
+            }
+            ret /= 2; // 辺ごとに ２ 回カウントするので /2
+            return ret;
+        }
+
+        // 与えられたノードの位置関係を接続するために必要な中間ノードを返す (与えられたノードも含む)
+        // Auxiliary Tree に含まれるようなノードを返す
+        // TODO: 未検証、エッジも貼るようにする
+        vector<int> compress_tree(const std::vector<int>& node_index)
+        {
+            auto sorted = sort_by_dfs_order(node_index);
+            size_t orig_n = sorted.size();
+            for (size_t i = 0; i < orig_n - 1; i++) {
+                sorted.push_back(lca.solve(sorted[i], sorted[i+1]));
+            }
+            return sorted;
+        }
+
+    private:
+        LowestCommonAncestor lca;
+        vector<int> node_index_to_dfs_order;
+    };
