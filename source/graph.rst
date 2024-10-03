@@ -355,12 +355,36 @@
 
 .. code-block:: cpp
 
-    // グラフにある閉路 (cycle, loop) を返す。 ({0, 1, 2, 3, 0}) のように最初と最後の値が同じものを返す
+
+    // グラフにある閉路を返す。 ({0, 1, 2, 3, 0}) のように最初と最後の値が同じものを返す
     // DAG (Directed acyclic graph) かどうかの判定にも利用できる
     // https://drken1215.hatenablog.com/entry/2023/05/20/200517
+    // TODO: 未検証: is_directed_graph が false、つまり無向グラフにこの関数が呼ばれた時、 同じ辺を二度使うようなループは許さない
     template<typename T>
-    optional<vector<int>> find_cycle(const vector<vector<Edge<T>>>& graph)
+    optional<vector<int>> find_cycle(const vector<vector<Edge<T>>>& graph, bool is_directed_graph = true)
     {
+        if (!is_directed_graph) {
+            // 無向グラフの時、 多重辺が存在したときにはそれを使ってすぐにループを作ることができる。
+            set<pair<int, int>> already_appears;
+            for (int c = 0; c < static_cast<int>(graph.size()); c++) {
+                for (const auto& e : graph[c]) {
+                    if (already_appears.contains({c, e.to})) {
+                        return vector<int> { c, e.to, c };
+                    }
+                    already_appears.insert({c, e.to});
+                }
+            }
+        }
+
+        // 自己ループがあったらそれを返す
+        for (int c = 0; c < static_cast<int>(graph.size()); c++) {
+            for (const auto& e : graph[c]) {
+                if (e.to == c) {
+                    return vector<int> { c, c };
+                }
+            }
+        }
+
         vector<bool> seen(graph.size()); // dfs を呼び出したか
         vector<bool> finished(graph.size()); // dfs を最後まで完了したか
         vector<int> history;
@@ -369,7 +393,8 @@
             history.push_back(k);
             for (const auto& e : graph[k]) {
                 int v = e.to;
-                if (v == p) continue; // 逆戻りはスキップ
+                // 無向グラフの時、すぐに逆に戻るようなもの (同じ辺を二度使う) はスキップ
+                if (!is_directed_graph && v == p) continue;
                 if (finished[v]) continue; // 操作済み
                 if (seen[v] && !finished[v]) {
                     // この呼び出しは v の中で発生しているので v を始点終点とするループがある
@@ -1249,3 +1274,50 @@ Auxiliary Tree
         LowestCommonAncestor lca;
         vector<int> node_index_to_dfs_order;
     };
+
+
+********************
+トポロジカルソート
+********************
+
+.. code-block:: cpp
+    // 有向であってループがないグラフ (DAG) を入力とする
+    // もし DAG ではないものが入力されたら nullopt を返す
+    template<typename T>
+    std::optional<vector<int>> topological_sort(const std::vector<std::vector<Edge<T>>>& graph)
+    {
+        if (find_cycle(graph)) {
+            return std::nullopt;
+        }
+        // 実装としては入る辺が 0 になったものを順番にリストに突っ込んでいく
+        vector<int> ret;
+        ret.reserve(graph.size());
+        vector<int> number_of_in_edges(graph.size());
+        for (const auto& edges: graph) {
+            for (const auto& e : edges) {
+                number_of_in_edges[e.to] += 1;
+            }
+        }
+
+        queue<int> que;
+        for (size_t i = 0; i < number_of_in_edges.size(); i++) {
+            if (number_of_in_edges[i] == 0) {
+                que.push(static_cast<int>(i));
+            }
+        }
+
+        while (!que.empty()) {
+            int cur = que.front();
+            que.pop();
+            ret.push_back(cur);
+            for (const auto& e : graph[cur]) {
+                number_of_in_edges[e.to] -= 1;
+                assert(number_of_in_edges[e.to] >= 0);
+                if (number_of_in_edges[e.to] == 0) {
+                    que.push(e.to);
+                }
+            }
+        }
+        assert(ret.size() == graph.size());
+        return ret;
+    }
