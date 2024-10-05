@@ -1281,6 +1281,7 @@ Auxiliary Tree
 ********************
 
 .. code-block:: cpp
+
     // 有向であってループがないグラフ (DAG) を入力とする
     // もし DAG ではないものが入力されたら nullopt を返す
     template<typename T>
