@@ -1,63 +1,58 @@
-struct Edge{
-    int to,cost;
-    Edge(int t,int c)
-        :to(t),cost(c) {
-    }
-};
 
-void check_back_number(const vector<vector<Edge>>& graph,
-                       int v,vector<char>& used,vector<int>& back_number){
-    used[v] = true;
-    for(const auto& e : graph[v]){
-        if(not used[e.to]){
-            check_back_number(graph,e.to,used,back_number);
-        }
-    }
-    back_number.push_back(v);
-}
-
-void collect_nodes(const vector<vector<Edge>> &graph,
-                   int v,vector<char>& used,vector<int>& s){
-    used[v] = true;
-    s.push_back(v);
-    for(const auto& e : graph[v]){
-        if(not used[e.to]) {
-            collect_nodes(graph,e.to,used,s);
-        }
-    }
-}
-
-vector<vector<int>> strongly_connected_components(const vector<vector<Edge>>& graph){
-    const int N = graph.size();
-    vector<vector<int>> scc;
+template<typename T>
+vector<vector<int>> strongly_connected_components(const vector<vector<Edge<T>>>& graph){
+    const int n = graph.size();
     vector<int> back_number;
+
     {
-        vector<char> used(N);
-        for(int i=0;i<N;i++){
-            if(not used[i]){
-                check_back_number(graph,i,used,back_number);
+        vector<bool> used(n);
+        function<void(int)> check_back_number = [&](int v) {
+            used[v] = true;
+            for(const auto& e : graph[v]){
+                if(!used[e.to]){
+                    check_back_number(e.to);
+                }
+            }
+            back_number.push_back(v);
+        };
+        for(int i = 0; i < n; i++){
+            if(!used[i]){
+                check_back_number(i);
             }
         }
     }
 
+    vector<vector<int>> scc;
+
     {
-        vector<char> used(N);
-        vector<vector<Edge>> reversed_graph(N);
-        for(int from=0;from<N;from++){
+        vector<vector<Edge<T>>> reversed_graph(n);
+        for(int from = 0; from < n; from++){
             for(const auto& e : graph[from]){
-                reversed_graph[e.to].push_back(Edge(from,e.cost));
+                reversed_graph[e.to].push_back(Edge(from, e.value));
             }
         }
-        reverse(all(back_number));
+        vector<char> used(n);
+        function<void(int, vector<int>&)> collect_nodes = [&](int v, vector<int>& s) {
+            used[v] = true;
+            s.push_back(v);
+            for(const auto& e : reversed_graph[v]){
+                if (!used[e.to]) {
+                    collect_nodes(e.to,s);
+                }
+            }
+        };
+
+        reverse(back_number.begin(), back_number.end());
         for(int k : back_number){
-            if(not used[k]){
-                scc.push_back(vector<int>());
-                collect_nodes(reversed_graph,k,used,scc.back());
+            if(!used[k]){
+                scc.emplace_back(0);
+                collect_nodes(k, scc.back());
             }
         }
     }
     return scc;
 }
+
 namespace SAT{
     // variable is integer .
     struct Literal{
