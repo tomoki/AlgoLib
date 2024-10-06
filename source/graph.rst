@@ -11,10 +11,18 @@
 
 .. code-block:: cpp
 
-    struct Edge{
-        int to,cost;
-        Edge(int to,int cost) : to(to),cost(cost) {};
+    template<typename T>
+    struct Edge {
+        int to;
+        T value;
+        Edge(int to, const T& v) : to(to), value(v) {}
     };
+
+    template<typename T>
+    std::ostream& operator<<(std::ostream& os, const Edge<T>& e)
+    {
+        return os << "(" << e.to << ", " << e.value << ")";
+    }
 
 ****************************************
 ベルマンフォード
@@ -1079,7 +1087,202 @@ Nagamochi-Ibaraki/Storer-Wagnerの方法によってO(V^3)で計算できる。
 強連結成分分解
 ****************************************
 
-.. literalinclude:: cpp/scc.cpp
+.. code-block:: cpp
+
+    template<typename T>
+    vector<vector<int>> strongly_connected_components(const vector<vector<Edge<T>>>& graph){
+        const int n = graph.size();
+        vector<int> back_number;
+
+        {
+            vector<bool> used(n);
+            function<void(int)> check_back_number = [&](int v) {
+                used[v] = true;
+                for(const auto& e : graph[v]){
+                    if(!used[e.to]){
+                        check_back_number(e.to);
+                    }
+                }
+                back_number.push_back(v);
+            };
+            for(int i = 0; i < n; i++){
+                if(!used[i]){
+                    check_back_number(i);
+                }
+            }
+        }
+
+        vector<vector<int>> scc;
+
+        {
+            vector<vector<Edge<T>>> reversed_graph(n);
+            for(int from = 0; from < n; from++){
+                for(const auto& e : graph[from]){
+                    reversed_graph[e.to].push_back(Edge(from, e.value));
+                }
+            }
+            vector<char> used(n);
+            function<void(int, vector<int>&)> collect_nodes = [&](int v, vector<int>& s) {
+                used[v] = true;
+                s.push_back(v);
+                for(const auto& e : reversed_graph[v]){
+                    if (!used[e.to]) {
+                        collect_nodes(e.to,s);
+                    }
+                }
+            };
+
+            reverse(back_number.begin(), back_number.end());
+            for(int k : back_number){
+                if(!used[k]){
+                    scc.emplace_back(0);
+                    collect_nodes(k, scc.back());
+                }
+            }
+        }
+        return scc;
+    }
+
+
+    // SCC した後のグラフを計算。
+    template<typename T>
+    vector<vector<Edge<T>>> construct_scced_graph(const vector<vector<Edge<T>>>& graph)
+    {
+        auto scc = strongly_connected_components(graph);
+        dump(scc);
+        vector<vector<Edge<T>>> scc_graph(scc.size());
+
+        // 元のノード番号から新しいノード番号へのマップを作成
+        map<int, int> to_scc_node_id;
+        for (int i = 0; i < scc.size(); i++) {
+            for (int c : scc[i]) {
+                to_scc_node_id[c] = i;
+            }
+        }
+
+        // SCC 後のグラフにエッジをはる
+        for (int i = 0; i < scc.size(); i++) {
+            for (int c : scc[i]) {
+                for (const auto& e : graph[c]) {
+                    // 自己ループになる時はスキップ
+                    if (to_scc_node_id[e.to] == i) continue;
+                    // TODO: 多重辺をとりのぞくか、あるいはどのように取りのぞくかカスタマイズできるようにする
+                    scc_graph[i].emplace_back(to_scc_node_id[e.to], e.value);
+                }
+            }
+        }
+        return scc_graph;
+    }
+
+************
+2 SAT
+************
+
+.. code-block:: cpp
+
+    namespace SAT{
+        // variable is integer .
+        struct Literal{
+            bool is_not;
+            int var;
+            Literal(bool _is_not,int _var)
+                : is_not(_is_not),var(_var){}
+            Literal not_() const{
+                return Literal(not is_not,var);
+            }
+        };
+        Literal make_yes(int var){
+            return Literal(false,var);
+        }
+        Literal make_no(int var){
+            return Literal(true,var);
+        }
+        using Clause = std::vector<Literal>;
+        bool solve_2SAT(const int number_of_variable,
+                        const vector<Clause>& problem,
+                        vector<char>& output){
+            // variable is [0..N).
+            // "not n" will be assigned to (n+N).
+            auto index = [number_of_variable](const bool& is_not,const int& var){
+                return number_of_variable*is_not+var;
+            };
+            auto to_int = [number_of_variable,&index](const Literal& lit){
+                return index(lit.is_not,lit.var);
+            };
+
+            vector<vector<Edge>> graph(number_of_variable*2);
+            for(const Clause& clause : problem){
+                // clause = {Literal,Literal}
+                // a \/ b -> ~a -> b /\ ~b -> a
+                for(int i=0;i<2;i++){
+                    Literal c = clause[i].not_(),
+                            d = clause[not i];
+                    graph[to_int(c)].push_back(Edge(to_int(d),1));
+                }
+            }
+            vector<vector<int>> scc = strongly_connected_components(graph);
+            // where[i] = which component holds i
+            vector<int> where(number_of_variable*2);
+            for(int i=0;i<scc.size();i++){
+                for(int node : scc[i]){
+                    where[node] = i;
+                }
+            }
+            for(int var=0;var<number_of_variable;var++){
+                if(where[index(false,var)] == where[index(true,var)]){
+                    return false;
+                }
+            }
+            for(int var=0;var<number_of_variable;var++){
+                output[var] = where[index(false,var)] < where[index(true,var)];
+            }
+            return true;
+        }
+    }
+
+.. code-block:: cpp
+
+    // Codeforces 228E
+    signed main() {
+        ios::sync_with_stdio(false);
+        cin.tie(0);
+        int n,m;
+        cin >> n >> m;
+        vector<SAT::Clause> problem;
+        for(int i=0;i<m;i++){
+            int a,b,c;
+            cin >> a >> b >> c;
+            a--;b--;
+            if(c){
+                // already
+                // ~(A/\~B) /\ ~(~A/\B)
+                //  = (~A \/ B) /\ (A \/ ~B)
+                problem.push_back({SAT::make_no(a),SAT::make_yes(b)});
+                problem.push_back({SAT::make_yes(a),SAT::make_no(b)});
+            }else{
+                // ~(A/\B) /\ ~(~A/\~B)
+                //  = (~A \/ ~B) /\ (A \/ B)
+                problem.push_back({SAT::make_no(a),SAT::make_no(b)});
+                problem.push_back({SAT::make_yes(a),SAT::make_yes(b)});
+            }
+        }
+        vector<char> output(n);
+        bool is_solvable = SAT::solve_2SAT(n,problem,output);
+        if(is_solvable){
+            cout << count(all(output),true) << endl;
+            for(int i=0;i<n;i++){
+                if(output[i]){
+                    cout << i+1 << " ";
+                }
+            }
+            cout << endl;
+        }else{
+            cout << "Impossible" << endl;
+        }
+
+        return 0;
+    }
+
 
 ****************************************
 橋の列挙
@@ -1320,5 +1523,43 @@ Auxiliary Tree
             }
         }
         assert(ret.size() == graph.size());
+        return ret;
+    }
+
+***************
+最小道被覆問題
+***************
+
+
+.. code-block:: cpp
+
+    // グラフをいくつかの道に分割する、最小道被覆問題を解く
+    // https://kyopro.hateblo.jp/entry/2018/06/04/000659
+    // https://atcoder.jp/contests/abc374/tasks/abc374_g
+    template<typename T>
+    int minimum_path_cover_on_dag(const vector<vector<Edge<T>>>& graph)
+    {
+    #if DEBUG
+        assert(find_cycle(graph) == nullopt);
+    #endif
+        // 二部マッチング問題に帰着する
+        Dinic<int> maxflow(2 * graph.size() + 2);
+        const int source = 2 * graph.size();
+        const int sink = 2 * graph.size() + 1;
+        // source => 0 ~ n-1 に辺をはる
+        for (int i = 0; i < graph.size(); i++)
+            maxflow.add_edge(source, i, 1);
+        // n ~ 2 * n -1 => sink に辺をはる
+        for (int i = 0; i < graph.size(); i++)
+            maxflow.add_edge(graph.size() + i, sink, 1);
+
+        // 元のグラフで u => v の辺があるならば、 u => n + v に辺をはる
+        for (int i = 0; i < graph.size(); i++) {
+            for (const auto& e : graph[i]) {
+                maxflow.add_edge(i, graph.size() + e.to, 1);
+            }
+        }
+        // この時フローが流れている辺が元のグラフ上の道になる
+        int ret = graph.size() - maxflow.flow(source, sink);
         return ret;
     }
