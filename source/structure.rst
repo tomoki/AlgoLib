@@ -490,11 +490,332 @@ Binary-Indexed Tree (FenwickTree)
     };
 
 ****************************************
-定数個のみを保持する priority_queue
+Interval Heap
 ****************************************
-ビームサーチとかに使える？
 
-.. literalinclude:: cpp/lens_queue.cpp
+.. code-block:: cpp
+
+    // https://natsugiri.hatenablog.com/entry/2016/10/10/035445
+    // https://cs.seu.edu.cn/_upload/article/files/39/fc/faa16ec14ea79946477ff4d0d6a1/1d3c1c6e-2f34-4477-84bd-34ee72158d55.pdf
+    // 最小の要素と最大の要素の取り出しができる priority queue
+    template<typename T, auto compare=std::less<T>()>
+    class IntervalHeap {
+        static_assert(std::is_convertible_v<decltype(compare), std::function<bool(const T&, const T&)>>);
+    public:
+        IntervalHeap() = default;
+        // TODO: イテレータを受け取るように変更する
+        // 一旦バグっているので封印。 (テスト通らず)
+        // explicit IntervalHeap(const std::vector<T>& d) : data(d)
+        // {
+        //     for (int i = data.size() - 1; i >= 0; i--) {
+        //         // 適切に min-heap 部分と max-heap 部分を入れ替える
+        //         if (i % 2 == 1 && compare(data[i], data[i-1])) {
+        //             swap(data[i], data[i-1]);
+        //         }
+        //         move_up(move_down(i), i);
+        //     }
+        // }
+        explicit IntervalHeap(const std::vector<T>& d)
+        {
+            for (const auto& v : d) push(v);
+        }
+        [[nodiscard]] const T& max() const
+        {
+            assert(data.size() >= 1);
+            // 要素が一個だけの時以外はルートの max-heap 部分を返す
+            if (data.size() == 1) return data[0];
+            return data[1];
+        }
+        [[nodiscard]] const T& min() const
+        {
+            assert(data.size() >= 1);
+            return data[0];
+        }
+        void push(const T& x)
+        {
+            // 木の一番下に入れて移動する
+            int index = data.size();
+            data.push_back(x);
+            if (index % 2 == 1 && compare(data[index], data[index-1])) {
+                // max-heap 部分に突っ込んだが min-heap 部分より小さかったら入れ替える
+                std::swap(data[index-1], data[index]);
+                index = index - 1;
+            }
+            // 追加した要素を上に移動
+            move_up(index);
+        }
+        void pop_max()
+        {
+            assert(data.size() >= 1);
+            if (data.size() <= 2)
+                // データの数が 1 or 2 なら最後の要素が取り出す要素
+                data.pop_back();
+            else {
+                // 1 番目の要素を最後と入れ替えて取り出し、その後その要素を適切なところに移動 (max heap と同じ)
+                std::swap(data[1], data.back());
+                data.pop_back();
+                // ここでは必ず data[0] <= data[1]、 data[0] は最小のため。
+                move_up(move_down(1));
+            }
+        }
+        void pop_min()
+        {
+            assert(data.size() >= 1);
+            if (data.size() == 1)
+                data.pop_back();
+            else {
+                // 0 番目の要素を最後と入れ替えて取り出し、その後その要素を適切なところに移動 (max heap と同じ)
+                std::swap(data[0], data.back());
+                data.pop_back();
+                move_up(move_down(0));
+            }
+        }
+        void dump_data(std::ostream& os)
+        {
+            int iter = 0;
+            for (int size_of_level = 2; iter < static_cast<int>(data.size()); size_of_level *= 2) {
+                for (int i = 0; i < size_of_level && iter < static_cast<int>(data.size()); i += 2) {
+                    if (iter + 1 < static_cast<int>(data.size()))
+                        os << "[" << data[iter] << "," << data[iter + 1] << "] ";
+                    else
+                        os << "[" << data[iter] << "]";
+                    iter += 2;
+                }
+                os << std::endl;
+            }
+        }
+        // デバッグ用、 全ての要素がヒープ条件を満たしているかチェックする
+        void validate_data()
+        {
+            for (int i = 0; i < static_cast<int>(data.size()); i++) {
+                if (i % 2 == 0) {
+                    assert((i + 1) >= static_cast<int>(data.size()) || !compare(data[i+1], data[i]));
+                    // min-heap
+                    int left = min_heap_left(i);
+                    int right = min_heap_right(i);
+                    if (left < static_cast<int>(data.size())) assert(!compare(data[left], data[i]));
+                    if (right < static_cast<int>(data.size())) assert(!compare(data[right], data[i]));
+                } else {
+                    // max-heap
+                    int left = max_heap_left(i);
+                    int right = max_heap_right(i);
+                    if (left < static_cast<int>(data.size())) assert(!compare(data[i], data[left]));
+                    if (right < static_cast<int>(data.size())) assert(!compare(data[i], data[right]));
+                }
+            }
+        }
+        [[nodiscard]] size_t size() const { return data.size(); }
+        [[nodiscard]] bool empty() const { return data.empty(); }
+    private:
+        static int min_heap_parent(const int index)
+        {
+            // - /2: 通常の heap の index に変換
+            // - +1: 1-indexed に変換
+            // - /2: 親 index を取得
+            // - -1: 0-indexed に変換
+            // - *2: interval heap に変換
+            return 2 * ((((index / 2) + 1) / 2) - 1);
+        }
+        static int min_heap_left(const int index)
+        {
+            return 2 * index + 2;
+        }
+        static int min_heap_right(const int index)
+        {
+            return 2 * index + 4;
+        }
+        static int max_heap_parent(const int index)
+        {
+            // - -1: min-heap 側に移動
+            // - min-heap 側の計算
+            // - +1: min-heap 側に移動
+            return min_heap_parent(index - 1) + 1;
+        }
+        static int max_heap_left(const int index)
+        {
+            return min_heap_left(index - 1) + 1;
+        }
+        static int max_heap_right(const int index)
+        {
+            return min_heap_right(index - 1) + 1;
+        }
+
+        int move_up(int index, int root = 0)
+        {
+            assert(0 <= index && index < static_cast<int>(data.size()));
+
+            // max-heap
+            // max 側への交換が発生するのは今 max 側にいるか、あるいは min 側だけが含まれるリーフ
+            while (index >= 2) {
+                // | 1 にすることで今 min 側リーフにいるケースと max 側にいるケース両方をカバーするように計算
+                int parent = max_heap_parent(index | 1);
+                if (parent >= root && compare(data[parent], data[index])) {
+                    std::swap(data[parent], data[index]);
+                    index = parent;
+                } else {
+                    break;
+                }
+            }
+            // min-heap
+            // max 側から min 側への交換は発生しない
+            if (index % 2 == 0) {
+                while (index >= 2) {
+                    int parent = min_heap_parent(index);
+                    if (parent >= root && compare(data[index], data[parent])) {
+                        std::swap(data[parent], data[index]);
+                        index = parent;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            return index;
+        }
+        int move_down(int index)
+        {
+            if (index % 2 == 0) {
+                // min-heap
+                while (true) {
+                    int left = min_heap_left(index);
+                    int right = min_heap_right(index);
+                    // もう子供がいなければ終了
+                    if (left >= static_cast<int>(data.size()))
+                        break;
+
+                    // 右があって、かつ右が左より小さい時に限り右に入れる可能性がある
+                    const int move_to = (right < static_cast<int>(data.size()) && compare(data[right], data[left])) ? right : left;
+                    if (compare(data[move_to], data[index])) {
+                        std::swap(data[move_to], data[index]);
+                        index = move_to;
+                    } else {
+                        break;
+                    }
+                }
+                // もし最後まで行って min-heap/max-heap の値が逆転していたら戻しておく
+                if (index + 1 < static_cast<int>(data.size()) && compare(data[index+1], data[index])) {
+                    std::swap(data[index], data[index+1]);
+                    index = index + 1;
+                }
+            } else {
+                // max-heap
+                while (true) {
+                    int left = max_heap_left(index);
+                    int right = max_heap_right(index);
+                    if (left >= static_cast<int>(data.size()))
+                        break;
+                    // 右があって、かつ右が左より大きい時に限り右に入れる可能性がある
+                    const int move_to = (right < static_cast<int>(data.size()) && compare(data[left], data[right])) ? right : left;
+                    if (compare(data[index], data[move_to])) {
+                        std::swap(data[index], data[move_to]);
+                        index = move_to;
+                    } else {
+                        break;
+                    }
+                }
+                // もし最後まで行って min-heap/max-heap の値が逆転していたら戻しておく
+                if (compare(data[index], data[index-1])) {
+                    std::swap(data[index-1], data[index]);
+                    index = index - 1;
+                }
+            }
+            return index;
+        }
+        // 偶数番の要素は min-heap、奇数番を max-heap とする
+        std::vector<T> data;
+    };
+
+
+
+.. code-block:: cpp
+
+    int my_main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
+    {
+        std::random_device seed_gen;
+        std::mt19937 engine(seed_gen());
+
+        // push, max, pop_max test
+        for (int i = 0; i < 100; i++) {
+            IntervalHeap<int> heap;
+            std::uniform_int_distribution<int> dist(1, 100);
+            for (int j = 0; j < i; j++) {
+                heap.push(dist(engine));
+                heap.validate_data();
+            }
+            int prev = 100000;
+            while (!heap.empty()) {
+                int m = heap.max();
+                assert(prev >= m);
+                prev = m;
+                heap.pop_max();
+                heap.validate_data();
+            }
+        }
+        // push, min, pop_min test
+        for (int i = 0; i < 100; i++) {
+            IntervalHeap<int> heap;
+            std::uniform_int_distribution<int> dist(1, 100);
+            for (int j = 0; j < i; j++) {
+                heap.push(dist(engine));
+                heap.validate_data();
+            }
+            int prev = -100;
+            while (!heap.empty()) {
+                int m = heap.min();
+                assert(prev <= m);
+                heap.pop_min();
+                heap.validate_data();
+            }
+        }
+
+        // constructor test
+        for (int i = 0; i < 100; i++) {
+            vector<int> data;
+            std::uniform_int_distribution<int> dist(1, 100);
+            for (int j = 0; j < i; j++) {
+                data.push_back(dist(engine));
+            }
+            IntervalHeap<int> heap(data);
+            heap.validate_data();
+        }
+
+        IntervalHeap<int> heap;
+        vector<int> example_data {10, 90, 15, 80, 20, 70, 25, 60, 27, 55, 35, 15, 20, 16, 19, 17, 17, 30, 60,  45, 60, 44, 44, 50, 55, 47, 58, 35, 50, 40, 45, 40, 43};
+
+        for (int d : example_data) {
+            heap.push(d);
+            heap.dump_data(cout);
+            cout << "-----" << endl;
+            heap.validate_data();
+        }
+
+        while (!heap.empty()) {
+            int m = heap.max();
+            heap.pop_max();
+            cout << m << " " << endl;
+            heap.dump_data(cout);
+            cout << "-----" << endl;
+            heap.validate_data();
+        }
+        cout << endl;
+
+        {
+            struct M {
+                int a;
+            };
+            const auto comp = [](const M& a, const M& b) -> bool { return abs(a.a) < abs(b.a); };
+
+            vector<M> m_data {{10}, {-90}, {15}, {80}};
+            IntervalHeap<M, comp> m_heap(m_data);
+
+            while (!m_heap.empty()) {
+                cout << m_heap.max().a << " " << endl;
+                m_heap.pop_max();
+                m_heap.validate_data();
+            }
+            cout << endl;
+        }
+        return 0;
+    }
 
 ****************************************
 Set で区間を管理するテクニック
