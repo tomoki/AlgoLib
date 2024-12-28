@@ -432,3 +432,33 @@ https://drken1215.hatenablog.com/entry/2019/02/04/013700
     constexpr T powi2(T x, R n, T one = 1) {
         return apply_doubling(x, n, std::multiplies<T>(), one);
     }
+
+************
+編集距離
+************
+
+.. code-block:: cpp
+    // https://o-treetree.hatenablog.com/entry/DPL1E
+    int edit_distance(const string& s, const string& t)
+    {
+        // dp[i][j] = s を i 文字、 t を j 文字とった時に編集距離
+        vector<vector<int>> dp(s.size() + 1, vector<int>(t.size() + 1));
+        // それぞれが 0 文字ならもう片方の長さかかる
+        for (int i = 0; i <= s.size(); i++) dp[i][0] = i;
+        for (int i = 0; i <= t.size(); i++) dp[0][i] = i;
+
+        const int REMOVE_COST = 1;
+        const int ADD_COST = 1;
+        const int MODIFY_COST = 1;
+
+        for (int i = 1; i <= s.size(); i++) {
+            for (int j = 1; j <= t.size(); j++) {
+                dp[i][j] = min({
+                    dp[i-1][j] + REMOVE_COST, // s を 1 文字スキップ
+                    dp[i][j-1] + ADD_COST,    // s はそのままで t の文字と同じものを追加
+                    dp[i-1][j-1] + (s[i-1] == t[j-1] ? 0 : MODIFY_COST) // 文字列長は変えずに更新する
+                });
+            }
+        }
+        return dp[s.size()][t.size()];
+    }
