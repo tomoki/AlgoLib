@@ -107,3 +107,88 @@ Nim を拡張し、コインの山ではなくなんらかのゲームがいく�
 ****************************************
 
 TODO
+
+******************
+連結性判定
+******************
+
+大域的な連続判定はもう少し複雑だが、 3x3 のローカルグリッドにおいて連結性が変わるかどうかを判定するのは容易に可能
+https://www.terry-u16.net/entry/ahc039#連結性判定
+(テスト中)
+
+.. code-block:: cpp
+
+    // 3x3 のグリッドにおいて、中心の点を変更しても連結状況が変わらないかを返す
+    // grid は 9 bit で表すことにする 例: 0b00111101 = xxo ooo oxo
+    // ref: https://www.terry-u16.net/entry/ahc039#連結性判定
+    bool can_flip_center_without_loosing_connection(uint32_t grid)
+    {
+        static bitset<(1 << 9)> res;
+        static std::once_flag once;
+        constexpr int CENTER = 4;
+
+        auto can_reach = [](uint32_t grid, int index) -> uint32_t {
+            static int dx[] = {-1, 0, 1, 0};
+            static int dy[] = {0, 1, 0, -1};
+
+            uint32_t res = (1 << index);
+            stack<int> sta;
+            sta.push(index);
+
+            while (!sta.empty()) {
+                const int cur = sta.top();
+                const int y = cur / 3;
+                const int x = cur % 3;
+                sta.pop();
+
+                for (int i = 0; i < 4; i++) {
+                    const int ny = y + dy[i];
+                    const int nx = x + dx[i];
+                    if (0 <= ny && ny < 3 && 0 <= nx && nx < 3) {
+                        const int ni = 3 * ny + nx;
+                        bool have_mark = grid & (1 << ni);
+                        bool not_used_yet = (res & (1 << ni)) == 0;
+                        if (have_mark && not_used_yet) {
+                            res |= (1 << ni);
+                            sta.push(ni);
+                        }
+                    }
+                }
+            }
+            return res;
+        };
+        std::call_once(once, [&]() {
+            for (uint32_t g = 0; g < (1 << 9); g++) {
+                bool ok = true;
+                const uint32_t flipped = g ^ (1 << CENTER);
+                for (int i = 0; i < 9; i++) {
+                    if (i == CENTER) continue;
+                    if (!(g & (1 << i))) continue;
+                    auto a = can_reach(g, i);
+                    auto b = can_reach(flipped, i);
+                    a &= ~(1u << CENTER);
+                    b &= ~(1u << CENTER);
+                    if (a != b) ok = false;
+                }
+                res[g] = ok;
+            }
+        });
+
+        return res[grid];
+    }
+
+    bool can_flip_center_without_loosing_connection(const vector<vector<bool>>& grid)
+    {
+        assert(grid.size() == 3);
+        assert(all_of(all(grid), [](const vector<bool>& row) {return row.size() == 3;}));
+
+        uint32_t bits = 0;
+        for (int r = 0; r < 3; r++) {
+            for (int c = 0; c < 3; c++) {
+                if (grid[r][c]) {
+                    bits |= (1 << (3 * r + c));
+                }
+            }
+        }
+        return can_flip_center_without_loosing_connection(bits);
+    }
