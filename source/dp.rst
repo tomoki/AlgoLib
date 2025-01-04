@@ -234,48 +234,151 @@ DP[何桁目まで決めた][すでに絶対 N より小さいか] = 通り数
 
 https://drken1215.hatenablog.com/entry/2019/02/04/013700
 
+.. code-block:: cpp
+
+    long long keta_dp_template(long long n)
+    {
+        // 桁ごとに分解
+        vector<int> digits;
+        for (ll k = n; k != 0; k /= 10)
+            digits.push_back(k % 10);
+        reverse(all(digits));
+
+        // dp[i][true] = i 桁目まで決まっていて、かつ値が真に n より小さい時
+        // dp[i][false] = i 桁目まで決まっていて、かつ値がこれまでの桁が n と一致する時
+        vector<vector<long long>> dp(digits.size(), vector<long long>(2));
+        // 0 桁目の値を設定する。 0 桁目だけは前のものを参照できないので別に計算する
+        dp[0][false] = 1; // 0 桁目は n と同じにする場合
+        dp[0][true] = 0;  // 0 桁目から異なる場合
+
+        for (size_t i = 1; i < digits.size(); i++) {
+            // n より小さい状態から、小さい状態への遷移、 i 桁目は自由に選ぶ。
+            // dp[i][true] = (dp[i-1][true] からの計算)
+
+            // n と同じ状態から小さい状態への遷移、 i 桁目は 0 ~ digits[i]-1 から選ぶ
+            // dp[i][true] = (dp[i-1][false] からの計算)
+
+            // n と同じ状態から同じ状態への遷移、 i 桁目は digits[i]
+            // dp[i][false] = (dp[i-1][false] からの計算)
+        }
+
+        // dp.back() から最終計算を行う
+        // dp.back()[true] = n より小さい時の値、　dp.back()[false] = n の時の値
+        return 0;
+    }
+
 以下が上から bit を決めていく DP
 
 .. code-block:: cpp
+    // bit を左/上から決めていく桁 DP
+    ll keta_dp_template_bit_from_left(uint64_t n);
+    {
+        // n と同じサイズにすればいい時は width = std::bit_width(n) とする
+        // しかし、例えば与えられる n 以外に演算する値が n より大きい時は 62 などの大きい値 (必ず全てが 0 になるところ) で決めうつ
+        const int width = 62;
 
-    // https://atcoder.jp/contests/abc117/tasks/abc117_d
-    ll n, k; cin >> n >> k;
-    auto a = input_vector<ll>(n);
+        // dp[i][true] = i 桁目まで決まっていて、かつ値が真に n より小さい時
+        // dp[i][false] = i 桁目まで決まっていて、かつ値がこれまでの桁が n と一致する時
+        vector<vector<ll>> dp(width, vector<ll>(2, -1));
+        // width を大きく設定したときは必ず width-1 番目が 0 になるようにする (n と一致する扱いとする)
+        dp[width-1][false] = 0;
+        dp[width-1][true] = -1; // width-1 番目の設定で n より小さくはなり得ない
+        // width を n と同じにしたときは 0 も 1 もありうる
+        // dp[width-1][false] = 0;
+        // dp[width-1][true] = 0;
 
-    int MAX_BIT = 62;
-    // dp[i][smaller]
-    vector<vector<ll>> dp(MAX_BIT+1, vector<ll>(2, -1));
-    dp[0][0] = 0;
-    for (int i = 0; i < MAX_BIT; i++) {
-        ll fil = 1ll << (MAX_BIT - i - 1);
-        int select0 = 0, select1 =  0;
-        for (ll ia : a) {
-            if (ia & fil) {
-                select0++;
+        for (int i = width - 2; i >= 0; i--) {
+            ll mask = 1ll << i;
+
+            // n より小さい状態から、小さい状態への遷移、 i 桁目は 0 でも 1 でも良い
+            // dp[i][true] = (dp[i+1][true] からの計算)
+            if (dp[i+1][true] >= 0) {
+            }
+
+            // n と同じ状態から小さい状態への遷移、 i 桁目は 0 になる
+            // n の i 桁目が 0 の時は、 同じ状態から小さい状態に遷移することはできない
+            // dp[i][true] = (dp[i+1][false] からの計算)
+            if (n & mask) {
+                if (dp[i+1][false] >= 0) {
+                }
+            }
+
+            // n と同じ状態から同じ状態への遷移、 i 桁目は n と同じ値
+            // dp[i][false] = (dp[i+1][false] からの計算)
+            if (n & mask) {
+                // i 桁目を 1 にするとき
+                if (dp[i+1][false] >= 0) {}
             } else {
-                select1++;
+                // i 桁目を 0 にするとき
+                if (dp[i+1][false] >= 0) {}
             }
         }
-        // smaller -> smaller
-        if (dp[i][1] != -1) {
-            chmax(dp[i+1][1], dp[i][1] + fil * select0);
-            chmax(dp[i+1][1], dp[i][1] + fil * select1);
-        }
-        if (dp[i][0] != -1) {
-            // !smaller -> !smaller
-            if (k & fil) {
-                chmax(dp[i+1][0], dp[i][0] + fil * select1);
-            } else {
-                chmax(dp[i+1][0], dp[i][0] + fil * select0);
-            }
-            // !smaller -> smaller
-            if (k & fil) {
-                chmax(dp[i+1][1], dp[i][0] + fil * select0);
-            }
-        }
+        // dp[0][true], dp[0][false] (n と同じ) から最終結果を計算する
+        return 0;
     }
 
-    cout << *max_element(all(dp.back())) << endl;
+例: https://atcoder.jp/contests/abc117/tasks/abc117_d
+
+.. code-block:: cpp
+    // https://atcoder.jp/contests/abc117/tasks/abc117_d
+    // bit を左/上から決めていく桁 DP
+    ll keta_dp_template_bit_from_left(uint64_t n, const vector<uint64_t>& a)
+    {
+        // n と同じサイズにすればいい時は width = std::bit_width(n) とする
+        // しかし、例えば与えられる n 以外に演算する値が n より大きい時は 62 などの大きい値 (必ず全てが 0 になるところ) で決めうつ
+        const int width = 62;
+
+        // dp[i][true] = i 桁目まで決まっていて、かつ値が真に n より小さい時
+        // dp[i][false] = i 桁目まで決まっていて、かつ値がこれまでの桁が n と一致する時
+        vector<vector<ll>> dp(width, vector<ll>(2, -1));
+        // width を大きく設定したときは必ず width-1 番目が 0 になるようにする (n と一致する扱いとする)
+        dp[width-1][false] = 0;
+        dp[width-1][true] = -1; // width-1 番目の設定で n より小さくはなり得ない
+        // width を n と同じにしたときは 0 も 1 もありうる
+        // dp[width-1][false] = 0;
+        // dp[width-1][true] = 0;
+
+        for (int i = width - 2; i >= 0; i--) {
+            ll mask = 1ll << i;
+            int select0 = 0, select1 =  0;
+            for (ll ia : a) {
+                if (ia & mask) {
+                    select0++;
+                } else {
+                    select1++;
+                }
+            }
+
+            // n より小さい状態から、小さい状態への遷移、 i 桁目は 0 でも 1 でも良い
+            // dp[i][true] = (dp[i+1][true] からの計算)
+            if (dp[i+1][true] >= 0) {
+                dp[i][true] = max(dp[i+1][true] + mask * select0, dp[i+1][true] + mask * select1);
+            }
+
+            // n と同じ状態から小さい状態への遷移、 i 桁目は 0 になる
+            // n の i 桁目が 0 の時は、 同じ状態から小さい状態に遷移することはできない
+            // dp[i][true] = (dp[i+1][false] からの計算)
+            if (n & mask) {
+                if (dp[i+1][false] >= 0) {
+                    dp[i][true] = max(dp[i][true], dp[i+1][false] + mask * select0);
+                }
+            }
+
+            // n と同じ状態から同じ状態への遷移、 i 桁目は n と同じ値
+            // dp[i][false] = (dp[i+1][false] からの計算)
+            if (n & mask) {
+                // i 桁目を 1 にするとき
+                if (dp[i+1][false] >= 0)
+                    dp[i][false] = dp[i+1][false] + mask * select1;
+            } else {
+                // i 桁目を 0 にするとき
+                if (dp[i+1][false] >= 0)
+                    dp[i][false] = dp[i+1][false] + mask * select0;
+            }
+        }
+        // dp[0][true], dp[0][false] (n と同じ) から最終結果を計算する
+        return max(dp[0][true], dp[0][false]);
+    }
 
 
 ****************************************
