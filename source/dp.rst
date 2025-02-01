@@ -256,7 +256,7 @@ https://drken1215.hatenablog.com/entry/2019/02/04/013700
             // dp[i][true] = (dp[i-1][true] からの計算)
 
             // n と同じ状態から小さい状態への遷移、 i 桁目は 0 ~ digits[i]-1 から選ぶ
-            // dp[i][true] = (dp[i-1][false] からの計算)
+            // dp[i][true] += (dp[i-1][false] からの計算)
 
             // n と同じ状態から同じ状態への遷移、 i 桁目は digits[i]
             // dp[i][false] = (dp[i-1][false] からの計算)
@@ -297,7 +297,7 @@ https://drken1215.hatenablog.com/entry/2019/02/04/013700
 
             // n と同じ状態から小さい状態への遷移、 i 桁目は 0 になる
             // n の i 桁目が 0 の時は、 同じ状態から小さい状態に遷移することはできない
-            // dp[i][true] = (dp[i+1][false] からの計算)
+            // dp[i][true] += (dp[i+1][false] からの計算)
             if (n & mask) {
                 if (dp[i+1][false] >= 0) {
                 }
@@ -357,7 +357,7 @@ https://drken1215.hatenablog.com/entry/2019/02/04/013700
 
             // n と同じ状態から小さい状態への遷移、 i 桁目は 0 になる
             // n の i 桁目が 0 の時は、 同じ状態から小さい状態に遷移することはできない
-            // dp[i][true] = (dp[i+1][false] からの計算)
+            // dp[i][true] += (dp[i+1][false] からの計算)
             if (n & mask) {
                 if (dp[i+1][false] >= 0) {
                     dp[i][true] = max(dp[i][true], dp[i+1][false] + mask * select0);
