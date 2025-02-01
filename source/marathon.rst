@@ -6,7 +6,7 @@
 焼き鈍し
 ****************************************
 
-テスト中
+例: https://atcoder.jp/contests/ahc002/submissions/62311972
 
 .. code-block:: cpp
 
