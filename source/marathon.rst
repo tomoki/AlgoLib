@@ -9,13 +9,15 @@
 テスト中
 
 .. code-block:: cpp
-    template<typename SCORE>
+
+    // 焼きなまし法を行う、 まずは山登り法で試すこと
+    // SCORE: スコアの型、 OPTIMIZE_TO_MAX_SCORE: スコアを最大化するなら true, 最小化するなら false、 HILL_CLIMBING: true なら山登り法
+    template<typename SCORE, bool OPTIMIZE_TO_MAX_SCORE = true, bool HILL_CLIMBING = false>
     SCORE simulated_annealing(SCORE initial_score, // 初期スコア
                             const function<SCORE()>& update, // 更新しそのスコアを返す
                             const function<void()>& undo,    // 更新を取り消す
                             const SCORE start_temp, // 一度の遷移で動く最大幅
                             const SCORE end_temp,   // 一度の遷移で動く最小幅
-                            const bool optimize_to_max_score = true, // スコアを最大化するなら true, 最小化するなら false
                             const chrono::milliseconds annealing_time = chrono::milliseconds(1000))
     {
         assert(start_temp >= 0 && end_temp >= 0 && start_temp > end_temp);
@@ -34,11 +36,11 @@
 
             const SCORE updated_score = update();
             // スコアが悪くなっても遷移する確率
-            const double probability_force_next = optimize_to_max_score ?
+            const double probability_force_next = OPTIMIZE_TO_MAX_SCORE ?
                                                 exp((updated_score - current_score) / current_temp) :
                                                 exp(-(updated_score - current_score) / current_temp);
-            const bool force_next = (probability_force_next * PRECISION_FOR_FORCE_NEXT) > (xor128() % PRECISION_FOR_FORCE_NEXT);
-            const bool better_score = (optimize_to_max_score ? (updated_score >= current_score) : (updated_score <= current_score));
+            const bool force_next = !HILL_CLIMBING && (probability_force_next * PRECISION_FOR_FORCE_NEXT) > (xor128() % PRECISION_FOR_FORCE_NEXT);
+            const bool better_score = (OPTIMIZE_TO_MAX_SCORE ? (updated_score >= current_score) : (updated_score <= current_score));
             if(better_score || force_next){
                 // Accept the change
                 current_score = updated_score;
@@ -50,7 +52,9 @@
         return current_score;
     }
 
+
 .. code-block:: cpp
+
     void main() {
         const auto score = [](double x){
             // return (x-50) * (x-50);
@@ -66,6 +70,6 @@
         const function<void()> undo = [&]() {
             current_x = prev_x;
         };
-        double ans = simulated_annealing<double>(score(current_x), update, undo, 1000, 10, true);
+        double ans = simulated_annealing<double>(score(current_x), update, undo, 1000, 10);
         dump(current_x, ans);
     }
