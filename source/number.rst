@@ -154,6 +154,13 @@ XORShiftをつかったらうれしいかもしれない。
         t=(x^(x<<11));x=y;y=z;z=w; return( w=(w^(w>>19))^(t^(t>>8)) );
     }
 
+    template <class RandomAccessIterator>
+    void xor128_shuffle(RandomAccessIterator first, RandomAccessIterator last) {
+        typename iterator_traits<RandomAccessIterator>::difference_type i, n;
+        n = (last - first);
+        for (i = n - 1; i > 0; --i) swap(first[i], first[xor128() % (i + 1)]);
+    }
+
 ****************************************
 基数変換
 ****************************************
